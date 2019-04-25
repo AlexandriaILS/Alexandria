@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "alexandria"
+version = "0.1.0"
+description = "Bespoke. Books. Battlestar Galactica."
+authors = ["Joe Kaufeld <joe.kaufeld@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+django = "^2.2"
+
+[tool.poetry.dev-dependencies]
+better_exceptions = "^0.2.2"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
