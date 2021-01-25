@@ -19,4 +19,4 @@ It should include:
 
 * investigate adding bookstore functionality for sale of weeded materials
 
-...and probably more. ¯\_(ツ)_/¯
+...and probably more. ¯\\\_(ツ)_/¯
