@@ -20,13 +20,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*qn*8fffxcth7jfb#&_r0w%9d!l2x(6nbge*d5*rapbufw=+-5'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", '*qn*8fffxcth7jfb#&_r0w%9d!l2x(6nbge*d5*rapbufw=+-5')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+
+AUTH_USER_MODEL = "users.AlexandriaUser"
 
 # Application definition
 
@@ -37,12 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "taggit",
+    "users",
+    "localflavor",
     "catalog",
     "media",
     "payments",
     "selfcheckout",
     "staff",
-    "users"
 ]
 
 MIDDLEWARE = [
@@ -124,3 +128,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Customizations
+
+# used for the default keys in address fields when signing up a user -- change
+# these to match the area that this is deployed in
+DEFAULT_ADDRESS_STATE_OR_REGION = "IN"
+DEFAULT_ADDRESS_CITY = "Indianapolis"
+DEFAULT_ADDRESS_ZIP_CODE = "46227"
+DEFAULT_ADDRESS_COUNTRY = "USA"
+
+ENABLE_RUNNING_BORROW_SAVED_MONEY = True
