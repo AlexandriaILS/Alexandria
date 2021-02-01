@@ -1,5 +1,11 @@
 from django.db import models
+from django.conf import settings
+from django.utils.translation import ugettext as _
 from taggit.managers import TaggableManager
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType as DjangoContentType
+
+from users.models import BranchLocation
 
 
 class ContentType(models.Model):
@@ -217,8 +223,33 @@ class ISBDRecord(models.Model):
     def parse_isbd_record(self, record):
         pass
 
+    def _convert_isbn10_to_isbn13(self):
+        # this process is so ridiculous.
+        # https://isbn-information.com/convert-isbn-10-to-isbn-13.html
+        isbn = self.isbn_10
+        # drop the old check digit off the end
+        isbn = str(isbn)[:-1]
+        # bookland!
+        isbn = "978" + isbn
+        # seriously why
+        check_digit = (
+            sum(
+                [
+                    int(integer) if position % 2 == 0 else int(integer) * 3
+                    for position, integer in enumerate(str(isbn))
+                ]
+            )
+            % 10
+        )
+        if check_digit != 0:
+            check_digit = 10 - check_digit
+        # append the new check digit
+        isbn = str(isbn) + str(check_digit)
+        return int(isbn)
+
     @property
     def isbn_13(self):
+        result = ""
         return "123"
 
     @property
@@ -262,11 +293,36 @@ class Media(models.Model):
     # is this a book? A CD? A book AND a CD?
     type = models.ManyToManyField(ContentTypeManager, related_name="content_type")
     # the scanned bar code, usually purchased from an outside vendor
-    barcode = models.CharField(max_length=50)
+    barcode = models.CharField(_("barcode"), max_length=50)
     # what material is this?
     record = models.ForeignKey(ISBDRecord, on_delete=models.CASCADE)
     # how much was it purchased for?
-    price = models.DecimalField(max_digits=7, decimal_places=2)
+    price = models.DecimalField(_("price"), max_digits=7, decimal_places=2)
     condition = models.CharField(
-        max_length=4, choices=BASE_CONDITION_OPTIONS, null=True, blank=True, default=NEW
+        _("condition"),
+        max_length=4,
+        choices=BASE_CONDITION_OPTIONS,
+        null=True,
+        blank=True,
+        default=NEW,
     )
+    home_location = models.ForeignKey(
+        BranchLocation,
+        on_delete=models.CASCADE,
+        null=True if settings.FLOATING_COLLECTION else False,
+        blank=True if settings.FLOATING_COLLECTION else False,
+    )
+    is_active = models.BooleanField(
+        _("active"),
+        default=True,
+        help_text=_(
+            "Designates whether this piece of media is counted as part of the"
+            " collection."
+        ),
+    )
+    # Allow assigning a piece of media to a user, a location, or really anything
+    content_type = models.ForeignKey(DjangoContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    checked_out_to = GenericForeignKey("content_type", "object_id")
+
+    call_number = models.CharField(max_length=100, unique=settings.FORCE_UNIQUE_CALL_NUMBERS)

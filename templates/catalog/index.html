@@ -1,0 +1,21 @@
+{% extends 'partials/base.partial' %}
+
+{% block content %}
+
+    <h1>HI!</h1>
+    <h2>welcome to alexandria</h2>
+    <h3>we have books and stuff</h3>
+    <p>
+        You have a search term? Enter it here:
+    </p>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit!">
+    </form>
+    {% if result %}
+        <h2>Got a response from LoC!</h2>
+        {{ result }}
+    {% endif %}
+
+{% endblock %}

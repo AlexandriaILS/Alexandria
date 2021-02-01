@@ -64,7 +64,7 @@ ROOT_URLCONF = 'alexandria.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -127,7 +127,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "images")
+MEDIA_URL = "/media/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_dev")]
 
 
 # Customizations
@@ -140,3 +144,8 @@ DEFAULT_ADDRESS_ZIP_CODE = "46227"
 DEFAULT_ADDRESS_COUNTRY = "USA"
 
 ENABLE_RUNNING_BORROW_SAVED_MONEY = True
+
+# Enable this if no material has a home branch location;
+FLOATING_COLLECTION = False
+FORCE_UNIQUE_CALL_NUMBERS = True
+SITE_NAME = "Alexandria Libraries"
