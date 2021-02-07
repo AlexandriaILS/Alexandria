@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "users",
     "localflavor",
     "catalog",
-    "media",
     "payments",
     "selfcheckout",
     "staff",
@@ -143,9 +142,19 @@ DEFAULT_ADDRESS_CITY = "Indianapolis"
 DEFAULT_ADDRESS_ZIP_CODE = "46227"
 DEFAULT_ADDRESS_COUNTRY = "USA"
 
+# keep track of how much patrons have saved by using the library; this is a
+# privacy-centric value that only tallies the total value of the books on their
+# account as a single integer.
 ENABLE_RUNNING_BORROW_SAVED_MONEY = True
 
-# Enable this if no material has a home branch location;
+# Enable this if no material has a home branch location.
 FLOATING_COLLECTION = False
-FORCE_UNIQUE_CALL_NUMBERS = True
-SITE_NAME = "Alexandria Libraries"
+FORCE_UNIQUE_CALL_NUMBERS = False
+LIBRARY_SYSTEM_NAME = "Alexandria Libraries"
+
+# When adding new materials, the home location will default to a single place
+# until it can be edited. Usually this is the first place that's added when
+# the system is first configured, but if it's not then just set the ID of the
+# target location here. For example, if the ID of a processing center is #3,
+# then you'd set a 3 here.
+DEFAULT_LOCATION_ID = 1
