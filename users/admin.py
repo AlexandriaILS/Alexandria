@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext as _
 
-from users.models import AlexandriaUser
+from users.models import AlexandriaUser, BranchLocation, USLocation
 
 
 class AlexandriaUserAdmin(UserAdmin):
@@ -29,3 +29,5 @@ class AlexandriaUserAdmin(UserAdmin):
 
 
 admin.site.register(AlexandriaUser, AlexandriaUserAdmin)
+admin.site.register(BranchLocation)
+admin.site.register(USLocation)

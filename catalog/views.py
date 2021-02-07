@@ -8,6 +8,7 @@ import pymarc
 
 from catalog.helpers import build_context
 from catalog.forms import LoCSearchForm
+from catalog.marc import import_from_marc
 
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -26,8 +27,11 @@ def index(request: HttpRequest) -> HttpResponse:
             record = pymarc.parse_xml_to_array(
                 io.BytesIO(requests.get("https:" + result["url"] + "/marcxml").content)
             )[0]
-            context["result"] = record.as_dict()
-            breakpoint()
+            if data["store"]:
+                new_record = import_from_marc(record)
+                context["result"] = new_record
+            else:
+                context["result"] = record.as_dict()
 
     form = LoCSearchForm()
     context["form"] = form

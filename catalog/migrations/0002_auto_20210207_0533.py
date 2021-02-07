@@ -6,20 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('catalog', '0001_initial'),
+        ("catalog", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='item',
-            name='type',
+            model_name="item",
+            name="type",
         ),
         migrations.AddField(
-            model_name='item',
-            name='marc_leader',
+            model_name="item",
+            name="marc_leader",
             field=models.CharField(blank=True, max_length=50, null=True),
         ),
         migrations.DeleteModel(
-            name='MediaType',
+            name="MediaType",
         ),
     ]

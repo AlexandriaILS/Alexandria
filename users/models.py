@@ -51,6 +51,17 @@ class USLocation(models.Model):
     state = USStateField(default=settings.DEFAULT_ADDRESS_STATE_OR_REGION)
     zip_code = USZipCodeField(default=settings.DEFAULT_ADDRESS_ZIP_CODE)
 
+    class Meta:
+        verbose_name = "US Location"
+        verbose_name_plural = "US Locations"
+
+    def __str__(self):
+        addy = f"{self.address_1}"
+        if self.address_2:
+            addy += f" {self.address_2}"
+        addy += f", {self.city}, {self.state} {self.zip_code}"
+        return addy
+
 
 class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
     # http://www.ala.org/advocacy/privacy/checklists/library-management-systems
@@ -70,6 +81,7 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
     birth_year = models.IntegerField(
         _("birth year"),
         blank=True,
+        null=True,
         help_text=_(
             "If allowed, enter the year of birth for the patron."
             " Helps differentiate between patrons with the same name."
@@ -98,6 +110,9 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
 
     objects = AlexandriaUserManager()
 
+    def __str__(self):
+        return str(self.card_number)
+
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
@@ -112,3 +127,8 @@ class BranchLocation(models.Model):
     address = models.ForeignKey(
         USLocation, on_delete=models.CASCADE, null=True, blank=True
     )
+
+    def __str__(self):
+        if self.address:
+            return f"{self.name} - {self.address.address_1}"
+        return f"{self.name}"

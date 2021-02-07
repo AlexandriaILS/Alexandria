@@ -12,6 +12,9 @@ from users.models import BranchLocation
 class Subject(models.Model):
     name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
+
 
 class Record(models.Model):
     """
@@ -41,6 +44,9 @@ class Record(models.Model):
 
     tags = TaggableManager(blank=True)
 
+    def __str__(self):
+        return f"{self.title} | {self.authors}"
+
 
 class Collection(models.Model):
     name = models.CharField(max_length=200)
@@ -48,6 +54,9 @@ class Collection(models.Model):
         BranchLocation, null=True, blank=True, on_delete=models.CASCADE
     )
     can_circulate = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Item(models.Model):
@@ -103,7 +112,7 @@ class Item(models.Model):
             _("Potentially ephemeral item; loose-leaf paper / website"),
         ),
         "m": (_("Monograph/Item"), _("Standalone item")),
-        "s": (_("Serial"), _("Periodical")),
+        "s": (_("Serial"), _("Serial")),
     }
 
     # the scanned bar code, usually purchased from an outside vendor
@@ -111,7 +120,9 @@ class Item(models.Model):
     # what material is this?
     record = models.ForeignKey(Record, on_delete=models.CASCADE)
     # how much was it purchased for?
-    price = models.DecimalField(_("price"), max_digits=7, decimal_places=2)
+    price = models.DecimalField(
+        _("price"), max_digits=7, decimal_places=2, null=True, blank=True
+    )
     condition = models.CharField(
         _("condition"),
         max_length=4,
@@ -147,8 +158,16 @@ class Item(models.Model):
     marc_leader = models.CharField(max_length=50, blank=True, null=True)
 
     # Allow assigning a piece of media to a user, a location, or really anything
-    content_type = models.ForeignKey(DjangoContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
+    content_type = models.ForeignKey(
+        DjangoContentType, null=True, blank=True, on_delete=models.CASCADE,
+        limit_choices_to={
+            'model__in': (
+                'branchlocation',
+                'alexandriauser',
+            )
+        }
+    )
+    object_id = models.PositiveIntegerField(null=True, blank=True)
     checked_out_to = GenericForeignKey("content_type", "object_id")
 
     call_number = models.CharField(
@@ -203,10 +222,8 @@ class Item(models.Model):
         return isbn
 
     @property
-    def type(self, human_readable: bool = False) -> str:
-        return self.RECORD_TYPE_MAP[self._load_leader().type_of_record][
-            1 if human_readable else 0
-        ]
+    def type(self) -> str:
+        return self.RECORD_TYPE_MAP[self._load_leader().type_of_record][0]
 
     @type.setter
     def type(self, value: str) -> None:
@@ -215,16 +232,22 @@ class Item(models.Model):
         self.marc_leader = leader.leader
 
     @property
-    def bibliographic_level(self, human_readable: bool = False):
-        return self.BIBLIOGRAPHIC_LEVEL_MAP[self._load_leader().bibliographic_level][
-            1 if human_readable else 0
-        ]
+    def human_readable_type(self):
+        return self.RECORD_TYPE_MAP[self._load_leader().type_of_record][1]
+
+    @property
+    def bibliographic_level(self):
+        return self.BIBLIOGRAPHIC_LEVEL_MAP[self._load_leader().bibliographic_level][0]
 
     @bibliographic_level.setter
     def bibliographic_level(self, value):
         leader = self._load_leader()
         leader.bibliographic_level = value
         self.marc_leader = leader.leader
+
+    @property
+    def human_readable_bibliographic_level(self):
+        return self.BIBLIOGRAPHIC_LEVEL_MAP[self._load_leader().type_of_record][1]
 
     @property
     def isbn_13(self) -> str:
@@ -239,3 +262,9 @@ class Item(models.Model):
     def export_marc(self):
         # TODO
         ...
+
+    def __str__(self):
+        return (
+            f"{self.record.title} | {self.record.authors}"
+            f" | {self.human_readable_type} | {self.call_number}"
+        )

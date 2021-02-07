@@ -1,4 +1,5 @@
-from typing import Union
+import re
+from typing import List, Union
 
 import pymarc
 from django.conf import settings
@@ -6,6 +7,9 @@ from django.db.models import QuerySet
 
 from catalog.models import Item, Record, Subject
 from users.models import BranchLocation
+
+
+YEAR_RE = r"[0-9]{4}"
 
 
 def get_marc_subfield_from_field(
@@ -20,14 +24,12 @@ def get_marc_subfield_from_field(
     return None
 
 
-def get_subjects(marc_record):
-    qs = QuerySet()
+def get_subjects(marc_record: pymarc.Record) -> List:
+    subject_list = []
     for marc_subject in marc_record.subjects():
-        subject_obj, _ = Subject.objects.get_or_create(
-            name__iexact=marc_subject.value()
-        )
-        qs = qs | QuerySet(subject_obj)
-    return qs
+        subject_obj, _ = Subject.objects.get_or_create(name=marc_subject.value())
+        subject_list.append(subject_obj)
+    return subject_list
 
 
 def import_from_marc(marc_record: pymarc.Record) -> Item:
@@ -38,20 +40,33 @@ def import_from_marc(marc_record: pymarc.Record) -> Item:
 
     title = get_marc_subfield_from_field(marc_record["245"], "a")
     subtitle = get_marc_subfield_from_field(marc_record["245"], "b")
+    notes = "\n".join([f"{n.tag}: {n.value()}" for n in marc_record.notes()])
+
+    series = None if marc_record.series() == [] else marc_record.series()
 
     base_record = Record(
         title=title,
         subtitle=subtitle,
         authors=author_str,
         uniform_title=marc_record.uniformtitle(),
-        notes=marc_record.notes(),
-        series=marc_record.series(),
+        notes=notes,
+        series=series,
     )
     # generate an ID so that we can use it in the next step
     base_record.save()
 
     base_record.subjects.add(*get_subjects(marc_record))
     base_record.save()
+
+    pubyear = re.search(YEAR_RE, marc_record.pubyear())
+    if pubyear:
+        pubyear = pubyear.group()
+
+    physical_description = marc_record.physicaldescription()
+    if len(physical_description) > 0:
+        physical_description = physical_description[0].value()
+
+    location = None if marc_record.location() == [] else marc_record.location()
 
     return Item.objects.create(
         record=base_record,
@@ -66,9 +81,9 @@ def import_from_marc(marc_record: pymarc.Record) -> Item:
         isbn=marc_record.isbn(),
         issn=marc_record.issn(),
         issn_title=marc_record.issn_title(),
-        marc_location=marc_record.location(),
+        marc_location=location,
         call_number=marc_record["050"].value(),
         sudoc=marc_record.sudoc(),
-        physical_description=marc_record.physicaldescription(),
-        pubyear=marc_record.pubyear(),
+        physical_description=physical_description,
+        pubyear=pubyear,
     )
