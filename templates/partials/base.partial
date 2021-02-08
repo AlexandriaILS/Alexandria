@@ -1,11 +1,14 @@
+{% load settings_value %}
+
 <html lang="en">
 <head>
-    {% include 'partials/head.partial' %}
-    <title>Alexandria - the Open Source ILS</title>
+    {% include "partials/head.partial" %}
+    <title>{% settings_value "LIBRARY_SYSTEM_NAME" %} - Powered by Alexandria</title>
 </head>
 
 <body>
-    <div class="container">
+    {% include "partials/navbar.partial" %}
+    <div class="container mt-3">
         {% block content %}
         {% endblock %}
     </div>

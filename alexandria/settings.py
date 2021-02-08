@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "taggit",
+    "general",
     "users",
     "localflavor",
     "catalog",
@@ -158,3 +159,5 @@ LIBRARY_SYSTEM_NAME = "Alexandria Libraries"
 # target location here. For example, if the ID of a processing center is #3,
 # then you'd set a 3 here.
 DEFAULT_LOCATION_ID = 1
+
+IGNORED_SEARCH_TERMS = ["a", "an", "the"]

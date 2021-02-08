@@ -1,0 +1,14 @@
+{% extends "partials/base.partial" %}
+
+{% block content %}
+    {% if search_term %}
+        <h1>Results</h1>
+        <p>Search term: {{ search_term }}</p>
+        {% for item in results %}
+            {% include "partials/single_search_result.partial" with item=item %}
+        {% endfor %}
+    {% else %}
+        <h1>No search term entered!</h1>
+    {% endif %}
+
+{% endblock %}

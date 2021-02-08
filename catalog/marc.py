@@ -3,11 +3,9 @@ from typing import List, Union
 
 import pymarc
 from django.conf import settings
-from django.db.models import QuerySet
 
-from catalog.models import Item, Record, Subject
+from catalog.models import Item, Record, Subject, BibliographicLevel
 from users.models import BranchLocation
-
 
 YEAR_RE = r"[0-9]{4}"
 
@@ -66,12 +64,16 @@ def import_from_marc(marc_record: pymarc.Record) -> Item:
     if len(physical_description) > 0:
         physical_description = physical_description[0].value()
 
+    bibliographic_level, _ = BibliographicLevel.objects.get_or_create(
+        name=pymarc.Leader(marc_record.leader).bibliographic_level
+    )
+
     location = None if marc_record.location() == [] else marc_record.location()
 
     return Item.objects.create(
         record=base_record,
         publisher=marc_record.publisher(),
-        barcode=1234,
+        barcode=0,
         marc_leader=marc_record.leader,
         home_location=(
             None
@@ -86,4 +88,5 @@ def import_from_marc(marc_record: pymarc.Record) -> Item:
         sudoc=marc_record.sudoc(),
         physical_description=physical_description,
         pubyear=pubyear,
+        bibliographic_level=bibliographic_level
     )

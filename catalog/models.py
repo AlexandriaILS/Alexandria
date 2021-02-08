@@ -44,6 +44,8 @@ class Record(models.Model):
 
     tags = TaggableManager(blank=True)
 
+    image = models.ImageField(blank=True, null=True)
+
     def __str__(self):
         return f"{self.title} | {self.authors}"
 
@@ -58,6 +60,90 @@ class Collection(models.Model):
     def __str__(self):
         return self.name
 
+
+class BibliographicLevel(models.Model):
+    MONOGRAPHIC_COMPONENT_PART = "a"
+    SERIAL_COMPONENT_PART = "b"
+    COLLECTION = "c"
+    SUBUNIT = "d"
+    INTEGRATING_RESOURCE = "i"
+    MONOGRAPH_ITEM = "m"
+    SERIAL = "s"
+
+    LEVEL_OPTIONS = [
+        (MONOGRAPHIC_COMPONENT_PART, _("Monographic component part")),
+        (SERIAL_COMPONENT_PART, _("Serial component part")),
+        (COLLECTION, _("Collection")),
+        (SUBUNIT, _("Subunit")),
+        (INTEGRATING_RESOURCE, _("Integrating resource")),
+        (MONOGRAPH_ITEM, _("Monograph / Item")),
+        (SERIAL, _("Serial")),
+    ]
+
+    name = models.CharField(max_length=1, choices=LEVEL_OPTIONS)
+
+    def __str__(self):
+        return self.get_name_display()
+
+
+class ItemTypeBase(models.Model):
+    """
+    Record type base.
+
+    Used for organizing groups of materials if needed and for populating the
+    leader of MARC records when exporting.
+    """
+
+    LANGUAGE_MATERIAL = "a"
+    NOTATED_MUSIC = "c"
+    MANUSCRIPT_NOTATED_MUSIC = "d"
+    CARTOGRAPHIC_MATERIAL = "e"
+    MANUSCRIPT_CARTOGRAPHIC_MATERIAL = "f"
+    PROJECTED_MEDIUM = "g"
+    NONMUSICAL_SOUND_RECORDING = "i"
+    MUSICAL_SOUND_RECORDING = "j"
+    TWO_DIMENSIONAL_NONPROJECTABLE_GRAPHIC = "k"
+    COMPUTER_FILE = "m"
+    KIT = "o"
+    MIXED_MATERIALS = "p"
+    THREE_DIMENSIONAL_ARTIFACT = "r"
+    MANUSCRIPT_LANGUAGE_MATERIAL = "t"
+
+    TYPE_OPTIONS = [
+        (LANGUAGE_MATERIAL, _("Language material")),
+        (NOTATED_MUSIC, _("Notated music")),
+        (MANUSCRIPT_NOTATED_MUSIC, _("Manuscript notated music")),
+        (CARTOGRAPHIC_MATERIAL, _("Cartographic material")),
+        (MANUSCRIPT_CARTOGRAPHIC_MATERIAL, _("Manuscript cartographic material")),
+        (PROJECTED_MEDIUM, _("Projected medium")),
+        (NONMUSICAL_SOUND_RECORDING, _("Nonmusical sound recording")),
+        (MUSICAL_SOUND_RECORDING, _("Musical sound recording")),
+        (
+            TWO_DIMENSIONAL_NONPROJECTABLE_GRAPHIC,
+            _("Two-dimensional nonprojectable graphic"),
+        ),
+        (COMPUTER_FILE, _("Computer file")),
+        (KIT, _("Kit")),
+        (MIXED_MATERIALS, _("Mixed materials")),
+        (
+            THREE_DIMENSIONAL_ARTIFACT,
+            _("Three dimensional artifact or naturally occuring object"),
+        ),
+        (MANUSCRIPT_LANGUAGE_MATERIAL, _("Manuscript language material")),
+    ]
+
+    name = models.CharField(max_length=1, choices=TYPE_OPTIONS)
+
+    def __str__(self):
+        return self.get_name_display()
+
+
+class ItemType(models.Model):
+    name = models.CharField(max_length=40)
+    base = models.ForeignKey(ItemTypeBase, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 class Item(models.Model):
     NEW = "new"
@@ -75,45 +161,6 @@ class Item(models.Model):
         (FAIR, "Fair"),
         (POOR, "Poor"),
     ]
-
-    RECORD_TYPE_MAP = {
-        "a": (_("Language material"), _("Book / Text")),
-        "c": (_("Notated music"), _("Sheet music")),
-        "d": (_("Manuscript notated music"), _("Handwritten sheet music")),
-        "e": (_("Cartographic material"), _("Map")),
-        "f": (_("Manuscript cartographic material"), _("Hand-drawn map")),
-        "g": (_("Projected medium"), _("Video / film / slides / etc.")),
-        "i": (
-            _("Nonmusical sound recording"),
-            _("Spoken word / sound effect recorded audio"),
-        ),
-        "j": (_("Musical sound recording"), _("Music recording")),
-        "k": (
-            _("Two-dimensional nonprojectable graphic"),
-            _("Pictures / charts / graphics"),
-        ),
-        "m": (_("Computer file"), _("Software / dataset / online service")),
-        "o": (_("Kit"), _("Kit of assorted materials")),
-        "p": (_("Mixed materials"), _("Mixed material")),
-        "r": (
-            _("Three-dimensional artifact or naturally occurring object"),
-            _("3D object / sculpture / toy / etc."),
-        ),
-        "t": (_("Manuscript language material"), _("Handwritten book")),
-    }
-
-    BIBLIOGRAPHIC_LEVEL_MAP = {
-        "a": (_("Monographic component part"), _("Standalone item from a series")),
-        "b": (_("Serial component part"), _("Part of a series")),
-        "c": (_("Collection"), _("Collection")),
-        "d": (_("Subunit"), _("Sub-unit of a collection or series")),
-        "i": (
-            _("Integrating resource"),
-            _("Potentially ephemeral item; loose-leaf paper / website"),
-        ),
-        "m": (_("Monograph/Item"), _("Standalone item")),
-        "s": (_("Serial"), _("Serial")),
-    }
 
     # the scanned bar code, usually purchased from an outside vendor
     barcode = models.CharField(_("barcode"), max_length=50)
@@ -159,13 +206,16 @@ class Item(models.Model):
 
     # Allow assigning a piece of media to a user, a location, or really anything
     content_type = models.ForeignKey(
-        DjangoContentType, null=True, blank=True, on_delete=models.CASCADE,
+        DjangoContentType,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
         limit_choices_to={
-            'model__in': (
-                'branchlocation',
-                'alexandriauser',
+            "model__in": (
+                "branchlocation",
+                "alexandriauser",
             )
-        }
+        },
     )
     object_id = models.PositiveIntegerField(null=True, blank=True)
     checked_out_to = GenericForeignKey("content_type", "object_id")
@@ -196,6 +246,12 @@ class Item(models.Model):
     )
     publisher = models.CharField(_("publisher"), max_length=500)
     pubyear = models.IntegerField(_("pubyear"), blank=True, null=True)
+    image = models.ImageField(blank=True, null=True)
+
+    type = models.ForeignKey(ItemType, on_delete=models.CASCADE, blank=True, null=True)
+    bibliographic_level = models.ForeignKey(
+        BibliographicLevel, on_delete=models.CASCADE, blank=True, null=True
+    )
 
     def _convert_isbn10_to_isbn13(self) -> str:
         # this process is so ridiculous.
@@ -222,34 +278,6 @@ class Item(models.Model):
         return isbn
 
     @property
-    def type(self) -> str:
-        return self.RECORD_TYPE_MAP[self._load_leader().type_of_record][0]
-
-    @type.setter
-    def type(self, value: str) -> None:
-        leader = self._load_leader()
-        leader.type_of_record = value
-        self.marc_leader = leader.leader
-
-    @property
-    def human_readable_type(self):
-        return self.RECORD_TYPE_MAP[self._load_leader().type_of_record][1]
-
-    @property
-    def bibliographic_level(self):
-        return self.BIBLIOGRAPHIC_LEVEL_MAP[self._load_leader().bibliographic_level][0]
-
-    @bibliographic_level.setter
-    def bibliographic_level(self, value):
-        leader = self._load_leader()
-        leader.bibliographic_level = value
-        self.marc_leader = leader.leader
-
-    @property
-    def human_readable_bibliographic_level(self):
-        return self.BIBLIOGRAPHIC_LEVEL_MAP[self._load_leader().type_of_record][1]
-
-    @property
     def isbn_13(self) -> str:
         if len(self.isbn) == 13:
             return self.isbn
@@ -264,7 +292,7 @@ class Item(models.Model):
         ...
 
     def __str__(self):
-        return (
-            f"{self.record.title} | {self.record.authors}"
-            f" | {self.human_readable_type} | {self.call_number}"
-        )
+        string = f"{self.record.title} | {self.record.authors} | {self.call_number}"
+        if self.type:
+            string += f" {self.type.name}"
+        return string
