@@ -1,10 +1,10 @@
-from django.db import models
+import pymarc
 from django.conf import settings
-from django.utils.translation import ugettext as _
-from taggit.managers import TaggableManager
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType as DjangoContentType
-import pymarc
+from django.db import models
+from django.utils.translation import ugettext as _
+from taggit.managers import TaggableManager
 
 from users.models import BranchLocation
 
@@ -145,6 +145,7 @@ class ItemType(models.Model):
     def __str__(self):
         return self.name
 
+
 class Item(models.Model):
     NEW = "new"
     FINE = "fine"
@@ -263,13 +264,13 @@ class Item(models.Model):
         isbn = "978" + isbn
         # seriously why
         check_digit = (
-            sum(
-                [
-                    int(integer) if position % 2 == 0 else int(integer) * 3
-                    for position, integer in enumerate(str(isbn))
-                ]
-            )
-            % 10
+                sum(
+                    [
+                        int(integer) if position % 2 == 0 else int(integer) * 3
+                        for position, integer in enumerate(str(isbn))
+                    ]
+                )
+                % 10
         )
         if check_digit != 0:
             check_digit = 10 - check_digit

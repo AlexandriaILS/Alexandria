@@ -7,11 +7,11 @@ authors = ["Joe Kaufeld <joe.kaufeld@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.7"
 Django = "^3.1.5"
-pymarc = "^4.0.0"
 django-taggit = "^1.3.0"
 django-localflavor = "^3.0.1"
-requests = "^2.25.1"
 Pillow = "^8.1.0"
+requests = "^2.25.1"
+pymarc = "^4.0.0"
 
 [tool.poetry.dev-dependencies]
 better_exceptions = "^0.2.2"
