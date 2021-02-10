@@ -1,5 +1,54 @@
 {% extends 'partials/base.partial' %}
 
 {% block content %}
-<h1>ayyyy</h1>
+    <table style="height: 75%; width: 100%">
+        <tbody>
+        <tr>
+            <td class="align-middle">
+                <div class="card bg-light" style="height:50%">
+                    <div class="card-body">
+                        <table style="height: 100%; width: 100%">
+                            <tbody>
+                            <tr>
+                                <td class="align-middle">
+                                    <h1 class="text-center mb-5">What are you looking for today?</h1>
+                                    <div class="input-group input-group-lg">
+                                        <input type="text"
+                                               class="form-control border-2 border-primary text-center shadow-sm"
+                                               id="mainSearchBar" aria-label="Search for an item!"
+                                               placeholder="Type here!">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4"></div>
+                                        <div class="col-4 d-grid mt-5">
+                                            <div id="mainSearchButton" class="btn btn-block btn-success">Search!</div>
+                                        </div>
+                                        <div class="col-4"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+
+            document.getElementById('mainSearchButton').onclick = function () {
+                location.href = "{% url "search" %}?q=" + encodeURIComponent(document.getElementById('mainSearchBar').value)
+            }
+
+            document.getElementById("mainSearchBar").addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    location.href = "{% url "search" %}?q=" + encodeURIComponent(document.getElementById('mainSearchBar').value)
+                }
+            });
+        });
+    </script>
+
 {% endblock %}

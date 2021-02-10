@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from catalog.models import Subject, Record, Item, Collection
+from catalog.models import Subject, Record, Item, Collection, ItemType, ItemTypeBase
 
 
 class ItemAdmin(admin.ModelAdmin):
@@ -12,12 +12,12 @@ class ItemAdmin(admin.ModelAdmin):
         "object_id",
     )
 
-    readonly_fields = (
-        "checked_out_to",
-    )
+    readonly_fields = ("checked_out_to",)
 
 
 admin.site.register(Item, ItemAdmin)
 admin.site.register(Subject)
 admin.site.register(Record)
 admin.site.register(Collection)
+admin.site.register(ItemType)
+admin.site.register(ItemTypeBase)

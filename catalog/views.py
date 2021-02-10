@@ -1,16 +1,18 @@
-from urllib.parse import quote_plus
 import io
+from urllib.parse import quote_plus
 
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.core.handlers.wsgi import WSGIRequest
-from django.db.models import Q
-from django.conf import settings
-import requests
 import pymarc
+import requests
+from django.conf import settings
+from django.core.handlers.wsgi import WSGIRequest
+from django.db.models.aggregates import Count
+from django.db.models.expressions import F, Q
+from django.db.models.functions import Lower
+from django.http import HttpResponse
+from django.shortcuts import render
 
-from catalog.helpers import build_context
 from catalog.forms import LoCSearchForm
+from catalog.helpers import build_context
 from catalog.marc import import_from_marc
 from catalog.models import Record
 
@@ -25,12 +27,26 @@ def search(request: WSGIRequest) -> HttpResponse:
     search_term = request.GET.get("q")
     for item in settings.IGNORED_SEARCH_TERMS:
         search_term = search_term.replace(item, "")
-    results = Record.objects.filter(
-        Q(title__icontains=search_term) | Q(authors__icontains=search_term)
+
+    # TODO: refactor for SearchVector and SearchRank -- requires Postgres
+    # https://docs.djangoproject.com/en/dev/ref/contrib/postgres/search/#searchvector
+    results = (
+        Record.objects.filter(
+            Q(title__icontains=search_term) | Q(authors__icontains=search_term)
+        )
+        .exclude(
+            id__in=(
+                Record.objects.annotate(total_count=Count("item", distinct=True))
+                .filter(item__is_active=False)
+                .annotate(is_active=Count("item", distinct=True))
+                .filter(Q(is_active=F("total_count")))
+            )
+        )
+        .exclude(id__in=Record.objects.filter(item__isnull=True))
+        .order_by(Lower("title"))
     )
+
     if search_term:
-        # TODO: refactor for SearchVector and SearchRank -- requires Postgres
-        # https://docs.djangoproject.com/en/dev/ref/contrib/postgres/search/#searchvector
         context.update(
             {
                 "search_term": search_term,
@@ -52,16 +68,18 @@ def add_from_loc(request: WSGIRequest) -> HttpResponse:
                 f"https://www.loc.gov/books/?fo=json&all=true&q={search_string}"
             )
             # lots of results come back, but for testing we're just using the first
-            result = results.json()["results"][0]
-            record = pymarc.parse_xml_to_array(
-                io.BytesIO(requests.get("https:" + result["url"] + "/marcxml").content)
-            )[0]
-            if data["store"]:
-                new_record = import_from_marc(record)
-                context["result"] = new_record
-            else:
-                context["result"] = record.as_dict()
+            context["result"] = results.json()["results"]
 
     form = LoCSearchForm()
     context["form"] = form
     return render(request, "catalog/add_from_loc.html", context)
+
+
+def import_marc_record_from_loc(request):
+    loc_id = request.GET.get("loc")
+    record = pymarc.parse_xml_to_array(
+        io.BytesIO(requests.get("https:" + loc_id + "/marcxml").content)
+    )[0]
+    import_from_marc(record)
+
+    return render(request, "catalog/add_from_loc.html", build_context())

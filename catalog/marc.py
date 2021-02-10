@@ -88,5 +88,5 @@ def import_from_marc(marc_record: pymarc.Record) -> Item:
         sudoc=marc_record.sudoc(),
         physical_description=physical_description,
         pubyear=pubyear,
-        bibliographic_level=bibliographic_level
+        bibliographic_level=bibliographic_level,
     )

@@ -10,7 +10,7 @@
                                     {% if item.image %}
                                         <img src="{{ item.image.url }}" height="250" width="auto"
                                              aria-label="Item cover image"
-                                             alt="Item cover image">
+                                             alt="Item cover image" class="rounded">
                                     {% else %}
                                         <svg class="bd-placeholder-img rounded float-start" width="170" height="250"
                                              xmlns="http://www.w3.org/2000/svg" role="img"
@@ -48,5 +48,4 @@
             </div>
         </div>
     </div>
-
 </div>

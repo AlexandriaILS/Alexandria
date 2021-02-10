@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from taggit.managers import TaggableManager
 
+from catalog import openlibrary
 from users.models import BranchLocation
 
 
@@ -48,6 +49,10 @@ class Record(models.Model):
 
     def __str__(self):
         return f"{self.title} | {self.authors}"
+
+    def save(self, *args, **kwargs):
+        openlibrary.download_cover(self)
+        super(Record, self).save(*args, **kwargs)
 
 
 class Collection(models.Model):
@@ -187,7 +192,7 @@ class Item(models.Model):
     )
     is_active = models.BooleanField(
         _("active"),
-        default=True,
+        default=False,
         help_text=_(
             "Designates whether this piece of media is counted as part of the"
             " collection."
@@ -254,6 +259,10 @@ class Item(models.Model):
         BibliographicLevel, on_delete=models.CASCADE, blank=True, null=True
     )
 
+    def save(self, *args, **kwargs):
+        openlibrary.download_cover(self)
+        super(Item, self).save(*args, **kwargs)
+
     def _convert_isbn10_to_isbn13(self) -> str:
         # this process is so ridiculous.
         # https://isbn-information.com/convert-isbn-10-to-isbn-13.html
@@ -264,13 +273,13 @@ class Item(models.Model):
         isbn = "978" + isbn
         # seriously why
         check_digit = (
-                sum(
-                    [
-                        int(integer) if position % 2 == 0 else int(integer) * 3
-                        for position, integer in enumerate(str(isbn))
-                    ]
-                )
-                % 10
+            sum(
+                [
+                    int(integer) if position % 2 == 0 else int(integer) * 3
+                    for position, integer in enumerate(str(isbn))
+                ]
+            )
+            % 10
         )
         if check_digit != 0:
             check_digit = 10 - check_digit

@@ -15,7 +15,28 @@
     </form>
     {% if result %}
         <h2>Got a response from LoC!</h2>
-        {{ result }}
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Title</th>
+                <th scope="col">Author(s)</th>
+                <th scope="col">Year</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in result %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ i.title }}</td>
+                    <td>{{ i.contributor|join:", "|title }}</td>
+                    <td>{{ i.date }}</td>
+                    <td><a href="{% url 'add_marc_from_loc' %}?loc={{ i.url }}" class="btn btn-success">Import</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     {% endif %}
 
 {% endblock %}
