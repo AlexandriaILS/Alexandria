@@ -1,17 +1,17 @@
-from typing import Any, Union, TYPE_CHECKING
-from io import BytesIO
 import os
+from io import BytesIO
 from random import choice
-import sys
+from typing import Any, Union, TYPE_CHECKING
 
-from django.core.files.storage import default_storage
+import requests
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.images import ImageFile
-from django.conf import settings
-import requests
+from django.core.files.storage import default_storage
 
 if TYPE_CHECKING:
     from catalog.models import Item, Record
+
 
 # Book Documentation https://openlibrary.org/dev/docs/api/books
 
