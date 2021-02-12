@@ -12,6 +12,7 @@ django-localflavor = "^3.0.1"
 Pillow = "^8.1.0"
 requests = "^2.25.1"
 pymarc = "^4.0.0"
+django-widget-tweaks = "^1.4.8"
 
 [tool.poetry.dev-dependencies]
 better_exceptions = "^0.2.2"

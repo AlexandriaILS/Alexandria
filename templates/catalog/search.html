@@ -1,6 +1,16 @@
 {% extends "partials/base.partial" %}
 
 {% block content %}
+
+    <div aria-live="polite" aria-atomic="true" class="position-sticky" style="position: sticky; top: 0; z-index: 10">
+        <!-- Position it: -->
+        <!-- - `.toast-container` for spacing between toasts -->
+        <!-- - `.position-absolute`, `top-0` & `end-0` to position the toasts in the upper right corner -->
+        <!-- - `.p-3` to prevent the toasts from sticking to the edge of the container  -->
+        <div id="toaster" class="toast-container position-absolute top-0 end-0 p-3">
+        </div>
+    </div>
+
     {% if search_term %}
         <h1>Results</h1>
         <p>Search term: {{ search_term }}</p>
@@ -10,5 +20,20 @@
     {% else %}
         <h1>No search term entered!</h1>
     {% endif %}
+
+    <script>
+        function createToastHTML(message, success, id) {
+            // this is called in single_search_result.partial
+            colorClass = success === true ? "bg-success" : "bg-danger";
+
+            return `<div class="toast d-flex align-items-center ${colorClass} text-white" id="toast${id}" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close ms-auto me-2" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>`
+        }
+    </script>
 
 {% endblock %}

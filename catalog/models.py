@@ -17,44 +17,6 @@ class Subject(models.Model):
         return self.name
 
 
-class Record(models.Model):
-    """
-    Information that should not change between different types of the same media.
-    For example, a DVD release vs the original text.
-    """
-
-    # tag 245a
-    title = models.CharField(max_length=26021)  # thanks, Yethindra
-    # This may be multiple people in one string; it's a limitation of the MARC format.
-    # Field 245c is used, as it always includes all authors.
-    authors = models.CharField(max_length=500)
-
-    # tag 245b
-    subtitle = models.CharField(max_length=26021, blank=True, null=True)
-
-    uniform_title = models.CharField(max_length=26021, blank=True, null=True)
-
-    notes = models.TextField(blank=True, null=True)
-
-    # Is this part of a series, like a manga or something similar? Maybe a periodical?
-    series = models.TextField(blank=True, null=True)
-
-    subjects = models.ManyToManyField(
-        Subject, blank=True, verbose_name="list of subjects"
-    )
-
-    tags = TaggableManager(blank=True)
-
-    image = models.ImageField(blank=True, null=True)
-
-    def __str__(self):
-        return f"{self.title} | {self.authors}"
-
-    def save(self, *args, **kwargs):
-        openlibrary.download_cover(self)
-        super(Record, self).save(*args, **kwargs)
-
-
 class Collection(models.Model):
     name = models.CharField(max_length=200)
     home = models.ForeignKey(
@@ -149,6 +111,49 @@ class ItemType(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Record(models.Model):
+    """
+    Information that should not change between different types of the same media.
+    For example, a DVD release vs the original text.
+    """
+
+    # tag 245a
+    title = models.CharField(max_length=26021)  # thanks, Yethindra
+    # This may be multiple people in one string; it's a limitation of the MARC format.
+    # Field 245c is used, as it always includes all authors.
+    authors = models.CharField(max_length=500)
+
+    # tag 245b
+    subtitle = models.CharField(max_length=26021, blank=True, null=True)
+
+    uniform_title = models.CharField(max_length=26021, blank=True, null=True)
+
+    notes = models.TextField(blank=True, null=True)
+
+    # Is this part of a series, like a manga or something similar? Maybe a periodical?
+    series = models.TextField(blank=True, null=True)
+
+    subjects = models.ManyToManyField(
+        Subject, blank=True, verbose_name="list of subjects"
+    )
+
+    tags = TaggableManager(blank=True)
+
+    image = models.ImageField(blank=True, null=True)
+
+    type = models.ForeignKey(
+        "ItemType", on_delete=models.CASCADE, blank=True, null=True
+    )
+
+    def __str__(self):
+        return f"{self.title} | {self.authors}"
+
+    def save(self, *args, **kwargs):
+        if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
+            openlibrary.download_cover(self)
+        super(Record, self).save(*args, **kwargs)
 
 
 class Item(models.Model):
@@ -254,7 +259,6 @@ class Item(models.Model):
     pubyear = models.IntegerField(_("pubyear"), blank=True, null=True)
     image = models.ImageField(blank=True, null=True)
 
-    type = models.ForeignKey(ItemType, on_delete=models.CASCADE, blank=True, null=True)
     bibliographic_level = models.ForeignKey(
         BibliographicLevel, on_delete=models.CASCADE, blank=True, null=True
     )

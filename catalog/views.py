@@ -1,5 +1,6 @@
 import io
 from urllib.parse import quote_plus
+import random
 
 import pymarc
 import requests
@@ -83,3 +84,8 @@ def import_marc_record_from_loc(request):
     import_from_marc(record)
 
     return render(request, "catalog/add_from_loc.html", build_context())
+
+
+def place_hold(request, item_id):
+    # breakpoint()
+    return HttpResponse(status=random.choice([200, 403]))
