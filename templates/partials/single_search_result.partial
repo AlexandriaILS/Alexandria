@@ -2,7 +2,7 @@
 
 <div class="container mt-3">
     <div class="row">
-        <div class="col-xl-8 col-xxl-9">
+        <div class="col-xl-6 col-xxl-8">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <div class="row">
@@ -40,10 +40,36 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-xxl-3">
+        <div class="col-xl-4 col-xxl-4">
             <div class="card shadow-sm" style="height:100%">
                 <div class="card-body">
-                    <div id="{{ item.id }}HoldButton" class="btn btn-block btn-primary mt-2">Put this on hold!</div>
+                    <div class="row">
+                        {% for subitem in item.get_available_types %}
+                            <div class="col-12 mb-2">
+                                <div class="row">
+                                    <div class="col-5">
+                                        <table class="text-md-center" style="height: 100%; width: 100%">
+                                            <tbody>
+                                            <tr>
+                                                <td class="align-middle text-center fs-5">{{ subitem.0 }}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-7">
+                                        <div class="d-grid">
+                                            <div id="{{ item.id }}HoldButton"
+                                                 class="btn btn-block btn-primary">Put
+                                                this on
+                                                hold!
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -65,7 +91,6 @@
             // all the different sections which would normally be closed off from each other.
             let newtoast;
             fetch(url).then(function (response) {
-                // call was successful
                 return response.ok ? response : Promise.reject(response);
             }).then(function (resp) {
                 newtoast = createToastHTML(

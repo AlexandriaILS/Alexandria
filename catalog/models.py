@@ -5,6 +5,7 @@ from django.contrib.contenttypes.models import ContentType as DjangoContentType
 from django.db import models
 from django.utils.translation import ugettext as _
 from taggit.managers import TaggableManager
+import requests
 
 from catalog import openlibrary
 from users.models import BranchLocation
@@ -123,7 +124,9 @@ class Record(models.Model):
     title = models.CharField(max_length=26021)  # thanks, Yethindra
     # This may be multiple people in one string; it's a limitation of the MARC format.
     # Field 245c is used, as it always includes all authors.
-    authors = models.CharField(max_length=500)
+    # This field may not have a relevant answer; for example, DVDs don't really have
+    # an author. Filling this field out is encouraged, but therefore not required.
+    authors = models.CharField(max_length=500, blank=True, null=True)
 
     # tag 245b
     subtitle = models.CharField(max_length=26021, blank=True, null=True)
@@ -144,16 +147,27 @@ class Record(models.Model):
     image = models.ImageField(blank=True, null=True)
 
     type = models.ForeignKey(
-        ItemType, on_delete=models.CASCADE, blank=True, null=True
+        ItemType, on_delete=models.CASCADE
     )
 
     def __str__(self):
-        return f"{self.title} | {self.authors}"
+        val = f"{self.title}"
+        if self.authors:
+            val += f" | {self.authors}"
+        if self.type:
+            val += f" | {self.type.name}"
+        return val
 
     def save(self, *args, **kwargs):
         if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
-            openlibrary.download_cover(self)
+            try:
+                openlibrary.download_cover(self)
+            except requests.exceptions.HTTPError:
+                pass
         super(Record, self).save(*args, **kwargs)
+
+    def get_available_types(self):
+        return set([(i.type.name, i.type.id)for i in self.item_set.filter(is_active=True)])
 
 
 class Item(models.Model):
@@ -269,7 +283,10 @@ class Item(models.Model):
 
     def save(self, *args, **kwargs):
         if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
-            openlibrary.download_cover(self)
+            try:
+                openlibrary.download_cover(self)
+            except requests.exceptions.HTTPError:
+                pass
         super(Item, self).save(*args, **kwargs)
 
     def _convert_isbn10_to_isbn13(self) -> str:
