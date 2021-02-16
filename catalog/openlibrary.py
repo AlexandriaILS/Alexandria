@@ -1,7 +1,7 @@
 import os
 from io import BytesIO
 from random import choice
-from typing import Any, Union, TYPE_CHECKING
+from typing import Any, Dict, Union, TYPE_CHECKING
 
 import requests
 from django.conf import settings
@@ -62,8 +62,10 @@ def download_cover(item: Union["Item", "Record"], size: str = "M") -> None:
     default_storage.delete(filename)
 
 
-def get_by_isbn(isbn: str) -> str:
-    ...
+def get_by_isbn(isbn: str) -> Dict:
+    return requests.get(
+        f"https://openlibrary.org/api/books?bibkeys=ISBN:{isbn}&format=json"
+    ).json()
 
 
 def get_openlibrary_book(isbn: str) -> Any:

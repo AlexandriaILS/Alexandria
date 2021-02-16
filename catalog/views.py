@@ -5,14 +5,16 @@ import random
 import pymarc
 import requests
 from django.conf import settings
+from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models.aggregates import Count
 from django.db.models.expressions import F, Q
 from django.db.models.functions import Lower
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.generic import View
 
-from catalog.forms import LoCSearchForm
+from catalog.forms import LoCSearchForm, LoginForm
 from catalog.helpers import build_context
 from catalog.marc import import_from_marc
 from catalog.models import Record
@@ -87,5 +89,10 @@ def import_marc_record_from_loc(request):
 
 
 def place_hold(request, item_id):
-    # breakpoint()
+    # TODO: build hold system
     return HttpResponse(status=random.choice([200, 403]))
+
+
+class LoginView(View):
+    def get(self, request):
+        return render(request, 'generic_form.html', build_context({'form': LoginForm}))

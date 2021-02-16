@@ -1,6 +1,6 @@
 Front-facing patron services.
 
-* Search catalog
+* ~~Search catalog~~ DONE
 * login
 * pay fines
 * reserve media

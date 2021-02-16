@@ -144,7 +144,7 @@ class Record(models.Model):
     image = models.ImageField(blank=True, null=True)
 
     type = models.ForeignKey(
-        "ItemType", on_delete=models.CASCADE, blank=True, null=True
+        ItemType, on_delete=models.CASCADE, blank=True, null=True
     )
 
     def __str__(self):
@@ -263,8 +263,13 @@ class Item(models.Model):
         BibliographicLevel, on_delete=models.CASCADE, blank=True, null=True
     )
 
+    type = models.ForeignKey(
+        ItemType, on_delete=models.CASCADE, blank=True, null=True
+    )
+
     def save(self, *args, **kwargs):
-        openlibrary.download_cover(self)
+        if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
+            openlibrary.download_cover(self)
         super(Item, self).save(*args, **kwargs)
 
     def _convert_isbn10_to_isbn13(self) -> str:

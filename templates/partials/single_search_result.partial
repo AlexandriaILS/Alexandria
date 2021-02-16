@@ -61,31 +61,29 @@
                 return
             }
 
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", url);
+            // because this is declared outside the fetch request, it's available inside
+            // all the different sections which would normally be closed off from each other.
+            let newtoast;
+            fetch(url).then(function (response) {
+                // call was successful
+                return response.ok ? response : Promise.reject(response);
+            }).then(function (resp) {
+                newtoast = createToastHTML(
+                    "{% format_toast messages.hold_success_message title=item.title subtitle=item.subtitle|default:'' %}", success = true, id ={{ item.id }}
+                )
+            }).catch(function (err) {
+                newtoast = createToastHTML("{{ messages.hold_error_message }}", success = false, id ={{ item.id }})
+            }).finally(function () {
+                document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
 
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {  // state 4 is "done"
-                    let newtoast;
-                    if (xhr.status === 200) {
-                        newtoast = createToastHTML(
-                            "{% format_toast messages.hold_success_message title=item.title subtitle=item.subtitle|default:'' %}", success = true, id ={{ item.id }}
-                        )
-                    } else {
-                        newtoast = createToastHTML("{{ messages.hold_error_message }}", success = false, id ={{ item.id }})
-                    }
-                    document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
+                let toastEl = document.getElementById("toast{{ item.id }}");
+                let toast = new bootstrap.Toast(toastEl, {'delay': 8000});
+                toast.show();
 
-                    let toastEl = document.getElementById("toast{{ item.id }}");
-                    let toast = new bootstrap.Toast(toastEl, {'delay': 8000});
-                    toast.show();
-
-                    toastEl.addEventListener('hidden.bs.toast', function (event) {
-                        toastEl.remove();
-                    });
-                }
-            };
-            xhr.send();
+                toastEl.addEventListener('hidden.bs.toast', function (event) {
+                    toastEl.remove();
+                });
+            })
         }
     });
 </script>

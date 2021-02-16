@@ -94,13 +94,13 @@
     </div>
 
     <script>
-        $(document).ready(function () {
-            var inputs = document.querySelectorAll('.inputfile');
+        document.addEventListener("DOMContentLoaded", function (event) {
+            const inputs = document.querySelectorAll('.inputfile');
             Array.prototype.forEach.call(inputs, function (input) {
-                var label = input.previousElementSibling
+                let label = input.previousElementSibling
 
                 input.addEventListener('change', function (e) {
-                    var fileName = '';
+                    let fileName = '';
 
                     fileName = e.target.value.split('\\').pop();
 
@@ -108,18 +108,18 @@
                 });
             });
             // from https://www.tjvantoll.com/2012/08/05/html5-form-validation-showing-all-error-messages/
-            var createAllErrors = function () {
-                var form = $(this)
-                var errorList = $(".errorMessages");
+            const createAllErrors = function () {
+                let form = $(this)
+                let errorList = $(".errorMessages");
 
-                var showAllErrorMessages = function () {
+                const showAllErrorMessages = function () {
                     errorList.innerHTML = "";
 
                     // Find all invalid fields within the form.
-                    var invalidFields = form.find(":invalid").each(function (index, node) {
+                    form.find(":invalid").each(function (index, node) {
 
                         // Find the field's corresponding label
-                        var label = $("label[for=" + node.id + "] "),
+                        let label = $("label[for=" + node.id + "] "),
                             // Opera incorrectly does not fill the validationMessage property.
                             message = node.validationMessage || 'Invalid value.';
 
@@ -144,7 +144,7 @@
                     .on("click", showAllErrorMessages);
 
                 $("input", form).on("keypress", function (event) {
-                    var type = $(this).attr("type");
+                    let type = $(this).attr("type");
                     if (/date|email|month|number|search|tel|text|time|url|week/.test(type)
                         && event.keyCode === 13) {
                         showAllErrorMessages();
