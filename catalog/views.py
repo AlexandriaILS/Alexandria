@@ -10,14 +10,15 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.db.models.aggregates import Count
 from django.db.models.expressions import F, Q
 from django.db.models.functions import Lower
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.generic import View
+from django.core.paginator import Paginator
 
 from catalog.forms import LoCSearchForm, LoginForm
 from catalog.helpers import build_context
 from catalog.marc import import_from_marc
-from catalog.models import Record
+from catalog.models import Record, ItemType
 
 
 def index(request: WSGIRequest) -> HttpResponse:
@@ -48,13 +49,26 @@ def search(request: WSGIRequest) -> HttpResponse:
         .exclude(id__in=Record.objects.filter(item__isnull=True))
         .order_by(Lower("title"))
     )
+    try:
+        results_per_page = int(
+            request.GET.get("count", settings.DEFAULT_RESULTS_PER_PAGE)
+        )
+        if results_per_page < 1:
+            # accidentally fell over this while testing
+            results_per_page = settings.DEFAULT_RESULTS_PER_PAGE
+    except ValueError:
+        results_per_page = settings.DEFAULT_RESULTS_PER_PAGE
+
+    paginator = Paginator(results, results_per_page)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    context.update(
+        {"result_count": paginator.count, "results_per_page": results_per_page}
+    )
 
     if search_term:
         context.update(
-            {
-                "search_term": search_term,
-                "results": results,
-            }
+            {"search_term": search_term, "results": results, "page": page_obj}
         )
     return render(request, "catalog/search.html", context)
 
@@ -88,11 +102,20 @@ def import_marc_record_from_loc(request):
     return render(request, "catalog/add_from_loc.html", build_context())
 
 
-def place_hold(request, item_id):
+def place_hold(request, item_id, item_type_id):
+    SUCCESS = 200
+    HOLD_ALREADY_EXISTS = 409
     # TODO: build hold system
-    return HttpResponse(status=random.choice([200, 403]))
+    itemtype = ItemType.objects.filter(id=item_type_id).first()
+    if itemtype:
+        return JsonResponse(
+            {"name": itemtype.name},
+            status=random.choice([SUCCESS, HOLD_ALREADY_EXISTS, 403]),
+        )
+    else:
+        return HttpResponse(404)
 
 
 class LoginView(View):
     def get(self, request):
-        return render(request, 'generic_form.html', build_context({'form': LoginForm}))
+        return render(request, "generic_form.html", build_context({"form": LoginForm}))

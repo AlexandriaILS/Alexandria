@@ -30,11 +30,14 @@
                             </div>
 
                         </div>
-                        <div class="col-sm-7 col-lg-9 col-xl-9">
+                        <div class="col-sm-5 col-lg-7 col-xl-7">
                             <h5 class="card-title">
                                 {{ item.title }}{% if item.subtitle %}: {{ item.subtitle }}{% endif %}</h5>
-                            <h6 class="card-subtitle mb-2">{{ item.authors }}</h6>
+                            {% if item.authors %}<h6 class="card-subtitle mb-2">{{ item.authors }}</h6>{% endif %}
                             <br>{{ item.call_number }}
+                        </div>
+                        <div class="col-sm-2 col-lg-2 col-xl-2">
+                            <h2 class="text-center"><span class="badge bg-secondary">{{ item.type.name }}</span></h2>
                         </div>
                     </div>
                 </div>
@@ -58,8 +61,8 @@
                                     </div>
                                     <div class="col-7">
                                         <div class="d-grid">
-                                            <div id="{{ item.id }}HoldButton"
-                                                 class="btn btn-block btn-primary">Put
+                                            <div data-subitem-id="{{ subitem.1 }}"
+                                                 class="btn btn-block btn-primary {{ item.id }}HoldButton">Put
                                                 this on
                                                 hold!
                                             </div>
@@ -79,36 +82,54 @@
 <script>
     document.addEventListener("DOMContentLoaded", function (event) {
 
-        document.getElementById('{{ item.id }}HoldButton').onclick = function () {
-            const url = "/placehold/{{ item.id }}/";
+        Array.from(document.getElementsByClassName('{{ item.id }}HoldButton')).forEach(function (el) {
+            const url = `/placehold/{{ item.id }}/${el.dataset.subitemId}/`;
 
-            if (document.getElementById("toast{{ item.id }}")) {
-                // The toast is already on screen and active, so don't fire the request again
-                return
+            el.onclick = function () {
+                if (document.getElementById(`toast{{ item.id }}-${el.dataset.subitemId}`)) {
+                    // The toast is already on screen and active, so don't fire the request again
+                    return
+                }
+                // because this is declared outside the fetch request, it's available inside
+                // all the different sections which would normally be closed off from each other.
+                let newtoast;
+                fetch(url).then(function (response) {
+                    return response.ok ? response.json() : Promise.reject(response);
+                }).then(function (resp) {
+                    let message = "{% format_toast messages.hold_success_message title=item.title subtitle=item.subtitle|default:'' %}"
+                    message = message.replace("(itemType)", resp['name'])
+                    newtoast = createToastHTML(
+                        message, colorClass = "bg-success", id ={{ item.id }}, itemTypeId = el.dataset.subitemId
+                    )
+                }).catch(function (err) {
+                    if (err.status === 409) {
+                        newtoast = createToastHTML(
+                            "{{ messages.hold_duplicate }}",
+                            colorClass = "bg-secondary",
+                            id ={{ item.id }},
+                            itemTypeId = el.dataset.subitemId
+                        )
+                    } else {
+                        newtoast = createToastHTML(
+                            "{{ messages.hold_error_message }}",
+                            colorClass = "bg-danger",
+                            id ={{ item.id }},
+                            itemTypeId = el.dataset.subitemId
+                        )
+                    }
+
+                }).finally(function () {
+                    document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
+
+                    let toastEl = document.getElementById(`toast{{ item.id }}-${el.dataset.subitemId}`);
+                    let toast = new bootstrap.Toast(toastEl, {'delay': 8000});
+                    toast.show();
+
+                    toastEl.addEventListener('hidden.bs.toast', function (event) {
+                        toastEl.remove();
+                    });
+                })
             }
-
-            // because this is declared outside the fetch request, it's available inside
-            // all the different sections which would normally be closed off from each other.
-            let newtoast;
-            fetch(url).then(function (response) {
-                return response.ok ? response : Promise.reject(response);
-            }).then(function (resp) {
-                newtoast = createToastHTML(
-                    "{% format_toast messages.hold_success_message title=item.title subtitle=item.subtitle|default:'' %}", success = true, id ={{ item.id }}
-                )
-            }).catch(function (err) {
-                newtoast = createToastHTML("{{ messages.hold_error_message }}", success = false, id ={{ item.id }})
-            }).finally(function () {
-                document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
-
-                let toastEl = document.getElementById("toast{{ item.id }}");
-                let toast = new bootstrap.Toast(toastEl, {'delay': 8000});
-                toast.show();
-
-                toastEl.addEventListener('hidden.bs.toast', function (event) {
-                    toastEl.remove();
-                });
-            })
-        }
+        });
     });
 </script>

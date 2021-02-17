@@ -14,19 +14,41 @@
     {% if search_term %}
         <h1>Results</h1>
         <p>Search term: {{ search_term }}</p>
-        {% for item in results %}
+        <p>Total results: {{ result_count }}</p>
+        {# {% for item in results %} #}
+        {% for item in page %}
             {% include "partials/single_search_result.partial" with item=item %}
         {% endfor %}
     {% else %}
         <h1>No search term entered!</h1>
     {% endif %}
 
-    <script>
-        function createToastHTML(message, success, id) {
-            // this is called in single_search_result.partial
-            colorClass = success === true ? "bg-success" : "bg-danger";
+    <nav aria-label="Page navigation links" class="mt-5">
+        <ul class="pagination pagination-lg justify-content-center">
+            {% if page.has_previous %}
+                <li class="page-item"><a class="page-link" href="?q={{ search_term }}&count={{ results_per_page }}&page=1">&laquo;</a></li>
+                <li class="page-item"><a class="page-link"
+                                         href="?q={{ search_term }}&count={{ results_per_page }}&page={{ page.previous_page_number }}">{{ page.previous_page_number }}</a>
+                </li>
+            {% endif %}
+            <li class="page-item active"><a class="page-link">{{ page.number }}</a></li>
+            {% if page.has_next %}
+                <li class="page-item"><a class="page-link"
+                                         href="?q={{ search_term }}&count={{ results_per_page }}&page={{ page.next_page_number }}">{{ page.next_page_number }}</a>
+                </li>
+                <li class="page-item"><a class="page-link"
+                                         href="?q={{ search_term }}&count={{ results_per_page }}&page={{ page.paginator.num_pages }}">&raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
 
-            return `<div class="toast d-flex align-items-center ${colorClass} text-white" id="toast${id}" role="alert" aria-live="assertive" aria-atomic="true">
+
+    <script>
+        function createToastHTML(message, colorClass, id, itemTypeId) {
+            // this is called in single_search_result.partial
+
+            return `<div class="toast d-flex align-items-center ${colorClass} text-white" id="toast${id}-${itemTypeId}" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-body">
                     ${message}
                 </div>

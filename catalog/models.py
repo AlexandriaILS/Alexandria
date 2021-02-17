@@ -146,9 +146,7 @@ class Record(models.Model):
 
     image = models.ImageField(blank=True, null=True)
 
-    type = models.ForeignKey(
-        ItemType, on_delete=models.CASCADE
-    )
+    type = models.ForeignKey(ItemType, on_delete=models.CASCADE)
 
     def __str__(self):
         val = f"{self.title}"
@@ -167,7 +165,9 @@ class Record(models.Model):
         super(Record, self).save(*args, **kwargs)
 
     def get_available_types(self):
-        return set([(i.type.name, i.type.id)for i in self.item_set.filter(is_active=True)])
+        return set(
+            [(i.type.name, i.type.id) for i in self.item_set.filter(is_active=True)]
+        )
 
 
 class Item(models.Model):
@@ -277,9 +277,7 @@ class Item(models.Model):
         BibliographicLevel, on_delete=models.CASCADE, blank=True, null=True
     )
 
-    type = models.ForeignKey(
-        ItemType, on_delete=models.CASCADE, blank=True, null=True
-    )
+    type = models.ForeignKey(ItemType, on_delete=models.CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
