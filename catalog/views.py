@@ -16,7 +16,7 @@ from django.views.generic import View
 from django.core.paginator import Paginator
 
 from catalog.forms import LoCSearchForm, LoginForm
-from catalog.helpers import build_context
+from catalog.helpers import build_context, get_results_per_page
 from catalog.marc import import_from_marc
 from catalog.models import Record, ItemType
 
@@ -49,15 +49,7 @@ def search(request: WSGIRequest) -> HttpResponse:
         .exclude(id__in=Record.objects.filter(item__isnull=True))
         .order_by(Lower("title"))
     )
-    try:
-        results_per_page = int(
-            request.GET.get("count", settings.DEFAULT_RESULTS_PER_PAGE)
-        )
-        if results_per_page < 1:
-            # accidentally fell over this while testing
-            results_per_page = settings.DEFAULT_RESULTS_PER_PAGE
-    except ValueError:
-        results_per_page = settings.DEFAULT_RESULTS_PER_PAGE
+    results_per_page = get_results_per_page(request)
 
     paginator = Paginator(results, results_per_page)
     page_number = request.GET.get("page")

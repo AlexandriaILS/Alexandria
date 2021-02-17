@@ -26,7 +26,9 @@
     <nav aria-label="Page navigation links" class="mt-5">
         <ul class="pagination pagination-lg justify-content-center">
             {% if page.has_previous %}
-                <li class="page-item"><a class="page-link" href="?q={{ search_term }}&count={{ results_per_page }}&page=1">&laquo;</a></li>
+                <li class="page-item"><a class="page-link"
+                                         href="?q={{ search_term }}&count={{ results_per_page }}&page=1">&laquo;</a>
+                </li>
                 <li class="page-item"><a class="page-link"
                                          href="?q={{ search_term }}&count={{ results_per_page }}&page={{ page.previous_page_number }}">{{ page.previous_page_number }}</a>
                 </li>
@@ -46,7 +48,6 @@
 
     <script>
         function createToastHTML(message, colorClass, id, itemTypeId) {
-            // this is called in single_search_result.partial
 
             return `<div class="toast d-flex align-items-center ${colorClass} text-white" id="toast${id}-${itemTypeId}" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-body">
@@ -56,6 +57,61 @@
                         aria-label="Close"></button>
             </div>`
         }
+
+        document.addEventListener("DOMContentLoaded", function (event) {
+
+            Array.from(document.getElementsByClassName('HoldButton')).forEach(function (el) {
+                let url = `/placehold/${el.dataset.itemId}/${el.dataset.subitemId}/`;
+
+                el.onclick = function () {
+                    if (document.getElementById(`toast${el.dataset.itemId}-${el.dataset.subitemId}`)) {
+                        // The toast is already on screen and active, so don't fire the request again
+                        return
+                    }
+                    // because this is declared outside the fetch request, it's available inside
+                    // all the different sections which would normally be closed off from each other.
+                    let newtoast;
+                    fetch(url).then(function (response) {
+                        return response.ok ? response.json() : Promise.reject(response);
+                    }).then(function (resp) {
+                        let message = "{{ messages.hold_success_message }}"
+                        console.log(message)
+                        message = message.replace("{{ name_keys.item_title }}", el.dataset.title)
+                        message = message.replace("{{ name_keys.item_type_name }}", resp['name'])
+                        newtoast = createToastHTML(
+                            message, colorClass = "bg-success", id = el.dataset.itemId, itemTypeId = el.dataset.subitemId
+                        )
+                    }).catch(function (err) {
+                        if (err.status === 409) {
+                            newtoast = createToastHTML(
+                                "{{ messages.hold_duplicate }}",
+                                colorClass = "bg-secondary",
+                                id = el.dataset.itemId,
+                                itemTypeId = el.dataset.subitemId
+                            )
+                        } else {
+                            newtoast = createToastHTML(
+                                "{{ messages.hold_error_message }}",
+                                colorClass = "bg-danger",
+                                id = el.dataset.itemId,
+                                itemTypeId = el.dataset.subitemId
+                            )
+                        }
+
+                    }).finally(function () {
+                        document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
+
+                        let toastEl = document.getElementById(`toast${el.dataset.itemId}-${el.dataset.subitemId}`);
+                        let toast = new bootstrap.Toast(toastEl, {'delay': 8000});
+                        toast.show();
+
+                        toastEl.addEventListener('hidden.bs.toast', function (event) {
+                            toastEl.remove();
+                        });
+                    })
+                }
+            });
+        });
     </script>
 
 {% endblock %}

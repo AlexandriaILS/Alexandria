@@ -61,8 +61,9 @@
                                     </div>
                                     <div class="col-7">
                                         <div class="d-grid">
-                                            <div data-subitem-id="{{ subitem.1 }}"
-                                                 class="btn btn-block btn-primary {{ item.id }}HoldButton">Put
+                                            <div data-subitem-id="{{ subitem.1 }}" data-item-id="{{ item.id }}"
+                                                 data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
+                                                 class="btn btn-block btn-primary HoldButton">Put
                                                 this on
                                                 hold!
                                             </div>
@@ -78,58 +79,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function (event) {
-
-        Array.from(document.getElementsByClassName('{{ item.id }}HoldButton')).forEach(function (el) {
-            const url = `/placehold/{{ item.id }}/${el.dataset.subitemId}/`;
-
-            el.onclick = function () {
-                if (document.getElementById(`toast{{ item.id }}-${el.dataset.subitemId}`)) {
-                    // The toast is already on screen and active, so don't fire the request again
-                    return
-                }
-                // because this is declared outside the fetch request, it's available inside
-                // all the different sections which would normally be closed off from each other.
-                let newtoast;
-                fetch(url).then(function (response) {
-                    return response.ok ? response.json() : Promise.reject(response);
-                }).then(function (resp) {
-                    let message = "{% format_toast messages.hold_success_message title=item.title subtitle=item.subtitle|default:'' %}"
-                    message = message.replace("(itemType)", resp['name'])
-                    newtoast = createToastHTML(
-                        message, colorClass = "bg-success", id ={{ item.id }}, itemTypeId = el.dataset.subitemId
-                    )
-                }).catch(function (err) {
-                    if (err.status === 409) {
-                        newtoast = createToastHTML(
-                            "{{ messages.hold_duplicate }}",
-                            colorClass = "bg-secondary",
-                            id ={{ item.id }},
-                            itemTypeId = el.dataset.subitemId
-                        )
-                    } else {
-                        newtoast = createToastHTML(
-                            "{{ messages.hold_error_message }}",
-                            colorClass = "bg-danger",
-                            id ={{ item.id }},
-                            itemTypeId = el.dataset.subitemId
-                        )
-                    }
-
-                }).finally(function () {
-                    document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
-
-                    let toastEl = document.getElementById(`toast{{ item.id }}-${el.dataset.subitemId}`);
-                    let toast = new bootstrap.Toast(toastEl, {'delay': 8000});
-                    toast.show();
-
-                    toastEl.addEventListener('hidden.bs.toast', function (event) {
-                        toastEl.remove();
-                    });
-                })
-            }
-        });
-    });
-</script>
