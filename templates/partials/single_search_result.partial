@@ -2,80 +2,99 @@
 
 <div class="container mt-3">
     <div class="row">
-        <div class="col-xl-6 col-xxl-8">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-5 col-lg-3 col-xl-3">
-                            <div class="position-relative" style="height: 250px;">
-                                <div class="position-absolute top-50 start-50 translate-middle">
-                                    {% if item.image %}
-                                        <img src="{{ item.image.url }}" height="250" width="auto"
-                                             aria-label="Item cover image"
-                                             alt="Item cover image" class="rounded">
-                                    {% else %}
-                                        <svg class="bd-placeholder-img rounded float-start" width="170" height="250"
-                                             xmlns="http://www.w3.org/2000/svg" role="img"
-                                             aria-label="Placeholder: 170x250"
-                                             preserveAspectRatio="xMidYMid slice" focusable="false"><title>No
-                                            image</title>
-                                            <rect width="100%" height="100%" fill="#868e96"></rect>
-                                            <text x="50%" y="50%" fill="#dee2e6" dy=".3em" style="text-anchor: middle">
-                                                No
-                                                Image
-                                            </text>
-                                        </svg>
-                                    {% endif %}
+        {% if item.show_quick_hold_button %}
+            <div class="col-xl-6 col-xxl-8">
+        {% else %}
+            <div class="col">
+        {% endif %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-5 col-lg-3 col-xl-3">
+                        <div class="position-relative" style="height: 250px;">
+                            <div class="position-absolute top-50 start-50 translate-middle">
+                                {% if item.image %}
+                                    <img src="{{ item.image.url }}" height="250" width="auto"
+                                         aria-label="Item cover image"
+                                         alt="Item cover image" class="rounded">
+                                {% else %}
+                                    <svg class="bd-placeholder-img rounded float-start" width="170" height="250"
+                                         xmlns="http://www.w3.org/2000/svg" role="img"
+                                         aria-label="Placeholder: 170x250"
+                                         preserveAspectRatio="xMidYMid slice" focusable="false"><title>No
+                                        image</title>
+                                        <rect width="100%" height="100%" fill="#868e96"></rect>
+                                        <text x="50%" y="50%" fill="#dee2e6" dy=".3em" style="text-anchor: middle">
+                                            No
+                                            Image
+                                        </text>
+                                    </svg>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-5 col-lg-7 col-xl-7">
+                        <h5 class="card-title">
+                            {{ item.title }}{% if item.subtitle %}: {{ item.subtitle }}{% endif %}</h5>
+                        {% if item.authors %}<h6 class="card-subtitle mb-2">{{ item.authors }}</h6>{% endif %}
+                        <br>{{ item.call_number }}
+                        <div class="row">
+                            <div class="col-sm-8 col-md-6 col-lg-4">
+                                <div class="d-grid mb-3">
+                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                                            data-bs-target="#detailModal{{ item.id }}">
+                                        More Info
+                                    </button>
                                 </div>
                             </div>
-
+                            <div class="col-sm-4 col-md-6 col-lg-8"></div>
                         </div>
-                        <div class="col-sm-5 col-lg-7 col-xl-7">
-                            <h5 class="card-title">
-                                {{ item.title }}{% if item.subtitle %}: {{ item.subtitle }}{% endif %}</h5>
-                            {% if item.authors %}<h6 class="card-subtitle mb-2">{{ item.authors }}</h6>{% endif %}
-                            <br>{{ item.call_number }}
-                        </div>
-                        <div class="col-sm-2 col-lg-2 col-xl-2">
-                            <h2 class="text-center"><span class="badge bg-secondary">{{ item.type.name }}</span></h2>
-                        </div>
+                    </div>
+                    <div class="col-sm-2 col-lg-2 col-xl-2">
+                        <h2 class="text-center"><span class="badge bg-secondary">{{ item.type.name }}</span></h2>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-xxl-4">
-            <div class="card shadow-sm" style="height:100%">
-                <div class="card-body">
-                    <div class="row">
-                        {% for subitem in item.get_available_types %}
-                            <div class="col-12 mb-2">
-                                <div class="row">
-                                    <div class="col-5">
-                                        <table class="text-md-center" style="height: 100%; width: 100%">
-                                            <tbody>
-                                            <tr>
-                                                <td class="align-middle text-center fs-5">{{ subitem.0 }}</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="col-7">
-                                        <div class="d-grid">
-                                            <div data-subitem-id="{{ subitem.1 }}" data-item-id="{{ item.id }}"
-                                                 data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
-                                                 class="btn btn-block btn-primary HoldButton">Put
-                                                this on
-                                                hold!
-                                            </div>
+        </div>
+        {% if item.show_quick_hold_button %}
+            <div class="col-xl-4 col-xxl-4">
+                <div class="card shadow-sm" style="height:100%">
+                    <div class="card-body">
+                        <div class="row">
+                            {% for subitem in item.get_available_types %}
+                                <div class="col-12 mb-2">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <table class="text-md-center" style="height: 100%; width: 100%">
+                                                <tbody>
+                                                <tr>
+                                                    <td class="align-middle text-center fs-5">{{ subitem.0 }}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
+                                        <div class="col-7">
+                                            <div class="d-grid">
+                                                <div data-subitem-id="{{ subitem.1 }}" data-item-id="{{ item.id }}"
+                                                     data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
+                                                     class="btn btn-block btn-primary HoldButton">Put
+                                                    this on
+                                                    hold!
+                                                </div>
+                                            </div>
 
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
+        {% endif %}
         </div>
     </div>
-</div>
+
+    {% include 'partials/item_detail_modal.partial' with obj=item %}

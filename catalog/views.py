@@ -6,6 +6,7 @@ import pymarc
 import requests
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate, get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models.aggregates import Count
 from django.db.models.expressions import F, Q
@@ -18,7 +19,7 @@ from django.core.paginator import Paginator
 from catalog.forms import LoCSearchForm, LoginForm
 from catalog.helpers import build_context, get_results_per_page
 from catalog.marc import import_from_marc
-from catalog.models import Record, ItemType
+from catalog.models import Record, Item, ItemType
 
 
 def index(request: WSGIRequest) -> HttpResponse:
@@ -111,3 +112,19 @@ def place_hold(request, item_id, item_type_id):
 class LoginView(View):
     def get(self, request):
         return render(request, "generic_form.html", build_context({"form": LoginForm}))
+
+    def post(self, request):
+        ...
+
+
+def item_detail(request, item_id):
+    item = Item.objects.get_object_or_404(id=item_id)
+    return render(request, "catalog/item_detail.html", build_context({"item": item}))
+
+
+class ItemEdit(View):
+    def get(self, request):
+        ...
+
+    def post(self, request):
+        ...

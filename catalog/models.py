@@ -148,6 +148,10 @@ class Record(models.Model):
 
     type = models.ForeignKey(ItemType, on_delete=models.CASCADE, blank=True, null=True)
 
+    bibliographic_level = models.ForeignKey(
+        BibliographicLevel, on_delete=models.CASCADE, blank=True, null=True
+    )
+
     def __str__(self):
         val = f"{self.title}"
         if self.authors:
@@ -169,6 +173,12 @@ class Record(models.Model):
         return set(
             [(i.type.name, i.type.id) for i in self.item_set.filter(is_active=True)]
         )
+
+    def show_quick_hold_button(self):
+        # Only show the quick hold button on standalone items where it makes sense to
+        # have a quick hold button.
+        if self.bibliographic_level:
+            return self.bibliographic_level.name == BibliographicLevel.MONOGRAPH_ITEM
 
 
 class Item(models.Model):
