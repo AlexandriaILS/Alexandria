@@ -146,7 +146,7 @@ class Record(models.Model):
 
     image = models.ImageField(blank=True, null=True)
 
-    type = models.ForeignKey(ItemType, on_delete=models.CASCADE)
+    type = models.ForeignKey(ItemType, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         val = f"{self.title}"
@@ -157,11 +157,11 @@ class Record(models.Model):
         return val
 
     def save(self, *args, **kwargs):
-        if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
-            try:
-                openlibrary.download_cover(self)
-            except requests.exceptions.HTTPError:
-                pass
+        # if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
+        #     try:
+        #         openlibrary.download_cover(self)
+        #     except requests.exceptions.HTTPError:
+        #         pass
         super(Record, self).save(*args, **kwargs)
 
     def get_available_types(self):
@@ -280,11 +280,12 @@ class Item(models.Model):
     type = models.ForeignKey(ItemType, on_delete=models.CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
-            try:
-                openlibrary.download_cover(self)
-            except requests.exceptions.HTTPError:
-                pass
+        if self.type:
+            if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
+                try:
+                    openlibrary.download_cover(self)
+                except requests.exceptions.HTTPError:
+                    pass
         super(Item, self).save(*args, **kwargs)
 
     def _convert_isbn10_to_isbn13(self) -> str:
