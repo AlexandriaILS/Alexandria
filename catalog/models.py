@@ -157,11 +157,12 @@ class Record(models.Model):
         return val
 
     def save(self, *args, **kwargs):
-        # if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
-        #     try:
-        #         openlibrary.download_cover(self)
-        #     except requests.exceptions.HTTPError:
-        #         pass
+        if self.type:
+            if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
+                try:
+                    openlibrary.download_cover(self)
+                except requests.exceptions.HTTPError:
+                    pass
         super(Record, self).save(*args, **kwargs)
 
     def get_available_types(self):
