@@ -28,7 +28,6 @@
                                     {% endif %}
                                 </div>
                             </div>
-
                         </div>
                         <div class="col-sm-5 col-lg-7 col-xl-7">
                             <h5 class="card-title">
@@ -55,52 +54,49 @@
             </div>
         </div>
         <div class="col-xl-4 col-xxl-4">
-            {% if item.show_quick_hold_button %}
-                <div class="card shadow-sm" style="height:100%">
-            {% else %}
-                <div class="card shadow-sm d-none d-xl-block" style="height:100%">
-            {% endif %}
-            <div class="card-body">
-                <div class="row">
-                    {% for subitem in item.get_available_types %}
-                        <div class="col-12 mb-2">
-                            <div class="row">
-                                {% if item.show_quick_hold_button %}
-                                    <div class="col-5">
-                                        <table class="text-md-center" style="height: 100%; width: 100%">
-                                            <tbody>
-                                            <tr>
-                                                <td class="align-middle text-center fs-5">{{ subitem.0 }}</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="col-7">
-                                        <div class="d-grid">
-                                            <div data-subitem-id="{{ subitem.1 }}" data-item-id="{{ item.id }}"
-                                                 data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
-                                                 class="btn btn-block btn-primary HoldButton">Put
-                                                this on
-                                                hold!
+            <div class="card shadow-sm{% if not item.show_quick_hold_button %} d-none d-xl-block{% endif %}"
+                 style="height:100%">
+                <div class="card-body">
+                    <div class="row">
+                        {% for subitem in item.get_available_types %}
+                            <div class="col-12 mb-2">
+                                <div class="row">
+                                    {% if item.show_quick_hold_button %}
+                                        <div class="col-5">
+                                            <table class="text-md-center" style="height: 100%; width: 100%">
+                                                <tbody>
+                                                <tr>
+                                                    <td class="align-middle text-center fs-5">{{ subitem.0 }}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="d-grid">
+                                                <div data-subitem-id="{{ subitem.1 }}" data-item-id="{{ item.id }}"
+                                                     data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
+                                                     class="btn btn-block btn-primary HoldButton">Put
+                                                    this on
+                                                    hold!
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                {% else %}
-                                    <div class="d-grid">
-                                        <button type="button" class="btn btn-outline-secondary"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#detailModal{{ item.id }}">
-                                            More Info
-                                        </button>
-                                    </div>
-                                {% endif %}
+                                    {% else %}
+                                        <div class="d-grid">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#detailModal{{ item.id }}">
+                                                More Info
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
-            </div>
             </div>
         </div>
     </div>
-    {% include 'partials/item_detail_modal.partial' with obj=item %}
+</div>
+{% include 'partials/item_detail_modal.partial' with obj=item %}
