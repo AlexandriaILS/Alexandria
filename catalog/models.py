@@ -1,5 +1,6 @@
 import pymarc
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType as DjangoContentType
 from django.db import models
@@ -117,7 +118,7 @@ class ItemType(models.Model):
 class Record(models.Model):
     """
     Information that should not change between different types of the same media.
-    For example, a DVD release vs the original text.
+    For example, an audiobook vs the original text.
     """
 
     # tag 245a
@@ -179,6 +180,9 @@ class Record(models.Model):
         # have a quick hold button.
         if self.bibliographic_level:
             return self.bibliographic_level.name == BibliographicLevel.MONOGRAPH_ITEM
+
+    def get_valid_items(self):
+        return self.item_set.filter(is_active=True).order_by('-pubyear')
 
 
 class Item(models.Model):
@@ -282,6 +286,7 @@ class Item(models.Model):
     )
     publisher = models.CharField(_("publisher"), max_length=500)
     pubyear = models.IntegerField(_("pubyear"), blank=True, null=True)
+    edition = models.CharField(_("edition"), max_length=40, blank=True, null=True)
     image = models.ImageField(blank=True, null=True)
 
     bibliographic_level = models.ForeignKey(
@@ -336,6 +341,9 @@ class Item(models.Model):
     def export_marc(self):
         # TODO
         ...
+
+    def is_checked_out(self):
+        return isinstance(self.checked_out_to, get_user_model())
 
     def __str__(self):
         string = f"{self.record.title} | {self.record.authors} | {self.call_number}"
