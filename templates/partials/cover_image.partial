@@ -7,7 +7,8 @@
                  aria-label="Item cover image"
                  alt="Item cover image" class="rounded">
         {% else %}
-            <svg class="bd-placeholder-img rounded float-start" width="{{ img_height|default:170|multiply:0.68 }}" height="{{ img_height|default:250 }}"
+            {# 250 * 0.68 = 170, which is the target width for the 'no image' placeholder. #}
+            <svg class="bd-placeholder-img rounded float-start" width="{{ img_height|default:250|multiply:0.68 }}" height="{{ img_height|default:250 }}"
                  xmlns="http://www.w3.org/2000/svg" role="img"
                  aria-label="Placeholder: 170x250"
                  preserveAspectRatio="xMidYMid slice" focusable="false"><title>No

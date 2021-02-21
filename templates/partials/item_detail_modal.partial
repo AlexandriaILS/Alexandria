@@ -82,11 +82,11 @@
                         </div>
                         <div class="col-md-4">
                             <div class="row">
-                                <div class="col-2 col-md-0"></div>
-                                <div class="col-8 col-md-12 text-center mt-2 d-grid" style="height:100%">
+                                <div class="col-2 col-md-0 col-lg-2"></div>
+                                <div class="col-8 col-md-12 col-lg-8 text-center mt-2 d-grid" style="height:100%">
                                     <div class="btn btn-primary">Place Hold</div>
                                 </div>
-                                <div class="col-2 col-md-0"></div>
+                                <div class="col-2 col-md-0 col-lg-2"></div>
                             </div>
                         </div>
                     </div>
