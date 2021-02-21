@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from catalog.models import ItemTypeBase
+from catalog.models import ItemTypeBase, BibliographicLevel
 
 
 class Command(BaseCommand):
@@ -7,18 +7,23 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        count = 0
+        items = [
+            (ItemTypeBase, ItemTypeBase.TYPE_OPTIONS),
+            (BibliographicLevel, BibliographicLevel.LEVEL_OPTIONS)
+        ]
 
-        for t in ItemTypeBase.TYPE_OPTIONS:
-            item, created = ItemTypeBase.objects.get_or_create(name=t[0])
-            if created:
-                count += 1
+        for model, options in items:
+            count = 0
+            for i in options:
+                item, created = model.objects.get_or_create(name=i[0])
+                if created:
+                    count += 1
 
-        if count == 0:
-            self.stdout.write(
-                self.style.SUCCESS("No changes made; all objects present.")
-            )
-        else:
-            self.stdout.write(
-                self.style.SUCCESS(f"Created {count} missing base types.")
-            )
+            if count == 0:
+                self.stdout.write(
+                    self.style.SUCCESS(f"No changes made; all objects present for {str(model)}.")
+                )
+            else:
+                self.stdout.write(
+                    self.style.SUCCESS(f"Created {count} missing base types in {str(model)}")
+                )
