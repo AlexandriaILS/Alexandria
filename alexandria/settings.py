@@ -162,3 +162,10 @@ DEFAULT_LOCATION_ID = 1
 
 IGNORED_SEARCH_TERMS = ["a", "an", "the"]
 DEFAULT_RESULTS_PER_PAGE = 25
+
+# The base URL and configuration settings for Zenodotus, the head librarian
+# service for Alexandria. It keeps copies of base Records to speed up importing
+# and to serve as a backup. Downloading is always available, and uploading is
+# optional (but recommended) -- it helps out other users of Alexandria!
+ZENODOTUS_URL = "http://localhost:8001"
+ZENODOTUS_AUTO_UPLOAD = True
