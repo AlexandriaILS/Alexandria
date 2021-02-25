@@ -11,8 +11,8 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.db.models.aggregates import Count
 from django.db.models.expressions import F, Q
 from django.db.models.functions import Lower
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render, reverse
 from django.views.generic import View
 from django.core.paginator import Paginator
 
@@ -92,7 +92,7 @@ def import_marc_record_from_loc(request):
     )[0]
     import_from_marc(record)
 
-    return render(request, "catalog/add_from_loc.html", build_context())
+    return HttpResponseRedirect(reverse("add_from_loc"))
 
 
 def place_hold(request, item_id, item_type_id):
