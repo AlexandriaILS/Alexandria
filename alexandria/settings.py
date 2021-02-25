@@ -25,7 +25,9 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", '*qn*8fffxcth7jfb#&_r0w%9d!l2x(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    'alexandrialibrary.dev', '.alexandrialibrary.dev', '192.168.1.185', 'localhost'
+]
 
 
 AUTH_USER_MODEL = "users.AlexandriaUser"
@@ -167,5 +169,5 @@ DEFAULT_RESULTS_PER_PAGE = 25
 # service for Alexandria. It keeps copies of base Records to speed up importing
 # and to serve as a backup. Downloading is always available, and uploading is
 # optional (but recommended) -- it helps out other users of Alexandria!
-ZENODOTUS_URL = "http://localhost:8001"
+ZENODOTUS_URL = "https://zenodotus.alexandrialibrary.dev/"
 ZENODOTUS_AUTO_UPLOAD = True
