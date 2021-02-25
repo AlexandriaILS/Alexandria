@@ -5,25 +5,33 @@ from django.conf import settings
 import requests
 
 
-def slash_join(*args: str, params: Dict=None) -> str:
+def slash_join(*args: str, params: Dict = None) -> str:
     # urljoin is too limited for the urls that I want to construct, so here's
     # a helper function for it.
     # Original inspiration from https://codereview.stackexchange.com/a/175423
     result = "/".join(arg.strip("/") for arg in args) + "/"
     if params:
-        params = f"?" + "&".join([*list([f'{key}={params[key]}' for key in params.keys() if params[key] != None])])
+        params = f"?" + "&".join(
+            [
+                *list(
+                    [
+                        f"{key}={params[key]}"
+                        for key in params.keys()
+                        if params[key] != None
+                    ]
+                )
+            ]
+        )
         result += params
     return result
 
 
 def get_base_id(route, level) -> [int, None]:
-    resp = requests.get(
-        slash_join(settings.ZENODOTUS_URL, "api", route)
-    )
+    resp = requests.get(slash_join(settings.ZENODOTUS_URL, "api", route))
     resp.raise_for_status()
     for item in resp.json():
-        if item['name'] == level.get_name_display():
-            return item['id']
+        if item["name"] == level.get_name_display():
+            return item["id"]
     return None
 
 
@@ -32,25 +40,22 @@ def sync_object_with_z(object, endpoint, itemtype=False) -> int:
     # is, then return the ID number. Otherwise, create the subject and return
     # the ID.
     resp = requests.get(
-        slash_join(settings.ZENODOTUS_URL, "api", endpoint, params={'q': object.name})
+        slash_join(settings.ZENODOTUS_URL, "api", endpoint, params={"q": object.name})
     )
     resp.raise_for_status()
     result = resp.json()
     if len(result) > 0:
-        return result[0].get('id')
+        return result[0].get("id")
     else:
-        data = {'name': object.name}
+        data = {"name": object.name}
         if itemtype:
-            data.update(
-                {'base': get_base_id("itemtypebase", object.base)}
-            )
+            data.update({"base": get_base_id("itemtypebase", object.base)})
 
         resp = requests.post(
-            slash_join(settings.ZENODOTUS_URL, "api", endpoint),
-            data=data
+            slash_join(settings.ZENODOTUS_URL, "api", endpoint), data=data
         )
         resp.raise_for_status()
-        return resp.json().get('id')
+        return resp.json().get("id")
 
 
 def upload(record):
@@ -63,11 +68,11 @@ def upload(record):
         params = {"title": record.title, "authors": record.authors}
 
         if record.subtitle:
-            params.update({'subtitle': record.subtitle})
+            params.update({"subtitle": record.subtitle})
 
         if record.type:
             item_type_id = sync_object_with_z(record.type, "itemtype", itemtype=True)
-            params.update({'type_id': item_type_id})
+            params.update({"type_id": item_type_id})
 
         result = requests.get(slash_join(new_url, "record", params=params))
         result.raise_for_status()
@@ -85,17 +90,17 @@ def upload(record):
                 bib_id = None
 
             data = {
-                'title': record.title,
-                'authors': record.authors,
-                'subtitle': record.subtitle,
-                'uniform_title': record.uniform_title,
-                'notes': record.notes,
-                'series': record.series,
-                'subjects': subject_ids,
-                'type': item_type_id,
-                'bibliographic_level': bib_id,
+                "title": record.title,
+                "authors": record.authors,
+                "subtitle": record.subtitle,
+                "uniform_title": record.uniform_title,
+                "notes": record.notes,
+                "series": record.series,
+                "subjects": subject_ids,
+                "type": item_type_id,
+                "bibliographic_level": bib_id,
             }
-            files = {'image': open(record.image.path, 'rb') if record.image else None}
+            files = {"image": open(record.image.path, "rb") if record.image else None}
             resp = requests.post(slash_join(new_url, "record"), data=data, files=files)
             resp.raise_for_status()
             return True

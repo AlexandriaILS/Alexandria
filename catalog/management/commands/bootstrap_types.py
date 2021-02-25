@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
         items = [
             (ItemTypeBase, ItemTypeBase.TYPE_OPTIONS),
-            (BibliographicLevel, BibliographicLevel.LEVEL_OPTIONS)
+            (BibliographicLevel, BibliographicLevel.LEVEL_OPTIONS),
         ]
 
         for model, options in items:
@@ -21,9 +21,13 @@ class Command(BaseCommand):
 
             if count == 0:
                 self.stdout.write(
-                    self.style.SUCCESS(f"No changes made; all objects present for {str(model)}.")
+                    self.style.SUCCESS(
+                        f"No changes made; all objects present for {str(model)}."
+                    )
                 )
             else:
                 self.stdout.write(
-                    self.style.SUCCESS(f"Created {count} missing base types in {str(model)}")
+                    self.style.SUCCESS(
+                        f"Created {count} missing base types in {str(model)}"
+                    )
                 )

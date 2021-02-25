@@ -17,10 +17,7 @@ def build_context(data: Dict = None) -> Dict:
                 "hold_error_message": _("Something went wrong — please try again."),
                 "hold_duplicate": _("You already have a hold on this item."),
             },
-            "name_keys": {
-                "item_type_name": "(itemType)",
-                "item_title": "(itemTitle)"
-            }
+            "name_keys": {"item_type_name": "(itemType)", "item_title": "(itemTitle)"},
         }
     )
 

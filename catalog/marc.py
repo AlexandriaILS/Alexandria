@@ -40,9 +40,11 @@ def import_from_marc(marc_record: pymarc.Record) -> Item:
     subtitle = get_marc_subfield_from_field(marc_record["245"], "b")
     notes = "\n".join([f"{n.tag}: {n.value()}" for n in marc_record.notes()])
 
-    # TODO: this is broken -- it loads in the pymarc classes instead of the values
-    breakpoint()
-    series = None if marc_record.series() == [] else marc_record.series()
+    series = (
+        None
+        if marc_record.series() == []
+        else "\n".join([series.value() for series in marc_record.series()])
+    )
 
     base_record = Record(
         title=title,

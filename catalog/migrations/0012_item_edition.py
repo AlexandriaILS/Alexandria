@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('catalog', '0011_record_bibliographic_level'),
+        ("catalog", "0011_record_bibliographic_level"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='item',
-            name='edition',
-            field=models.CharField(blank=True, max_length=40, null=True, verbose_name='edition'),
+            model_name="item",
+            name="edition",
+            field=models.CharField(
+                blank=True, max_length=40, null=True, verbose_name="edition"
+            ),
         ),
     ]

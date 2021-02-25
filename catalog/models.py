@@ -185,7 +185,7 @@ class Record(models.Model):
             return self.bibliographic_level.name == BibliographicLevel.MONOGRAPH_ITEM
 
     def get_valid_items(self):
-        return self.item_set.filter(is_active=True).order_by('-pubyear')
+        return self.item_set.filter(is_active=True).order_by("-pubyear")
 
 
 class Item(models.Model):
