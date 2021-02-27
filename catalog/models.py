@@ -153,6 +153,8 @@ class Record(models.Model):
         BibliographicLevel, on_delete=models.CASCADE, blank=True, null=True
     )
 
+    summary = models.TextField(blank=True, null=True)
+
     zenodotus_id = models.IntegerField(blank=True, null=True)
     zenodotus_record_version = models.IntegerField(blank=True, null=True)
 
