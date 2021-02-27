@@ -99,6 +99,7 @@ def upload(record):
                 "subjects": subject_ids,
                 "type": item_type_id,
                 "bibliographic_level": bib_id,
+                "summary": record.summary,
             }
             files = {"image": open(record.image.path, "rb") if record.image else None}
             resp = requests.post(slash_join(new_url, "record"), data=data, files=files)

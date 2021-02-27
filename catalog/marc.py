@@ -39,6 +39,7 @@ def import_from_marc(marc_record: pymarc.Record) -> Item:
     title = get_marc_subfield_from_field(marc_record["245"], "a")
     subtitle = get_marc_subfield_from_field(marc_record["245"], "b")
     notes = "\n".join([f"{n.tag}: {n.value()}" for n in marc_record.notes()])
+    summary = get_marc_subfield_from_field(marc_record["520"], "a")
 
     series = (
         None
@@ -53,6 +54,7 @@ def import_from_marc(marc_record: pymarc.Record) -> Item:
         uniform_title=marc_record.uniformtitle(),
         notes=notes,
         series=series,
+        summary=summary,
     )
     # generate an ID so that we can use it in the next step
     base_record.save()
