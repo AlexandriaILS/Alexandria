@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "widget_tweaks",
     "taggit",
     "general",
     "users",
@@ -169,5 +170,5 @@ DEFAULT_RESULTS_PER_PAGE = 25
 # service for Alexandria. It keeps copies of base Records to speed up importing
 # and to serve as a backup. Downloading is always available, and uploading is
 # optional (but recommended) -- it helps out other users of Alexandria!
-ZENODOTUS_URL = "https://zenodotus.alexandrialibrary.dev/"
+ZENODOTUS_URL = "https://zenodotus.alexandrialibrary.dev/api/"
 ZENODOTUS_AUTO_UPLOAD = True

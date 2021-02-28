@@ -12,11 +12,11 @@ from django.db.models.aggregates import Count
 from django.db.models.expressions import F, Q
 from django.db.models.functions import Lower
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, reverse
+from django.shortcuts import get_object_or_404, render, reverse
 from django.views.generic import View
 from django.core.paginator import Paginator
 
-from catalog.forms import LoCSearchForm, LoginForm
+from catalog.forms import CombinedRecordItemEditForm, LoCSearchForm, LoginForm
 from catalog.helpers import build_context, get_results_per_page
 from catalog.marc import import_from_marc
 from catalog.models import Record, Item, ItemType
@@ -90,9 +90,9 @@ def import_marc_record_from_loc(request):
     record = pymarc.parse_xml_to_array(
         io.BytesIO(requests.get("https:" + loc_id + "/marcxml").content)
     )[0]
-    import_from_marc(record)
+    item = import_from_marc(record)
 
-    return HttpResponseRedirect(reverse("add_from_loc"))
+    return HttpResponseRedirect(reverse("item_edit", args=(item.id,)))
 
 
 def place_hold(request, item_id, item_type_id):
@@ -118,13 +118,58 @@ class LoginView(View):
 
 
 def item_detail(request, item_id):
-    item = Item.objects.get_object_or_404(id=item_id)
+    item = get_object_or_404(Item, id=item_id)
     return render(request, "catalog/item_detail.html", build_context({"item": item}))
 
 
 class ItemEdit(View):
-    def get(self, request):
-        ...
+    def get(self, request, item_id):
+        item = get_object_or_404(Item, id=item_id)
+        data = {
+            "title": item.record.title,
+            "authors": item.record.authors,
+            "subtitle": item.record.subtitle,
+            "uniform_title": item.record.uniform_title,
+            "notes": item.record.notes,
+            "series": item.record.series,
+            "record_type": item.record.type,
+            "record_bibliographic_level": item.record.bibliographic_level,
+            "summary": item.record.summary,
+            "barcode": item.barcode,
+            "price": item.price,
+            "publisher": item.publisher,
+            "is_active": item.is_active,
+            "pubyear": item.pubyear,
+            "item_bibliographic_level": item.bibliographic_level,
+            "item_type": item.type,
+        }
+        form = CombinedRecordItemEditForm(initial=data)
+        return render(request, "generic_form.html", {"form": form})
 
-    def post(self, request):
-        ...
+    def post(self, request, item_id):
+        item = get_object_or_404(Item, id=item_id)
+        record = item.record
+        form = CombinedRecordItemEditForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            record.title = data["title"]
+            record.authors = data["authors"]
+            record.subtitle = data["subtitle"]
+            record.uniform_title = data["uniform_title"]
+            record.notes = data["notes"]
+            record.series = data["series"]
+            record.type = data["record_type"]
+            record.bibliographic_level = data["record_bibliographic_level"]
+            record.summary = data["summary"]
+
+            item.barcode = data["barcode"]
+            item.price = data["price"]
+            item.publisher = data["publisher"]
+            item.is_active = data["is_active"]
+            item.pubyear = data["pubyear"]
+            item.bibliographic_level = data["item_bibliographic_level"]
+            item.type = data["item_type"]
+
+            record.save()
+            item.save()
+            return HttpResponseRedirect(reverse("item_detail", args=(item.id,)))

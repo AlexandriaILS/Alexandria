@@ -177,7 +177,11 @@ class Record(models.Model):
 
     def get_available_types(self):
         return set(
-            [(i.type.name, i.type.id) for i in self.item_set.filter(is_active=True)]
+            [
+                (i.type.name, i.type.id)
+                for i in self.item_set.filter(is_active=True)
+                if i.type
+            ]
         )
 
     def show_quick_hold_button(self):

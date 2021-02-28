@@ -9,6 +9,8 @@ from django.core.files.base import ContentFile
 from django.core.files.images import ImageFile
 from django.core.files.storage import default_storage
 
+from catalog.helpers import get_and_save_image
+
 if TYPE_CHECKING:
     from catalog.models import Item, Record
 
@@ -41,25 +43,8 @@ def download_cover(item: Union["Item", "Record"], size: str = "M") -> None:
     URL = "http://covers.openlibrary.org/b/isbn/{value}-{size}.jpg"
     if size not in ["S", "M", "L"]:
         raise Exception("Can only request sizes in 'S', 'M', or 'L'.")
-    result = requests.get(URL.format(value=isbn, size=size))
-    result.raise_for_status()
-    pic = BytesIO(result.content)
-    if pic.seek(0, 2) < 2000:
-        # sometimes we get single pixel images, which is definitely not what we want.
-        # If that happens, discard the result.
-        # The single-pixel image that I received in testing has a length of 807, and
-        # a valid image las a length around 19,500. 2000 seems like a wild guess, but
-        # we'll run with that until it causes issues.
-        return
 
-    pic.seek(0)
-    filename = default_storage.save(
-        f"{item.id}-{title}-cover.jpg", ContentFile(pic.read())
-    )
-    path = os.path.join(settings.MEDIA_ROOT, filename)
-    item.image = ImageFile(open(path, "rb"))
-    item.image.name = filename
-    default_storage.delete(filename)
+    get_and_save_image(URL.format(value=isbn, size=size), item)
 
 
 def get_by_isbn(isbn: str) -> Dict:

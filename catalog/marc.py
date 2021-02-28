@@ -16,6 +16,8 @@ def get_marc_subfield_from_field(
     """Retrieve a specific subfield value, like `a` or `b`, from a field."""
     # get_subfields doesn't always work, so we'll just fish manually for them.
     # It'll be in a list that looks like this: ['a', 'a_value', 'b', 'b_value'...]
+    if not field:
+        return
     for field_id in range(0, len(field.subfields), 2):
         if field.subfields[field_id] == identifier:
             return field.subfields[field_id + 1]
