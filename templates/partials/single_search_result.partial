@@ -38,10 +38,10 @@
                  style="height:100%">
                 <div class="card-body">
                     <div class="row">
-                        {% for subitem in item.get_available_types %}
-                            <div class="col-12 mb-2">
-                                <div class="row">
-                                    {% if item.show_quick_hold_button %}
+                        {% if item.show_quick_hold_button %}
+                            {% for subitem in item.get_available_types %}
+                                <div class="col-12 mb-2">
+                                    <div class="row">
                                         <div class="col-5">
                                             <table class="text-md-center" style="height: 100%; width: 100%">
                                                 <tbody>
@@ -61,18 +61,26 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    {% else %}
-                                        <div class="d-grid">
-                                            <button type="button" class="btn btn-outline-secondary"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#detailModal{{ item.id }}">
-                                                More Info
-                                            </button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-12 mb-2">
+                                <div class="row">
+                                    <div class="col-12 mb-2">
+                                        <div class="row">
+                                            <div class="d-grid">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#detailModal{{ item.id }}">
+                                                    More Info
+                                                </button>
+                                            </div>
                                         </div>
-                                    {% endif %}
+                                    </div>
                                 </div>
                             </div>
-                        {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
             </div>

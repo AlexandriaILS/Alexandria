@@ -90,13 +90,14 @@ def build_record(item: Dict) -> Record:
 
 
 def generate_fake_item(record: Record):
-    if record.type.base == ItemTypeBase.LANGUAGE_MATERIAL:
+    if record.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
+        base = ItemTypeBase.objects.get(name=ItemTypeBase.LANGUAGE_MATERIAL)
         # it's a book.
         options = [
-            ItemType.objects.get_or_create(name="Audiobook (CD)")[0],
-            ItemType.objects.get_or_create(name="Book")[0],
-            ItemType.objects.get_or_create(name="Audiobook (Cassette)")[0],
-            ItemType.objects.get_or_create(name="Ebook")[0],
+            ItemType.objects.get_or_create(name="Audiobook (CD)", base=base)[0],
+            ItemType.objects.get_or_create(name="Book", base=base)[0],
+            ItemType.objects.get_or_create(name="Audiobook (Cassette)", base=base)[0],
+            ItemType.objects.get_or_create(name="Ebook", base=base)[0],
         ]
     else:
         options = [record.type]
