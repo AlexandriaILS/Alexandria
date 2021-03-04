@@ -3,47 +3,29 @@
 {% block content %}
 
     <div aria-live="polite" aria-atomic="true" class="position-sticky" style="position: sticky; top: 0; z-index: 10">
-        <!-- Position it: -->
-        <!-- - `.toast-container` for spacing between toasts -->
-        <!-- - `.position-absolute`, `top-0` & `end-0` to position the toasts in the upper right corner -->
-        <!-- - `.p-3` to prevent the toasts from sticking to the edge of the container  -->
         <div id="toaster" class="toast-container position-absolute top-0 end-0 p-3">
         </div>
     </div>
 
     {% if search_term %}
-        <h1>Results</h1>
-        <p>Search term: {{ search_term }}</p>
-        <p>Total results: {{ result_count }}</p>
-        {# {% for item in results %} #}
+        <h1>{{ labels.results }}</h1>
+        <p>{{ labels.search_term }}: {{ search_term }}</p>
+        <p>{{ labels.results }}: {{ result_count }}</p>
         {% for item in page %}
             {% include "partials/single_search_result.partial" with item=item %}
         {% endfor %}
+        {% include 'partials/pagination.partial' %}
     {% else %}
-        <h1>No search term entered!</h1>
-    {% endif %}
+        <div class="position-relative" style="height:80%">
+            <div class="position-absolute top-50 start-50 translate-middle">
+                <div class="text-center">
+                    <h1>{{ messages.no_search_term }}</h1>
+                    <a href="{% url "homepage" %}" class="btn btn-primary">{{ labels.buttons.home }}</a>
+                </div>
+            </div>
+        </div>
 
-    <nav aria-label="Page navigation links" class="mt-5">
-        <ul class="pagination pagination-lg justify-content-center">
-            {% if page.has_previous %}
-                <li class="page-item"><a class="page-link"
-                                         href="?q={{ search_term }}&count={{ results_per_page }}&page=1">&laquo;</a>
-                </li>
-                <li class="page-item"><a class="page-link"
-                                         href="?q={{ search_term }}&count={{ results_per_page }}&page={{ page.previous_page_number }}">{{ page.previous_page_number }}</a>
-                </li>
-            {% endif %}
-            <li class="page-item active"><a class="page-link">{{ page.number }}</a></li>
-            {% if page.has_next %}
-                <li class="page-item"><a class="page-link"
-                                         href="?q={{ search_term }}&count={{ results_per_page }}&page={{ page.next_page_number }}">{{ page.next_page_number }}</a>
-                </li>
-                <li class="page-item"><a class="page-link"
-                                         href="?q={{ search_term }}&count={{ results_per_page }}&page={{ page.paginator.num_pages }}">&raquo;</a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
+    {% endif %}
 
 
     <script>
@@ -75,7 +57,6 @@
                         return response.ok ? response.json() : Promise.reject(response);
                     }).then(function (resp) {
                         let message = "{{ messages.hold_success_message }}"
-                        console.log(message)
                         message = message.replace("{{ name_keys.item_title }}", el.dataset.title)
                         message = message.replace("{{ name_keys.item_type_name }}", resp['name'])
                         newtoast = createToastHTML(

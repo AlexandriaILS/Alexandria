@@ -11,17 +11,17 @@
                             <tbody>
                             <tr>
                                 <td class="align-middle">
-                                    <h1 class="text-center mb-5">What are you looking for today?</h1>
+                                    <h1 class="text-center mb-5">{{ text.index.welcome_question}}</h1>
                                     <div class="input-group input-group-lg">
                                         <input type="text"
                                                class="form-control border-2 border-primary text-center shadow-sm"
-                                               id="mainSearchBar" aria-label="Search for an item!"
-                                               placeholder="Type here!">
+                                               id="mainSearchBar" aria-label="{{ text.index.aria_label }}"
+                                               placeholder="{{ text.index.placeholder }}">
                                     </div>
                                     <div class="row">
                                         <div class="col-4"></div>
                                         <div class="col-4 d-grid mt-5">
-                                            <div id="mainSearchButton" class="btn btn-block btn-success">Search!</div>
+                                            <div id="mainSearchButton" class="btn btn-block btn-success">{{ labels.buttons.search }}</div>
                                         </div>
                                         <div class="col-4"></div>
                                     </div>

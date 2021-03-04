@@ -30,11 +30,14 @@ def index(request: WSGIRequest) -> HttpResponse:
 def search(request: WSGIRequest) -> HttpResponse:
     context = build_context()
     search_term = request.GET.get("q")
-    for item in settings.IGNORED_SEARCH_TERMS:
-        search_term = search_term.replace(item, "")
+    if not search_term:
+        return render(request, "catalog/search.html", context)
+
+    search_term = " ".join([i for i in search_term.split() if i not in settings.IGNORED_SEARCH_TERMS])
 
     # TODO: refactor for SearchVector and SearchRank -- requires Postgres
     # https://docs.djangoproject.com/en/dev/ref/contrib/postgres/search/#searchvector
+
     results = (
         Record.objects.filter(
             Q(title__icontains=search_term) | Q(authors__icontains=search_term)

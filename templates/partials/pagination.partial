@@ -1,0 +1,21 @@
+<nav aria-label="Page navigation links" class="mt-5">
+    <ul class="pagination pagination-lg justify-content-center">
+        {% if page.has_previous %}
+            <li class="page-item"><a class="page-link"
+                                     href="?q={{ search_term }}&count={{ results_per_page }}&page=1">&laquo;</a>
+            </li>
+            <li class="page-item"><a class="page-link"
+                                     href="?q={{ search_term }}&count={{ results_per_page }}&page={{ page.previous_page_number }}">{{ page.previous_page_number }}</a>
+            </li>
+        {% endif %}
+        <li class="page-item active"><a class="page-link">{{ page.number }}</a></li>
+        {% if page.has_next %}
+            <li class="page-item"><a class="page-link"
+                                     href="?q={{ search_term }}&count={{ results_per_page }}&page={{ page.next_page_number }}">{{ page.next_page_number }}</a>
+            </li>
+            <li class="page-item"><a class="page-link"
+                                     href="?q={{ search_term }}&count={{ results_per_page }}&page={{ page.paginator.num_pages }}">&raquo;</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
