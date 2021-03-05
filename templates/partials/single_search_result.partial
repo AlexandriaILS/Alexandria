@@ -1,4 +1,5 @@
 {% load format_toast %}
+{% load i18n %}
 
 <div class="container mt-3">
     <div class="row">
@@ -19,7 +20,7 @@
                                     <div class="d-grid mb-3">
                                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
                                                 data-bs-target="#detailModal{{ item.id }}">
-                                            {{ labels.buttons.details }}
+                                            {% translate "Details" %}
                                         </button>
                                     </div>
                                 </div>
@@ -55,7 +56,8 @@
                                             <div class="d-grid">
                                                 <div data-subitem-id="{{ subitem.1 }}" data-item-id="{{ item.id }}"
                                                      data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
-                                                     class="btn btn-block btn-primary HoldButton">{{ labels.buttons.put_this_on_hold }}
+                                                     class="btn btn-block btn-primary HoldButton">
+                                                    {% translate "Put this on hold" %}
                                                 </div>
                                             </div>
                                         </div>
@@ -71,7 +73,7 @@
                                                 <button type="button" class="btn btn-outline-secondary"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#detailModal{{ item.id }}">
-                                                    {{ labels.buttons.more_info }}
+                                                    {% translate "More info" %}
                                                 </button>
                                             </div>
                                         </div>

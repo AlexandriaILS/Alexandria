@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <div class="modal fade" id="detailModal{{ obj.id }}" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -19,26 +21,26 @@
                         {% endif %}
 
                         {% if obj.authors %}
-                            <p>Author(s): {{ obj.authors }}</p>
+                            <p>{% translate "Author(s)" %}: {{ obj.authors }}</p>
                         {% endif %}
 
                         {% if obj.publisher %}
-                            Publisher: {{ obj.publisher }}
+                            {% translate "Publisher" %}: {{ obj.publisher }}
                         {% endif %}
 
                         {% if obj.pubyear %}
-                            Release year: {{ obj.pubyear }}
+                            {% translate "Release year" %}: {{ obj.pubyear }}
                         {% endif %}
 
                         {% if obj.type %}
-                            <p>Media Type: {{ obj.type.name }}</p>
+                            <p>{% translate "Media type" %}: {{ obj.type.name }}</p>
                         {% endif %}
 
                         {% if obj.physical_description %}
-                            <p>Physical description: {{ obj.physical_description }}</p>
+                            <p>{% translate "Physical description" %}: {{ obj.physical_description }}</p>
                         {% endif %}
                         {% if obj.subjects.count > 0 %}
-                            <p>Subjects:</p>
+                            <p>{% translate "Subjects" %}:</p>
                             <ul>
                                 {% for subj in obj.subjects.all %}
                                     <li>{{ subj }}</li>
@@ -46,11 +48,11 @@
                             </ul>
                         {% endif %}
                         {% if obj.series %}
-                            <p>Series info: {{ obj.series }}</p>
+                            <p>{% translate "Series info:" %}: {{ obj.series }}</p>
                         {% endif %}
 
                         {% if obj.tags.count > 0 %}
-                            <p>Tags:</p>
+                            <p>{% translate "Tags" %}:</p>
                             <div class="row">
                                 {% for tag in obj.tags.all %}
                                     <div class="col">
@@ -64,7 +66,7 @@
                 </div>
             </div>
             <div class="container">
-                <p>Total copies: {{ obj.get_valid_items.count }}</p>
+                <p>{% translate "Total copies" %}: {{ obj.get_valid_items.count }}</p>
                 {% for el in obj.get_valid_items %}
                     <hr>
                     <div class="row mt-3">
@@ -77,14 +79,14 @@
                             <div class="row">
                                 <div class="col text-center">{% if el.type %}{{ el.type.name }}{% else %}{% endif %}</div>
                                 <div class="col text-center">{{ el.pubyear }}, {{ el.publisher }}</div>
-                                <div class="col text-center">{% if el.is_checked_out %}Checked Out{% else %}{{ el.home_location.name }}{% endif %}</div>
+                                <div class="col text-center">{% if el.is_checked_out %}{% translate "Checked Out" %}{% else %}{{ el.home_location.name }}{% endif %}</div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="row">
                                 <div class="col-2 col-md-0 col-lg-2"></div>
                                 <div class="col-8 col-md-12 col-lg-8 text-center mt-2 d-grid" style="height:100%">
-                                    <div class="btn btn-primary">Place Hold</div>
+                                    <div class="btn btn-primary">{% translate "Place hold" %}</div>
                                 </div>
                                 <div class="col-2 col-md-0 col-lg-2"></div>
                             </div>
@@ -94,7 +96,7 @@
             </div>
 
             <div class="modal-footer mt-3">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
             </div>
         </div>
     </div>

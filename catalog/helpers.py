@@ -23,26 +23,6 @@ def build_context(data: Dict = None) -> Dict:
                 "hold_success_message": _("Hold placed for (itemType) — (itemTitle)!"),
                 "hold_error_message": _("Something went wrong — please try again."),
                 "hold_duplicate": _("You already have a hold on this item."),
-                "no_search_term": _("No search term entered."),
-            },
-            "text": {
-                "index": {
-                    "welcome_question": _("What are you looking for today?"),
-                    "aria_label": _("Search for an item!"),
-                    "placeholder": _("Type here!"),
-                },
-            },
-            "labels": {
-                "buttons": {
-                    "home": _("Back to Home"),
-                    "search": _("Search"),
-                    "details": _("Details"),
-                    "put_this_on_hold": _("Put this on hold!"),
-                    "more_info": _("More Info"),
-                },
-                "search_term": _("Search Term"),
-                "results": _("Results"),
-                "navbar_search_prefill": _("Search Catalog"),
             },
             "name_keys": {"item_type_name": "(itemType)", "item_title": "(itemTitle)"},
         }
