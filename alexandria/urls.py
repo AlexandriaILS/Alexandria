@@ -19,12 +19,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from catalog.urls import urlpatterns as catalog_urls
+from users.urls import urlpatterns as user_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
 urlpatterns += catalog_urls
+urlpatterns += user_urls
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

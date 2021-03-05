@@ -7,11 +7,6 @@ class LoCSearchForm(forms.Form):
     store = forms.BooleanField(required=False)
 
 
-class LoginForm(forms.Form):
-    card_number = forms.IntegerField()
-    password = forms.CharField(widget=forms.PasswordInput)
-
-
 class CombinedRecordItemEditForm(forms.Form):
     # record-related stuff
     title = forms.CharField(max_length=26021)

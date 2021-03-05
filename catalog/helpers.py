@@ -19,7 +19,7 @@ def build_context(data: Dict = None) -> Dict:
     data.update(
         {
             "LIBRARY_SYSTEM_NAME": settings.LIBRARY_SYSTEM_NAME,
-            "messages": {
+            "alerts": {
                 "hold_success_message": _("Hold placed for (itemType) — (itemTitle)!"),
                 "hold_error_message": _("Something went wrong — please try again."),
                 "hold_duplicate": _("You already have a hold on this item."),

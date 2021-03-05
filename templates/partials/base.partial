@@ -1,9 +1,11 @@
 {% load settings_value %}
+{% load i18n %}
 
-<html lang="en">
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     {% include "partials/head.partial" %}
-    <title>{% settings_value "LIBRARY_SYSTEM_NAME" %} - Powered by Alexandria</title>
+    <title>{{ LIBRARY_SYSTEM_NAME }} - {% translate "Powered by Alexandria" %}</title>
 </head>
 
 <body>

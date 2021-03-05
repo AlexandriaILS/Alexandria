@@ -56,7 +56,7 @@
                     fetch(url).then(function (response) {
                         return response.ok ? response.json() : Promise.reject(response);
                     }).then(function (resp) {
-                        let message = "{{ messages.hold_success_message }}"
+                        let message = "{{ alerts.hold_success_message }}"
                         message = message.replace("{{ name_keys.item_title }}", el.dataset.title)
                         message = message.replace("{{ name_keys.item_type_name }}", resp['name'])
                         newtoast = createToastHTML(
@@ -65,14 +65,14 @@
                     }).catch(function (err) {
                         if (err.status === 409) {
                             newtoast = createToastHTML(
-                                "{{ messages.hold_duplicate }}",
+                                "{{ alerts.hold_duplicate }}",
                                 colorClass = "bg-secondary",
                                 id = el.dataset.itemId,
                                 itemTypeId = el.dataset.subitemId
                             )
                         } else {
                             newtoast = createToastHTML(
-                                "{{ messages.hold_error_message }}",
+                                "{{ alerts.hold_error_message }}",
                                 colorClass = "bg-danger",
                                 id = el.dataset.itemId,
                                 itemTypeId = el.dataset.subitemId

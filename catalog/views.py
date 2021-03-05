@@ -1,25 +1,25 @@
 import io
-from urllib.parse import quote_plus
 import random
+from urllib.parse import quote_plus
 
 import pymarc
 import requests
 from django.conf import settings
-from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.handlers.wsgi import WSGIRequest
+from django.core.paginator import Paginator
 from django.db.models.aggregates import Count
 from django.db.models.expressions import F, Q
 from django.db.models.functions import Lower
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, reverse
 from django.views.generic import View
-from django.core.paginator import Paginator
 
-from catalog.forms import CombinedRecordItemEditForm, LoCSearchForm, LoginForm
+from catalog.forms import CombinedRecordItemEditForm, LoCSearchForm
 from catalog.helpers import build_context, get_results_per_page
 from catalog.marc import import_from_marc
 from catalog.models import Record, Item, ItemType
+from users.mixins import LibraryStaffRequiredMixin
 
 
 def index(request: WSGIRequest) -> HttpResponse:
@@ -112,20 +112,12 @@ def place_hold(request, item_id, item_type_id):
         return HttpResponse(404)
 
 
-class LoginView(View):
-    def get(self, request):
-        return render(request, "generic_form.html", build_context({"form": LoginForm}))
-
-    def post(self, request):
-        ...
-
-
 def item_detail(request, item_id):
     item = get_object_or_404(Item, id=item_id)
     return render(request, "catalog/item_detail.html", build_context({"item": item}))
 
 
-class ItemEdit(View):
+class ItemEdit(LibraryStaffRequiredMixin, View):
     def get(self, request, item_id):
         item = get_object_or_404(Item, id=item_id)
         data = {
