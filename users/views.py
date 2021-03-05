@@ -38,3 +38,11 @@ def logout_view(request):
 
 def profile_view(request):
     ...
+
+
+def profile_settings(request):
+    ...
+
+
+def profile_settings_edit(request):
+    ...
