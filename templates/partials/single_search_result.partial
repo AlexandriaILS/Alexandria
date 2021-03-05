@@ -19,7 +19,7 @@
                                     <div class="d-grid mb-3">
                                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
                                                 data-bs-target="#detailModal{{ item.id }}">
-                                            Details
+                                            {{ labels.buttons.details }}
                                         </button>
                                     </div>
                                 </div>
@@ -46,7 +46,7 @@
                                             <table class="text-md-center" style="height: 100%; width: 100%">
                                                 <tbody>
                                                 <tr>
-                                                    <td class="align-middle text-center fs-5">{{ subitem.0 }}</td>
+                                                    <td class="align-middle text-center fs-6">{{ subitem.0 }}</td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -55,9 +55,7 @@
                                             <div class="d-grid">
                                                 <div data-subitem-id="{{ subitem.1 }}" data-item-id="{{ item.id }}"
                                                      data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
-                                                     class="btn btn-block btn-primary HoldButton">Put
-                                                    this on
-                                                    hold!
+                                                     class="btn btn-block btn-primary HoldButton">{{ labels.buttons.put_this_on_hold }}
                                                 </div>
                                             </div>
                                         </div>
@@ -73,7 +71,7 @@
                                                 <button type="button" class="btn btn-outline-secondary"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#detailModal{{ item.id }}">
-                                                    More Info
+                                                    {{ labels.buttons.more_info }}
                                                 </button>
                                             </div>
                                         </div>

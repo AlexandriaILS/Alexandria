@@ -35,7 +35,10 @@ def build_context(data: Dict = None) -> Dict:
             "labels": {
                 "buttons": {
                     "home": _("Back to Home"),
-                    "search": _("Search")
+                    "search": _("Search"),
+                    "details": _("Details"),
+                    "put_this_on_hold": _("Put this on hold!"),
+                    "more_info": _("More Info"),
                 },
                 "search_term": _("Search Term"),
                 "results": _("Results"),
