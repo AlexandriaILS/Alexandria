@@ -1,0 +1,17 @@
+{% load i18n %}
+
+<div class="mt-5">
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col">
+                    <a href="{{ LIBRARY_SYSTEM_URL }}" style="color:black">{{ LIBRARY_SYSTEM_NAME }}</a>
+                </div>
+                <div class="col">
+                    <a href="https://github.com/AlexandriaILS/Alexandria" target="_blank"
+                                    style="color:black">{% translate "Powered by AlexandriaILS" %}</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>

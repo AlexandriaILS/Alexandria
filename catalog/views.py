@@ -14,10 +14,11 @@ from django.shortcuts import get_object_or_404, render, reverse
 from django.views.generic import View
 
 from catalog.forms import CombinedRecordItemEditForm, LoCSearchForm
-from catalog.helpers import build_context, get_results_per_page
+from catalog.helpers import get_results_per_page
 from catalog.marc import import_from_marc
 from catalog.models import Record, Item
 from users.mixins import LibraryStaffRequiredMixin
+from utils import build_context
 
 
 def index(request: WSGIRequest) -> HttpResponse:

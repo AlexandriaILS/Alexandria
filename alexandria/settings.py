@@ -158,6 +158,7 @@ ENABLE_RUNNING_BORROW_SAVED_MONEY = True
 FLOATING_COLLECTION = False
 FORCE_UNIQUE_CALL_NUMBERS = False
 LIBRARY_SYSTEM_NAME = "Alexandria Libraries"
+LIBRARY_SYSTEM_URL = "https://github.com/AlexandriaILS/Alexandria"
 
 # When adding new materials, the home location will default to a single place
 # until it can be edited. Usually this is the first place that's added when

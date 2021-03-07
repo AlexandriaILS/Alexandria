@@ -8,11 +8,12 @@
     <title>{{ LIBRARY_SYSTEM_NAME }} - {% translate "Powered by Alexandria" %}</title>
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
     {% include "partials/navbar.partial" %}
     <div class="container mt-3">
         {% block content %}
         {% endblock %}
     </div>
+    {% include 'partials/footer.partial' %}
 </body>
 </html>

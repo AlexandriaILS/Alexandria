@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType as DjangoContentType
 from django.db import models
 from django.utils import timezone
 
+from catalog.models import ItemType
 from users.models import AlexandriaUser, BranchLocation
 
 
@@ -26,9 +27,8 @@ class Hold(models.Model):
     )
     object_id = models.PositiveIntegerField(null=True, blank=True)
     target = GenericForeignKey("content_type", "object_id")
-    # If they're just looking for any copy of a specific item, like any release
-    # of a given book. Set to False if they want THE THING that's in the target.
-    pull_any_same_type = models.BooleanField(default=True)
+    # for when they place a generic hold on a record
+    requested_item_type = models.ForeignKey(ItemType, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.target} heading to {self.destination}"

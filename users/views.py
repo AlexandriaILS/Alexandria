@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 
-from catalog.helpers import build_context
+from utils import build_context
 from users.forms import LoginForm
 
 

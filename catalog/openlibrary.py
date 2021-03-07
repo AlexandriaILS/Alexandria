@@ -1,15 +1,9 @@
-import os
-from io import BytesIO
 from random import choice
 from typing import Any, Dict, Union, TYPE_CHECKING
 
 import requests
-from django.conf import settings
-from django.core.files.base import ContentFile
-from django.core.files.images import ImageFile
-from django.core.files.storage import default_storage
 
-from catalog.helpers import get_and_save_image
+from utils.images import get_and_save_image
 
 if TYPE_CHECKING:
     from catalog.models import Item, Record
@@ -19,6 +13,9 @@ if TYPE_CHECKING:
 
 
 def download_cover(item: Union["Item", "Record"], size: str = "M") -> None:
+    """
+    This function is called by the `save` function on Records and Items.
+    """
     # https://openlibrary.org/dev/docs/api/covers
     if item.image != "":
         # Django stores null images as empty strings, so if it's not an
@@ -54,4 +51,5 @@ def get_by_isbn(isbn: str) -> Dict:
 
 
 def get_openlibrary_book(isbn: str) -> Any:
+    # TODO: finish
     result = requests.get("https://openlibrary.org/isbn/9780140328721.json").json()
