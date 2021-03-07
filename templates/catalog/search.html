@@ -60,6 +60,7 @@
                         let message = "{{ alerts.hold_success_message }}"
                         message = message.replace("{{ name_keys.item_title }}", el.dataset.title)
                         message = message.replace("{{ name_keys.item_type_name }}", resp['name'])
+                        message = message.replace("{{ name_keys.hold_number }}", resp['hold_number'])
                         newtoast = createToastHTML(
                             message, colorClass = "bg-success", id = el.dataset.itemId, itemTypeId = el.dataset.subitemId
                         )

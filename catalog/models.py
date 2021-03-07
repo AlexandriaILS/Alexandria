@@ -1,7 +1,7 @@
 import pymarc
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType as DjangoContentType
 from django.db import models
 from django.utils.translation import ugettext as _
@@ -158,6 +158,8 @@ class Record(models.Model):
     zenodotus_id = models.IntegerField(blank=True, null=True)
     zenodotus_record_version = models.IntegerField(blank=True, null=True)
 
+    holds = GenericRelation('holds.Hold', content_type_field='content_type', object_id_field='object_id')
+
     def __str__(self):
         val = f"{self.title}"
         if self.authors:
@@ -303,6 +305,7 @@ class Item(models.Model):
     )
 
     type = models.ForeignKey(ItemType, on_delete=models.CASCADE, blank=True, null=True)
+    holds = GenericRelation('holds.Hold', content_type_field='content_type', object_id_field='object_id')
 
     def save(self, *args, **kwargs):
         if self.type:
