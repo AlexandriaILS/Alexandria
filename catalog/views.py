@@ -1,24 +1,22 @@
 import io
-import random
 from urllib.parse import quote_plus
 
 import pymarc
 import requests
 from django.conf import settings
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator
 from django.db.models.aggregates import Count
 from django.db.models.expressions import F, Q
 from django.db.models.functions import Lower
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, reverse
 from django.views.generic import View
 
 from catalog.forms import CombinedRecordItemEditForm, LoCSearchForm
 from catalog.helpers import build_context, get_results_per_page
 from catalog.marc import import_from_marc
-from catalog.models import Record, Item, ItemType
+from catalog.models import Record, Item
 from users.mixins import LibraryStaffRequiredMixin
 
 
@@ -96,20 +94,6 @@ def import_marc_record_from_loc(request):
     item = import_from_marc(record)
 
     return HttpResponseRedirect(reverse("item_edit", args=(item.id,)))
-
-
-def place_hold(request, item_id, item_type_id):
-    SUCCESS = 200
-    HOLD_ALREADY_EXISTS = 409
-    # TODO: build hold system
-    itemtype = ItemType.objects.filter(id=item_type_id).first()
-    if itemtype:
-        return JsonResponse(
-            {"name": itemtype.name},
-            status=random.choice([SUCCESS, HOLD_ALREADY_EXISTS, 403]),
-        )
-    else:
-        return HttpResponse(404)
 
 
 def item_detail(request, item_id):

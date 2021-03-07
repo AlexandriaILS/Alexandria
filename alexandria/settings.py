@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "users",
     "localflavor",
     "catalog",
+    "holds",
     "payments",
     "selfcheckout",
     "staff",

@@ -62,7 +62,12 @@
                             </div>
                         {% endif %}
                     </div>
-                    <div class="col-xl-4 d-none d-xl-block">{% include 'partials/cover_image.partial' with item=obj %}</div>
+                    <div class="col-xl-4 d-none d-xl-block">
+                        {% include 'partials/cover_image.partial' with item=obj %}
+                        <div class="text-center">
+                            <div class="btn btn-primary mt-3">{% translate "Reserve next available copy" %}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="container">
@@ -77,16 +82,23 @@
                         </div>
                         <div class="col-md-6 mt-2">
                             <div class="row">
-                                <div class="col text-center">{% if el.type %}{{ el.type.name }}{% else %}{% endif %}</div>
+                                <div class="col text-center">
+                                    {% if el.type %}{{ el.type.name }}{% else %}{% endif %}</div>
                                 <div class="col text-center">{{ el.pubyear }}, {{ el.publisher }}</div>
-                                <div class="col text-center">{% if el.is_checked_out %}{% translate "Checked Out" %}{% else %}{{ el.home_location.name }}{% endif %}</div>
+                                <div class="col text-center">
+                                    {% if el.is_checked_out %}{% translate "Checked Out" %}{% else %}
+                                        {{ el.home_location.name }}{% endif %}</div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="row">
                                 <div class="col-2 col-md-0 col-lg-2"></div>
-                                <div class="col-8 col-md-12 col-lg-8 text-center mt-2 d-grid" style="height:100%">
-                                    <div class="btn btn-primary">{% translate "Place hold" %}</div>
+                                <div class="col-8 col-md-12 col-lg-8 text-center mt-2" style="height:100%">
+                                    <div data-subitem-id="{{ el.type.id }}" data-item-id="{{ el.id }}"
+                                         data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
+                                         data-is-item="1"
+                                         class="btn btn-block btn-primary HoldButton">
+                                        {% translate "Place hold" %}</div>
                                 </div>
                                 <div class="col-2 col-md-0 col-lg-2"></div>
                             </div>
