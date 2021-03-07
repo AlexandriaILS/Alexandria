@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='alexandriauser',
-            name='birth_year',
-            field=models.IntegerField(blank=True, help_text='If allowed, enter the year of birth for the patron. Helps differentiate between patrons with the same name.', null=True, verbose_name='birth year'),
+            model_name="alexandriauser",
+            name="birth_year",
+            field=models.IntegerField(
+                blank=True,
+                help_text="If allowed, enter the year of birth for the patron. Helps differentiate between patrons with the same name.",
+                null=True,
+                verbose_name="birth year",
+            ),
         ),
     ]

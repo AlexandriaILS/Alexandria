@@ -32,7 +32,9 @@ def search(request: WSGIRequest) -> HttpResponse:
     if not search_term:
         return render(request, "catalog/search.html", context)
 
-    search_term = " ".join([i for i in search_term.split() if i not in settings.IGNORED_SEARCH_TERMS])
+    search_term = " ".join(
+        [i for i in search_term.split() if i not in settings.IGNORED_SEARCH_TERMS]
+    )
 
     # TODO: refactor for SearchVector and SearchRank -- requires Postgres
     # https://docs.djangoproject.com/en/dev/ref/contrib/postgres/search/#searchvector

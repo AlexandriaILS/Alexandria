@@ -76,7 +76,9 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("email address"), blank=True)
     is_minor = models.BooleanField(
         default=False,
-        help_text=_("Check if the person this account belongs to is legally considered a minor."),
+        help_text=_(
+            "Check if the person this account belongs to is legally considered a minor."
+        ),
     )
     birth_year = models.IntegerField(
         _("birth year"),

@@ -23,7 +23,7 @@ from holds.urls import urlpatterns as hold_urls
 from users.urls import urlpatterns as user_urls
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
 ]
 
 urlpatterns += catalog_urls
