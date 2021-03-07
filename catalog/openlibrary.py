@@ -3,7 +3,7 @@ from typing import Any, Dict, Union, TYPE_CHECKING
 
 import requests
 
-from utils.images import get_and_save_image
+from utils import get_and_save_image
 
 if TYPE_CHECKING:
     from catalog.models import Item, Record
