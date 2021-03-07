@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from catalog.urls import urlpatterns as catalog_urls
+from holds.urls import urlpatterns as hold_urls
 from users.urls import urlpatterns as user_urls
 
 urlpatterns = [
@@ -26,6 +27,7 @@ urlpatterns = [
 ]
 
 urlpatterns += catalog_urls
+urlpatterns += hold_urls
 urlpatterns += user_urls
 
 if settings.DEBUG:

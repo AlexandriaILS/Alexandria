@@ -1,5 +1,5 @@
 from django.urls import path
-from catalog import views
+from holds import views
 
 urlpatterns = [
     path(
