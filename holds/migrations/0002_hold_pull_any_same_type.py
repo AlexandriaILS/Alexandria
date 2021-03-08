@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('holds', '0001_initial'),
+        ("holds", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='hold',
-            name='pull_any_same_type',
+            model_name="hold",
+            name="pull_any_same_type",
             field=models.BooleanField(default=True),
         ),
     ]

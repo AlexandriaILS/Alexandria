@@ -14,27 +14,50 @@ HOLD_ALREADY_EXISTS = 409
 
 
 def get_hold_queue_number(request: WSGIRequest, new_hold: Hold) -> int:
-    all_holds_for_obj = Hold.objects.filter(target=new_hold.target).order_by("-date_created")
+    # all_holds_for_obj = Hold.objects.filter(target=new_hold.target).order_by(
+    #     "-date_created"
+    # )
     ...
 
 
 def create_hold(request, obj, obj_type) -> Union[HttpResponse, JsonResponse]:
-    if Hold.objects.filter(placed_by=request.user, target=obj, requested_item_type=obj_type).first():
-        return HttpResponse(status=HOLD_ALREADY_EXISTS)
-
+    # TODO: figure out location issue
+    #  What if there's a modal when someone clicks on the quick hold button that asks
+    #  where they want it to go and defaults to the user's chosen location? Can't
+    #  have two modals on top of each other, so this needs workshopping. Maybe should
+    #  get rid of the details modal and just have a detail page like every other
+    #  ILS.
     if isinstance(obj, Record):
-        new_hold = Hold.objects.create(placed_by=request.user, target=obj, requested_item_type=obj_type)
+        existing = Hold.objects.filter(
+            placed_by=request.user, record=obj, requested_item_type=obj_type
+        ).first()
+        if existing:
+            return HttpResponse(status=HOLD_ALREADY_EXISTS)
+        new_hold = Hold.objects.create(
+            placed_by=request.user, record=obj, requested_item_type=obj_type
+        )
+
     else:
         # it's an Item
-        new_hold = Hold.objects.create(placed_by=request.user, target=obj)
+        existing = Hold.objects.filter(
+            placed_by=request.user, item=obj, requested_item_type=obj_type
+        ).first()
+        if existing:
+            return HttpResponse(status=HOLD_ALREADY_EXISTS)
+        new_hold = Hold.objects.create(placed_by=request.user, item=obj)
 
     return JsonResponse(
-        {"name": obj.type.name, "hold_number": get_hold_queue_number(request, new_hold)},
+        {
+            "name": obj.type.name,
+            "hold_number": get_hold_queue_number(request, new_hold),
+        },
         status=SUCCESS,
     )
 
 
-def place_hold_on_record(request: WSGIRequest, item_id: int, item_type_id: int) -> Union[JsonResponse, HttpResponse]:
+def place_hold_on_record(
+        request: WSGIRequest, item_id: int, item_type_id: int
+) -> Union[JsonResponse, HttpResponse]:
     if not request.user.is_authenticated:
         return HttpResponse(status=401)
     itemtype = get_object_or_404(ItemType, id=item_type_id)
@@ -42,7 +65,9 @@ def place_hold_on_record(request: WSGIRequest, item_id: int, item_type_id: int) 
     return create_hold(request, target, itemtype)
 
 
-def place_hold_on_item(request: WSGIRequest, item_id: int, item_type_id: int) -> Union[JsonResponse, HttpResponse]:
+def place_hold_on_item(
+        request: WSGIRequest, item_id: int, item_type_id: int
+) -> Union[JsonResponse, HttpResponse]:
     if not request.user.is_authenticated:
         return HttpResponse(status=401)
     itemtype = get_object_or_404(ItemType, id=item_type_id)
