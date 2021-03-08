@@ -13,11 +13,19 @@ def build_context(data: Dict = None) -> Dict:
             "LIBRARY_SYSTEM_NAME": settings.LIBRARY_SYSTEM_NAME,
             "LIBRARY_SYSTEM_URL": settings.LIBRARY_SYSTEM_URL,
             "alerts": {
-                "hold_success_message": _("Hold placed for (itemType) — (itemTitle)! You're number (holdNum) in queue!"),
+                "hold_success_message": _(
+                    "Hold placed for (itemType) — (itemTitle)! You're number (holdNum) in queue!"
+                ),
                 "hold_error_message": _("Something went wrong — please try again."),
                 "hold_duplicate": _("You already have a hold on this item."),
+                "not_logged_in": _("You're not logged in! You'll need to log in before you can put items on hold."),
+                # used to replace placeholders in the messages with values returned from the views
+                "name_keys": {
+                    "item_type_name": "(itemType)",
+                    "item_title": "(itemTitle)",
+                    "hold_number": "(holdNum)",
+                },
             },
-            "name_keys": {"item_type_name": "(itemType)", "item_title": "(itemTitle)", "hold_number": "(holdNum)"},
         }
     )
 

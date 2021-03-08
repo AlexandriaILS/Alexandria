@@ -9,7 +9,6 @@ from django.shortcuts import get_object_or_404
 from catalog.models import ItemType, Record, Item
 from holds.models import Hold
 
-
 SUCCESS = 200
 HOLD_ALREADY_EXISTS = 409
 
@@ -35,15 +34,17 @@ def create_hold(request, obj, obj_type) -> Union[HttpResponse, JsonResponse]:
     )
 
 
-@login_required
-def place_hold_on_record(request: WSGIRequest, item_id: int, item_type_id: int) -> JsonResponse:
+def place_hold_on_record(request: WSGIRequest, item_id: int, item_type_id: int) -> Union[JsonResponse, HttpResponse]:
+    if not request.user.is_authenticated:
+        return HttpResponse(status=401)
     itemtype = get_object_or_404(ItemType, id=item_type_id)
     target = get_object_or_404(Record, id=item_id)
     return create_hold(request, target, itemtype)
 
 
-@login_required
-def place_hold_on_item(request: WSGIRequest, item_id: int, item_type_id:int) -> JsonResponse:
+def place_hold_on_item(request: WSGIRequest, item_id: int, item_type_id: int) -> Union[JsonResponse, HttpResponse]:
+    if not request.user.is_authenticated:
+        return HttpResponse(status=401)
     itemtype = get_object_or_404(ItemType, id=item_type_id)
     target = get_object_or_404(Item, id=item_id)
     return create_hold(request, target, itemtype)
