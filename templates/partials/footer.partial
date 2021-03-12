@@ -1,6 +1,5 @@
 {% load i18n %}
 
-<div class="mt-5">
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container">
             <div class="row text-center">
@@ -14,4 +13,3 @@
             </div>
         </div>
     </footer>
-</div>

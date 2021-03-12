@@ -1,19 +1,24 @@
 {% load settings_value %}
 {% load i18n %}
-
+<!doctype html>
 {% get_current_language as LANGUAGE_CODE %}
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE }}" class="h-100">
 <head>
     {% include "partials/head.partial" %}
     <title>{{ LIBRARY_SYSTEM_NAME }} - {% translate "Powered by Alexandria" %}</title>
 </head>
 
 <body class="d-flex flex-column h-100">
+
+<main class="flex-shrink-0 mb-5">
     {% include "partials/navbar.partial" %}
     <div class="container mt-3">
         {% block content %}
         {% endblock %}
     </div>
-    {% include 'partials/footer.partial' %}
+</main>
+
+{% include 'partials/footer.partial' %}
+
 </body>
 </html>
