@@ -12,6 +12,7 @@ function createToastHTML(message, colorClass, id, itemTypeId, globalError) {
 document.addEventListener("DOMContentLoaded", function (event) {
 
     const DATA = JSON.parse(document.getElementById('alert-data').textContent);
+    const LIBRARY_DATA = JSON.parse(document.getElementById('library-data').textContent);
 
     Array.from(document.getElementsByClassName('HoldButton')).forEach(function (el) {
         let url = `/placehold/THING/${el.dataset.itemId}/${el.dataset.subitemId}/`;
@@ -63,6 +64,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         itemTypeId = el.dataset.subitemId,
                         globalError = true,
                     )
+                } else if (parseInt(err.status.toString()[0]) === 5) {
+                    newtoast = createToastHTML(
+                        `Something went wrong -- please contact ${LIBRARY_DATA['LIBRARY_SYSTEM_NAME']} IT support.`,
+                        colorClass = "bg-danger",
+                        id = el.dataset.itemId,
+                        itemTypeId = el.dataset.subitemId,
+                        globalError = true,
+                    )
+                    console.log(err)
                 } else {
                     newtoast = createToastHTML(
                         DATA['hold_error_message'],

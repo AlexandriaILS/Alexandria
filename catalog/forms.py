@@ -31,3 +31,18 @@ class CombinedRecordItemEditForm(forms.Form):
         queryset=BibliographicLevel.objects.all()
     )
     item_type = forms.ModelChoiceField(queryset=ItemType.objects.all())
+
+
+class RecordEditForm(forms.Form):
+    # record-related stuff
+    title = forms.CharField(max_length=26021)
+    authors = forms.CharField(max_length=500)
+    subtitle = forms.CharField(max_length=26021, required=False)
+    uniform_title = forms.CharField(max_length=26021, required=False)
+    notes = forms.CharField(widget=forms.Textarea, required=False)
+    series = forms.CharField(widget=forms.Textarea, required=False)
+    record_type = forms.ModelChoiceField(queryset=ItemType.objects.all())
+    record_bibliographic_level = forms.ModelChoiceField(
+        queryset=BibliographicLevel.objects.all()
+    )
+    summary = forms.CharField(widget=forms.Textarea, required=False)

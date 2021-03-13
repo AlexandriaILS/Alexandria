@@ -3,12 +3,6 @@
 {% load static %}
 
 {% block content %}
-
-    <div aria-live="polite" aria-atomic="true" class="position-sticky" style="position: sticky; top: 0; z-index: 2000">
-        <div id="toaster" class="toast-container position-absolute top-0 end-0 p-3">
-        </div>
-    </div>
-
     {% if search_term %}
         <h1>{{ result_count }} {% translate "Results" %}</h1>
         <p>{% translate "Search term" %}: {{ search_term }}</p>
@@ -22,8 +16,5 @@
     {% else %}
         {% include 'partials/catalog/no_results_found.partial' %}
     {% endif %}
-
-    {{ alerts|json_script:"alert-data" }}
-    <script src="{% static 'js/holdbuttons.js' %}" async defer></script>
 
 {% endblock %}
