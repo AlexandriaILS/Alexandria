@@ -18,10 +18,8 @@
                             <div class="row">
                                 <div class="col-sm-8 col-md-6 col-lg-4">
                                     <div class="d-grid mb-3">
-                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
-                                                data-bs-target="#detailModal{{ item.id }}">
-                                            {% translate "Details" %}
-                                        </button>
+                                        <a href="{% url "item_detail" item_id=item.id %}"
+                                           class="btn btn-outline-primary">{% translate "Details" %}</a>
                                     </div>
                                 </div>
                                 <div class="col-sm-4 col-md-6 col-lg-8"></div>
@@ -70,11 +68,8 @@
                                     <div class="col-12 mb-2">
                                         <div class="row">
                                             <div class="d-grid">
-                                                <button type="button" class="btn btn-outline-secondary"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#detailModal{{ item.id }}">
-                                                    {% translate "More info" %}
-                                                </button>
+                                                <a href="{% url "item_detail" item_id=item.id %}"
+                                                   class="btn btn-outline-secondary">{% translate "More info" %}</a>
                                             </div>
                                         </div>
                                     </div>
@@ -87,4 +82,3 @@
         </div>
     </div>
 </div>
-{% include 'partials/item_detail_modal.partial' with obj=item %}
