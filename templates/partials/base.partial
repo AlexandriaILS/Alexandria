@@ -10,9 +10,9 @@
 
 <body class="d-flex flex-column h-100">
 
-<main class="flex-shrink-0 mb-5">
+<main class="flex-fill mb-5">
     {% include "partials/navbar.partial" %}
-    <div class="container mt-3">
+    <div class="container mt-3" style="height:100%; width: 100%">
         {% block content %}
         {% endblock %}
     </div>
