@@ -7,11 +7,14 @@
 <html lang="{{ LANGUAGE_CODE }}" class="h-100">
 <head>
     {% include "partials/head.partial" %}
-    <title>{{ LIBRARY_SYSTEM_NAME }} - {% translate "Powered by Alexandria" %}</title>
+    {% if page_title %}
+        <title>{{ page_title }} - {% translate "Powered by Alexandria" %}</title>
+    {% else %}
+        <title>{{ library_info.LIBRARY_SYSTEM_NAME }} - {% translate "Powered by Alexandria" %}</title>
+    {% endif %}
 </head>
 
 <body class="d-flex flex-column h-100">
-
 <div aria-live="polite" aria-atomic="true" class="position-sticky" style="position: sticky; top: 0; z-index: 2000">
     <div id="toaster" class="toast-container position-absolute top-0 end-0 p-3">
     </div>

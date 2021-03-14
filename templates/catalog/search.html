@@ -2,9 +2,14 @@
 {% load i18n %}
 {% load static %}
 
+
 {% block content %}
     {% if search_term %}
-        <h1>{{ result_count }} {% translate "Results" %}</h1>
+        {% blocktranslate count result_count as r_count %}
+            <h1>{{ r_count }} Result</h1>
+            {% plural %}
+            <h1>{{ r_count }} Results</h1>
+        {% endblocktranslate %}
         <p>{% translate "Search term" %}: {{ search_term }}</p>
         {% for item in page %}
             {% include "partials/single_search_result.partial" with item=item %}
