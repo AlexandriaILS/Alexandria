@@ -6,7 +6,7 @@ import requests
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from catalog.helpers import get_and_save_image
+from utils.images import get_and_save_image
 from catalog.models import (
     Record,
     Subject,
