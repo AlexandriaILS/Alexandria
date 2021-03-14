@@ -26,6 +26,10 @@
                 {% translate "Release year" %}: {{ item.pubyear }}
             {% endif %}
 
+            {% if item.summary %}
+                <p>{% translate "Summary" %}: {{ item.summary }}</p>
+            {% endif %}
+
             {% if item.type %}
                 <p>{% translate "Media type" %}: {{ item.type.name }}</p>
             {% endif %}
@@ -42,7 +46,7 @@
                 </ul>
             {% endif %}
             {% if item.series %}
-                <p>{% translate "Series info:" %}: {{ item.series }}</p>
+                <p>{% translate "Series info" %}: {{ item.series }}</p>
             {% endif %}
 
             {% if item.tags.count > 0 %}

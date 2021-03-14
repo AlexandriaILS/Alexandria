@@ -78,11 +78,18 @@ def add_from_loc(request: WSGIRequest) -> HttpResponse:
         if form.is_valid():
             data = form.cleaned_data
             search_string = quote_plus(data.get("search_term"))
-            results = requests.get(
-                f"https://www.loc.gov/books/?fo=json&all=true&q={search_string}"
-            )
-            # lots of results come back, but for testing we're just using the first
-            context["result"] = results.json()["results"]
+            try:
+                results = requests.get(
+                    f"https://www.loc.gov/books/"
+                    f"?fo=json&all=true&fa=partof:catalog&q={search_string}"
+                )
+                # lots of results come back, but for testing we're just using the first
+                context["result"] = results.json()["results"]
+            except Exception:
+                context["error"] = (
+                    "Something went wrong and the response isn't usable."
+                    " Please try again or try a different import method."
+                )
 
     form = LoCSearchForm()
     context["form"] = form
