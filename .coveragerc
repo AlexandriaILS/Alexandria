@@ -1,0 +1,15 @@
+[run]
+omit =
+  .venv/*,
+  *tests/*,
+  manage.py,
+  *migrations*,
+  */static/*,
+  */static_dev/*,
+  */media/*,
+  alexandria/local_settings.py,
+  */urls.py,
+  */wsgi.py,
+  alexandria/settings/*,
+  alexandria/conftest.py,
+  catalog/management/commands/*,

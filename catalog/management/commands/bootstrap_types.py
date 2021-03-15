@@ -1,11 +1,11 @@
 from django.core.management.base import BaseCommand
-from catalog.models import ItemTypeBase, BibliographicLevel
 
 
 class Command(BaseCommand):
     help = "Creates the base types"
 
     def handle(self, *args, **options):
+        from catalog.models import ItemTypeBase, BibliographicLevel
 
         items = [
             (ItemTypeBase, ItemTypeBase.TYPE_OPTIONS),
