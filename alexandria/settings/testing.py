@@ -1,5 +1,3 @@
-import os
-
 from alexandria.settings.base import *  # noqa: F403
 
 ENVIRONMENT = "testing"
@@ -14,20 +12,26 @@ SECRET_KEY = (
 )
 
 CACHES = {
-    "default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache",}  # noqa: E231
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    }  # noqa: E231
 }
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),  # noqa: F405
+        "NAME": os.path.join(BASE_DIR, "db_testing.sqlite3"),  # noqa: F405
     }
 }
 
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"class": "logging.StreamHandler",},},  # noqa: E231
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },  # noqa: E231
     "loggers": {
         "django": {
             "handlers": ["console"],
@@ -39,3 +43,5 @@ LOGGING = {
         },
     },
 }
+
+INSTALLED_APPS += ['behave_django']

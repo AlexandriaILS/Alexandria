@@ -5,3 +5,6 @@ migrations/*
 db.sqlite3
 local_settings.py
 images/
+geckodriver.log
+htmlcov/
+.coverage

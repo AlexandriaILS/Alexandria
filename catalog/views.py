@@ -12,6 +12,7 @@ from django.db.models.functions import Lower
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, reverse
 from django.views.generic import View
+from django.views.decorators.csrf import csrf_exempt
 
 from catalog.forms import CombinedRecordItemEditForm, LoCSearchForm
 from catalog.helpers import get_results_per_page
@@ -21,7 +22,13 @@ from users.mixins import LibraryStaffRequiredMixin
 from utils import build_context
 
 
+@csrf_exempt
 def index(request: WSGIRequest) -> HttpResponse:
+    if request.method == "POST":
+        search_text = request.POST.get("search_text")
+        return HttpResponseRedirect(
+            reverse("search") + ("?q=" + quote_plus(search_text)) if search_text else ""
+        )
     context = build_context()
     return render(request, "catalog/index.html", context)
 

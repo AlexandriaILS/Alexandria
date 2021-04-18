@@ -10,7 +10,7 @@
     {% if page_title %}
         <title>{{ page_title }} - {% translate "Powered by Alexandria" %}</title>
     {% else %}
-        <title>{{ library_info.LIBRARY_SYSTEM_NAME }} - {% translate "Powered by Alexandria" %}</title>
+        <title>{{ library_data.LIBRARY_SYSTEM_NAME }} - {% translate "Powered by Alexandria" %}</title>
     {% endif %}
 </head>
 
@@ -31,7 +31,7 @@
 {% include 'partials/footer.partial' %}
 
 {{ alerts|json_script:"alert-data" }}
-{{ library_info|json_script:"library-data" }}
+{{ library_data|json_script:"library-data" }}
 <script src="{% static 'js/holdbuttons.js' %}" async defer></script>
 
 </body>

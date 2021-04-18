@@ -1,0 +1,4006 @@
+[
+  {
+    "model": "contenttypes.contenttype",
+    "id": 1,
+    "fields": {
+      "app_label": "admin",
+      "model": "logentry"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 2,
+    "fields": {
+      "app_label": "auth",
+      "model": "permission"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 3,
+    "fields": {
+      "app_label": "auth",
+      "model": "group"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 4,
+    "fields": {
+      "app_label": "contenttypes",
+      "model": "contenttype"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 5,
+    "fields": {
+      "app_label": "sessions",
+      "model": "session"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 6,
+    "fields": {
+      "app_label": "taggit",
+      "model": "tag"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 7,
+    "fields": {
+      "app_label": "taggit",
+      "model": "taggeditem"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 8,
+    "fields": {
+      "app_label": "users",
+      "model": "uslocation"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 9,
+    "fields": {
+      "app_label": "users",
+      "model": "alexandriauser"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 10,
+    "fields": {
+      "app_label": "users",
+      "model": "branchlocation"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 11,
+    "fields": {
+      "app_label": "catalog",
+      "model": "subject"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 12,
+    "fields": {
+      "app_label": "catalog",
+      "model": "collection"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 13,
+    "fields": {
+      "app_label": "catalog",
+      "model": "bibliographiclevel"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 14,
+    "fields": {
+      "app_label": "catalog",
+      "model": "itemtypebase"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 15,
+    "fields": {
+      "app_label": "catalog",
+      "model": "itemtype"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 16,
+    "fields": {
+      "app_label": "catalog",
+      "model": "record"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 17,
+    "fields": {
+      "app_label": "catalog",
+      "model": "item"
+    }
+  },
+  {
+    "model": "contenttypes.contenttype",
+    "id": 18,
+    "fields": {
+      "app_label": "holds",
+      "model": "hold"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "dovem7geo9r69k3lltgduh9gczdfw7ia",
+    "fields": {
+      "session_data": ".eJxVjDsOwyAQBe9CHSGzfJ0yvc-AgF2CkwgkY1dR7h5bcpG0b2bem_mwrcVvnRY_I7syAVKxy-8cQ3pSPRg-Qr03nlpdlznyQ-En7XxqSK_b6f4dlNDLXo9DJgUxZ0iY0OioQ0YXDRmLzkYj7M4GK7VJWkMSVijryIEUciTAwD5fe1E43A:1lOUjF:rGGhDwI53Vh1wfnc6629sC0HdIxCCnQ2umqj-jtHofk",
+      "expire_date": "2021-04-06T00:17:01.665Z"
+    }
+  },
+  {
+    "model": "sessions.session",
+    "pk": "umbbb074uyqjs4vog54jbxo3sbazq092",
+    "fields": {
+      "session_data": ".eJxVjDsOwyAQBe9CHSGzfJ0yvc-AgF2CkwgkY1dR7h5bcpG0b2bem_mwrcVvnRY_I7syAVKxy-8cQ3pSPRg-Qr03nlpdlznyQ-En7XxqSK_b6f4dlNDLXo9DJgUxZ0iY0OioQ0YXDRmLzkYj7M4GK7VJWkMSVijryIEUciTAwD5fe1E43A:1lXyHG:GboILpDFdl1ud2ErGqmZSSzsw4dUUqU40A6vnzDGPaQ",
+      "expire_date": "2021-05-02T03:39:18.975Z"
+    }
+  },
+  {
+    "model": "users.branchlocation",
+    "pk": 1,
+    "fields": {
+      "name": "Crickhollow",
+      "address": null
+    }
+  },
+  {
+    "model": "users.branchlocation",
+    "pk": 2,
+    "fields": {
+      "name": "Frogmorton",
+      "address": null
+    }
+  },
+  {
+    "model": "users.branchlocation",
+    "pk": 3,
+    "fields": {
+      "name": "Gamwitch",
+      "address": null
+    }
+  },
+  {
+    "model": "users.branchlocation",
+    "pk": 4,
+    "fields": {
+      "name": "Hobbiton",
+      "address": null
+    }
+  },
+  {
+    "model": "users.branchlocation",
+    "pk": 5,
+    "fields": {
+      "name": "Little Delving",
+      "address": null
+    }
+  },
+  {
+    "model": "users.branchlocation",
+    "pk": 6,
+    "fields": {
+      "name": "Michel Delving",
+      "address": null
+    }
+  },
+  {
+    "model": "users.branchlocation",
+    "pk": 7,
+    "fields": {
+      "name": "Overhill",
+      "address": null
+    }
+  },
+  {
+    "model": "users.branchlocation",
+    "pk": 8,
+    "fields": {
+      "name": "Rushey",
+      "address": null
+    }
+  },
+  {
+    "model": "users.branchlocation",
+    "pk": 9,
+    "fields": {
+      "name": "Tuckborough",
+      "address": null
+    }
+  },
+  {
+    "model": "users.branchlocation",
+    "pk": 10,
+    "fields": {
+      "name": "Willowbottom",
+      "address": null
+    }
+  },
+  {
+    "model": "users.branchlocation",
+    "pk": 11,
+    "fields": {
+      "name": "Woodhall",
+      "address": null
+    }
+  },
+  {
+    "model": "catalog.subject",
+    "pk": 1,
+    "fields": {
+      "name": "Wiggin, Ender (Fictitious character) Fiction."
+    }
+  },
+  {
+    "model": "catalog.subject",
+    "pk": 2,
+    "fields": {
+      "name": "Wiggin, Peter (Fictitious character) Fiction."
+    }
+  },
+  {
+    "model": "catalog.subject",
+    "pk": 3,
+    "fields": {
+      "name": "Science fiction"
+    }
+  },
+  {
+    "model": "catalog.subject",
+    "pk": 8,
+    "fields": {
+      "name": "Murder victims' families Fiction."
+    }
+  },
+  {
+    "model": "catalog.subject",
+    "pk": 9,
+    "fields": {
+      "name": "Inheritance and succession Fiction."
+    }
+  },
+  {
+    "model": "catalog.subject",
+    "pk": 10,
+    "fields": {
+      "name": "Women journalists Fiction."
+    }
+  },
+  {
+    "model": "catalog.subject",
+    "pk": 11,
+    "fields": {
+      "name": "Fantasy fiction"
+    }
+  },
+  {
+    "model": "catalog.subject",
+    "pk": 19,
+    "fields": {
+      "name": "Harrington, Honor (Fictitious character) Fiction."
+    }
+  },
+  {
+    "model": "catalog.subject",
+    "pk": 20,
+    "fields": {
+      "name": "Women soldiers"
+    }
+  },
+  {
+    "model": "catalog.subject",
+    "pk": 21,
+    "fields": {
+      "name": "Space warfare"
+    }
+  },
+  {
+    "model": "catalog.subject",
+    "pk": 22,
+    "fields": {
+      "name": "War stories"
+    }
+  },
+  {
+    "model": "catalog.bibliographiclevel",
+    "pk": 1,
+    "fields": {
+      "name": "a"
+    }
+  },
+  {
+    "model": "catalog.bibliographiclevel",
+    "pk": 2,
+    "fields": {
+      "name": "b"
+    }
+  },
+  {
+    "model": "catalog.bibliographiclevel",
+    "pk": 3,
+    "fields": {
+      "name": "c"
+    }
+  },
+  {
+    "model": "catalog.bibliographiclevel",
+    "pk": 4,
+    "fields": {
+      "name": "d"
+    }
+  },
+  {
+    "model": "catalog.bibliographiclevel",
+    "pk": 5,
+    "fields": {
+      "name": "i"
+    }
+  },
+  {
+    "model": "catalog.bibliographiclevel",
+    "pk": 6,
+    "fields": {
+      "name": "m"
+    }
+  },
+  {
+    "model": "catalog.bibliographiclevel",
+    "pk": 7,
+    "fields": {
+      "name": "s"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 1,
+    "fields": {
+      "name": "a"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 2,
+    "fields": {
+      "name": "c"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 3,
+    "fields": {
+      "name": "d"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 4,
+    "fields": {
+      "name": "e"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 5,
+    "fields": {
+      "name": "f"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 6,
+    "fields": {
+      "name": "g"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 7,
+    "fields": {
+      "name": "i"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 8,
+    "fields": {
+      "name": "j"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 9,
+    "fields": {
+      "name": "k"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 10,
+    "fields": {
+      "name": "m"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 11,
+    "fields": {
+      "name": "o"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 12,
+    "fields": {
+      "name": "p"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 13,
+    "fields": {
+      "name": "r"
+    }
+  },
+  {
+    "model": "catalog.itemtypebase",
+    "pk": 14,
+    "fields": {
+      "name": "t"
+    }
+  },
+  {
+    "model": "catalog.itemtype",
+    "pk": 1,
+    "fields": {
+      "name": "Book",
+      "base": 1
+    }
+  },
+  {
+    "model": "catalog.itemtype",
+    "pk": 2,
+    "fields": {
+      "name": "Audiobook (CD)",
+      "base": 1
+    }
+  },
+  {
+    "model": "catalog.itemtype",
+    "pk": 3,
+    "fields": {
+      "name": "Audiobook (Cassette)",
+      "base": 1
+    }
+  },
+  {
+    "model": "catalog.itemtype",
+    "pk": 4,
+    "fields": {
+      "name": "Ebook",
+      "base": 1
+    }
+  },
+  {
+    "model": "catalog.record",
+    "pk": 1,
+    "fields": {
+      "title": "Ender's Game",
+      "authors": "Orson Scott Card",
+      "subtitle": null,
+      "uniform_title": null,
+      "notes": "500: Sequel: Xenocide.",
+      "series": "",
+      "image": "1-da560e02-7302-4fb0-b825-0c44c3a9c1b6.jpg",
+      "type": 1,
+      "bibliographic_level": 6,
+      "summary": null,
+      "zenodotus_id": null,
+      "zenodotus_record_version": null,
+      "subjects": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "catalog.record",
+    "pk": 5,
+    "fields": {
+      "title": "The Family Trade",
+      "authors": "Charles Stross",
+      "subtitle": null,
+      "uniform_title": null,
+      "notes": "500: \"A Tom Doherty Associates book.\"",
+      "series": "",
+      "image": "5-9f7c81c1-85f9-46fb-b1d3-64df755776f0.jpg",
+      "type": 1,
+      "bibliographic_level": null,
+      "summary": null,
+      "zenodotus_id": null,
+      "zenodotus_record_version": null,
+      "subjects": [
+        8,
+        9,
+        10,
+        11
+      ]
+    }
+  },
+  {
+    "model": "catalog.record",
+    "pk": 11,
+    "fields": {
+      "title": "On Basilisk Station",
+      "authors": "David Weber",
+      "subtitle": null,
+      "uniform_title": null,
+      "notes": "500: \"A Baen Books original\"--T.p. verso.",
+      "series": "",
+      "image": "11-6533e3ba-dcf7-4f4b-9799-d0e66238ab89.jpg",
+      "type": 1,
+      "bibliographic_level": 6,
+      "summary": null,
+      "zenodotus_id": null,
+      "zenodotus_record_version": null,
+      "subjects": [
+        3,
+        19,
+        20,
+        21,
+        22
+      ]
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 2,
+    "fields": {
+      "barcode": "888573094846309",
+      "record": 1,
+      "price": "32.93",
+      "condition": "new",
+      "home_location": 7,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "2159230914",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "CowFjord University Press",
+      "pubyear": 2012,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": 6,
+      "type": 4
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 21,
+    "fields": {
+      "barcode": "617473305672245",
+      "record": 1,
+      "price": "26.49",
+      "condition": "new",
+      "home_location": 10,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "2483570444",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "Hatchet",
+      "pubyear": 1962,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": 6,
+      "type": 1
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 24,
+    "fields": {
+      "barcode": "704590645683190",
+      "record": 1,
+      "price": "21.67",
+      "condition": "new",
+      "home_location": 11,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "4183884088",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "CowFjord University Press",
+      "pubyear": 1976,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": 6,
+      "type": 1
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 27,
+    "fields": {
+      "barcode": "553050905952165",
+      "record": 1,
+      "price": "18.29",
+      "condition": "new",
+      "home_location": 1,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "827661698",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "IDG Books (RIP)",
+      "pubyear": 1952,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": 6,
+      "type": 1
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 78,
+    "fields": {
+      "barcode": "1035284104589026",
+      "record": 5,
+      "price": "25.31",
+      "condition": "new",
+      "home_location": 6,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "2162820776",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "Hatchet",
+      "pubyear": 1964,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": null,
+      "type": 2
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 79,
+    "fields": {
+      "barcode": "467601494856511",
+      "record": 5,
+      "price": "17.31",
+      "condition": "new",
+      "home_location": 10,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "2597008852",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "HarpoonCollegiate",
+      "pubyear": 1984,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": null,
+      "type": 4
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 93,
+    "fields": {
+      "barcode": "982237883295545",
+      "record": 5,
+      "price": "22.33",
+      "condition": "new",
+      "home_location": 10,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "2719311267",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "Macmillions",
+      "pubyear": 1962,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": null,
+      "type": 3
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 94,
+    "fields": {
+      "barcode": "286527048111388",
+      "record": 5,
+      "price": "31.83",
+      "condition": "new",
+      "home_location": 10,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "2913058945",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "Simone & Shoosting",
+      "pubyear": 1978,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": null,
+      "type": 2
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 95,
+    "fields": {
+      "barcode": "301067877273212",
+      "record": 5,
+      "price": "21.28",
+      "condition": "new",
+      "home_location": 2,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "3432506088",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "CowFjord University Press",
+      "pubyear": 2015,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": null,
+      "type": 4
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 96,
+    "fields": {
+      "barcode": "188811964471689",
+      "record": 5,
+      "price": "17.68",
+      "condition": "new",
+      "home_location": 1,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "2835911962",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "Simone & Shoosting",
+      "pubyear": 2018,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": null,
+      "type": 1
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 245,
+    "fields": {
+      "barcode": "930923719022215",
+      "record": 11,
+      "price": "17.88",
+      "condition": "new",
+      "home_location": 8,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "1901731414",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "Hatchet",
+      "pubyear": 2010,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": 6,
+      "type": 4
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 246,
+    "fields": {
+      "barcode": "1026038245179254",
+      "record": 11,
+      "price": "25.36",
+      "condition": "new",
+      "home_location": 2,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "2406563973",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "Simone & Shoosting",
+      "pubyear": 1984,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": 6,
+      "type": 4
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 250,
+    "fields": {
+      "barcode": "376791250701475",
+      "record": 11,
+      "price": "15.07",
+      "condition": "new",
+      "home_location": 9,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "387365389",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "HarpoonCollegiate",
+      "pubyear": 2000,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": 6,
+      "type": 1
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 270,
+    "fields": {
+      "barcode": "244999272682794",
+      "record": 11,
+      "price": "12.70",
+      "condition": "new",
+      "home_location": 1,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "2766098240",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "HarpoonCollegiate",
+      "pubyear": 1979,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": 6,
+      "type": 2
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 271,
+    "fields": {
+      "barcode": "170432937481656",
+      "record": 11,
+      "price": "22.26",
+      "condition": "new",
+      "home_location": 2,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "2711906179",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "CowFjord University Press",
+      "pubyear": 1957,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": 6,
+      "type": 3
+    }
+  },
+  {
+    "model": "catalog.item",
+    "pk": 272,
+    "fields": {
+      "barcode": "497749300062452",
+      "record": 11,
+      "price": "33.90",
+      "condition": "new",
+      "home_location": 9,
+      "is_active": true,
+      "isbn": null,
+      "issn": null,
+      "issn_title": null,
+      "marc_location": null,
+      "marc_leader": null,
+      "content_type": null,
+      "object_id": null,
+      "call_number": "4198296700",
+      "checkout_count": 0,
+      "sudoc": null,
+      "last_checked_out": null,
+      "can_circulate": true,
+      "collection": null,
+      "notes": null,
+      "physical_description": null,
+      "publisher": "AntarcticBird Spork Building",
+      "pubyear": 1986,
+      "edition": null,
+      "image": "",
+      "bibliographic_level": 6,
+      "type": 4
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 1,
+    "fields": {
+      "name": "Can add log entry",
+      "content_type": [
+        "admin",
+        "logentry"
+      ],
+      "codename": "add_logentry"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 2,
+    "fields": {
+      "name": "Can change log entry",
+      "content_type": [
+        "admin",
+        "logentry"
+      ],
+      "codename": "change_logentry"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 3,
+    "fields": {
+      "name": "Can delete log entry",
+      "content_type": [
+        "admin",
+        "logentry"
+      ],
+      "codename": "delete_logentry"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 4,
+    "fields": {
+      "name": "Can view log entry",
+      "content_type": [
+        "admin",
+        "logentry"
+      ],
+      "codename": "view_logentry"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 5,
+    "fields": {
+      "name": "Can add permission",
+      "content_type": [
+        "auth",
+        "permission"
+      ],
+      "codename": "add_permission"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 6,
+    "fields": {
+      "name": "Can change permission",
+      "content_type": [
+        "auth",
+        "permission"
+      ],
+      "codename": "change_permission"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 7,
+    "fields": {
+      "name": "Can delete permission",
+      "content_type": [
+        "auth",
+        "permission"
+      ],
+      "codename": "delete_permission"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 8,
+    "fields": {
+      "name": "Can view permission",
+      "content_type": [
+        "auth",
+        "permission"
+      ],
+      "codename": "view_permission"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 9,
+    "fields": {
+      "name": "Can add group",
+      "content_type": [
+        "auth",
+        "group"
+      ],
+      "codename": "add_group"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 10,
+    "fields": {
+      "name": "Can change group",
+      "content_type": [
+        "auth",
+        "group"
+      ],
+      "codename": "change_group"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 11,
+    "fields": {
+      "name": "Can delete group",
+      "content_type": [
+        "auth",
+        "group"
+      ],
+      "codename": "delete_group"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 12,
+    "fields": {
+      "name": "Can view group",
+      "content_type": [
+        "auth",
+        "group"
+      ],
+      "codename": "view_group"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 13,
+    "fields": {
+      "name": "Can add content type",
+      "content_type": [
+        "contenttypes",
+        "contenttype"
+      ],
+      "codename": "add_contenttype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 14,
+    "fields": {
+      "name": "Can change content type",
+      "content_type": [
+        "contenttypes",
+        "contenttype"
+      ],
+      "codename": "change_contenttype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 15,
+    "fields": {
+      "name": "Can delete content type",
+      "content_type": [
+        "contenttypes",
+        "contenttype"
+      ],
+      "codename": "delete_contenttype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 16,
+    "fields": {
+      "name": "Can view content type",
+      "content_type": [
+        "contenttypes",
+        "contenttype"
+      ],
+      "codename": "view_contenttype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 17,
+    "fields": {
+      "name": "Can add session",
+      "content_type": [
+        "sessions",
+        "session"
+      ],
+      "codename": "add_session"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 18,
+    "fields": {
+      "name": "Can change session",
+      "content_type": [
+        "sessions",
+        "session"
+      ],
+      "codename": "change_session"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 19,
+    "fields": {
+      "name": "Can delete session",
+      "content_type": [
+        "sessions",
+        "session"
+      ],
+      "codename": "delete_session"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 20,
+    "fields": {
+      "name": "Can view session",
+      "content_type": [
+        "sessions",
+        "session"
+      ],
+      "codename": "view_session"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 21,
+    "fields": {
+      "name": "Can add tag",
+      "content_type": [
+        "taggit",
+        "tag"
+      ],
+      "codename": "add_tag"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 22,
+    "fields": {
+      "name": "Can change tag",
+      "content_type": [
+        "taggit",
+        "tag"
+      ],
+      "codename": "change_tag"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 23,
+    "fields": {
+      "name": "Can delete tag",
+      "content_type": [
+        "taggit",
+        "tag"
+      ],
+      "codename": "delete_tag"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 24,
+    "fields": {
+      "name": "Can view tag",
+      "content_type": [
+        "taggit",
+        "tag"
+      ],
+      "codename": "view_tag"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 25,
+    "fields": {
+      "name": "Can add tagged item",
+      "content_type": [
+        "taggit",
+        "taggeditem"
+      ],
+      "codename": "add_taggeditem"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 26,
+    "fields": {
+      "name": "Can change tagged item",
+      "content_type": [
+        "taggit",
+        "taggeditem"
+      ],
+      "codename": "change_taggeditem"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 27,
+    "fields": {
+      "name": "Can delete tagged item",
+      "content_type": [
+        "taggit",
+        "taggeditem"
+      ],
+      "codename": "delete_taggeditem"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 28,
+    "fields": {
+      "name": "Can view tagged item",
+      "content_type": [
+        "taggit",
+        "taggeditem"
+      ],
+      "codename": "view_taggeditem"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 29,
+    "fields": {
+      "name": "Can add US Location",
+      "content_type": [
+        "users",
+        "uslocation"
+      ],
+      "codename": "add_uslocation"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 30,
+    "fields": {
+      "name": "Can change US Location",
+      "content_type": [
+        "users",
+        "uslocation"
+      ],
+      "codename": "change_uslocation"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 31,
+    "fields": {
+      "name": "Can delete US Location",
+      "content_type": [
+        "users",
+        "uslocation"
+      ],
+      "codename": "delete_uslocation"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 32,
+    "fields": {
+      "name": "Can view US Location",
+      "content_type": [
+        "users",
+        "uslocation"
+      ],
+      "codename": "view_uslocation"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 33,
+    "fields": {
+      "name": "Can add user",
+      "content_type": [
+        "users",
+        "alexandriauser"
+      ],
+      "codename": "add_alexandriauser"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 34,
+    "fields": {
+      "name": "Can change user",
+      "content_type": [
+        "users",
+        "alexandriauser"
+      ],
+      "codename": "change_alexandriauser"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 35,
+    "fields": {
+      "name": "Can delete user",
+      "content_type": [
+        "users",
+        "alexandriauser"
+      ],
+      "codename": "delete_alexandriauser"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 36,
+    "fields": {
+      "name": "Can view user",
+      "content_type": [
+        "users",
+        "alexandriauser"
+      ],
+      "codename": "view_alexandriauser"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 37,
+    "fields": {
+      "name": "Can add branch location",
+      "content_type": [
+        "users",
+        "branchlocation"
+      ],
+      "codename": "add_branchlocation"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 38,
+    "fields": {
+      "name": "Can change branch location",
+      "content_type": [
+        "users",
+        "branchlocation"
+      ],
+      "codename": "change_branchlocation"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 39,
+    "fields": {
+      "name": "Can delete branch location",
+      "content_type": [
+        "users",
+        "branchlocation"
+      ],
+      "codename": "delete_branchlocation"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 40,
+    "fields": {
+      "name": "Can view branch location",
+      "content_type": [
+        "users",
+        "branchlocation"
+      ],
+      "codename": "view_branchlocation"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 41,
+    "fields": {
+      "name": "Can add subject",
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "codename": "add_subject"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 42,
+    "fields": {
+      "name": "Can change subject",
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "codename": "change_subject"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 43,
+    "fields": {
+      "name": "Can delete subject",
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "codename": "delete_subject"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 44,
+    "fields": {
+      "name": "Can view subject",
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "codename": "view_subject"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 45,
+    "fields": {
+      "name": "Can add collection",
+      "content_type": [
+        "catalog",
+        "collection"
+      ],
+      "codename": "add_collection"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 46,
+    "fields": {
+      "name": "Can change collection",
+      "content_type": [
+        "catalog",
+        "collection"
+      ],
+      "codename": "change_collection"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 47,
+    "fields": {
+      "name": "Can delete collection",
+      "content_type": [
+        "catalog",
+        "collection"
+      ],
+      "codename": "delete_collection"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 48,
+    "fields": {
+      "name": "Can view collection",
+      "content_type": [
+        "catalog",
+        "collection"
+      ],
+      "codename": "view_collection"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 49,
+    "fields": {
+      "name": "Can add bibliographic level",
+      "content_type": [
+        "catalog",
+        "bibliographiclevel"
+      ],
+      "codename": "add_bibliographiclevel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 50,
+    "fields": {
+      "name": "Can change bibliographic level",
+      "content_type": [
+        "catalog",
+        "bibliographiclevel"
+      ],
+      "codename": "change_bibliographiclevel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 51,
+    "fields": {
+      "name": "Can delete bibliographic level",
+      "content_type": [
+        "catalog",
+        "bibliographiclevel"
+      ],
+      "codename": "delete_bibliographiclevel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 52,
+    "fields": {
+      "name": "Can view bibliographic level",
+      "content_type": [
+        "catalog",
+        "bibliographiclevel"
+      ],
+      "codename": "view_bibliographiclevel"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 53,
+    "fields": {
+      "name": "Can add item type base",
+      "content_type": [
+        "catalog",
+        "itemtypebase"
+      ],
+      "codename": "add_itemtypebase"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 54,
+    "fields": {
+      "name": "Can change item type base",
+      "content_type": [
+        "catalog",
+        "itemtypebase"
+      ],
+      "codename": "change_itemtypebase"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 55,
+    "fields": {
+      "name": "Can delete item type base",
+      "content_type": [
+        "catalog",
+        "itemtypebase"
+      ],
+      "codename": "delete_itemtypebase"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 56,
+    "fields": {
+      "name": "Can view item type base",
+      "content_type": [
+        "catalog",
+        "itemtypebase"
+      ],
+      "codename": "view_itemtypebase"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 57,
+    "fields": {
+      "name": "Can add item type",
+      "content_type": [
+        "catalog",
+        "itemtype"
+      ],
+      "codename": "add_itemtype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 58,
+    "fields": {
+      "name": "Can change item type",
+      "content_type": [
+        "catalog",
+        "itemtype"
+      ],
+      "codename": "change_itemtype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 59,
+    "fields": {
+      "name": "Can delete item type",
+      "content_type": [
+        "catalog",
+        "itemtype"
+      ],
+      "codename": "delete_itemtype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 60,
+    "fields": {
+      "name": "Can view item type",
+      "content_type": [
+        "catalog",
+        "itemtype"
+      ],
+      "codename": "view_itemtype"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 61,
+    "fields": {
+      "name": "Can add record",
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "codename": "add_record"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 62,
+    "fields": {
+      "name": "Can change record",
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "codename": "change_record"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 63,
+    "fields": {
+      "name": "Can delete record",
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "codename": "delete_record"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 64,
+    "fields": {
+      "name": "Can view record",
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "codename": "view_record"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 65,
+    "fields": {
+      "name": "Can add item",
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "codename": "add_item"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 66,
+    "fields": {
+      "name": "Can change item",
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "codename": "change_item"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 67,
+    "fields": {
+      "name": "Can delete item",
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "codename": "delete_item"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 68,
+    "fields": {
+      "name": "Can view item",
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "codename": "view_item"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 69,
+    "fields": {
+      "name": "Can add hold",
+      "content_type": [
+        "holds",
+        "hold"
+      ],
+      "codename": "add_hold"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 70,
+    "fields": {
+      "name": "Can change hold",
+      "content_type": [
+        "holds",
+        "hold"
+      ],
+      "codename": "change_hold"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 71,
+    "fields": {
+      "name": "Can delete hold",
+      "content_type": [
+        "holds",
+        "hold"
+      ],
+      "codename": "delete_hold"
+    }
+  },
+  {
+    "model": "auth.permission",
+    "id": 72,
+    "fields": {
+      "name": "Can view hold",
+      "content_type": [
+        "holds",
+        "hold"
+      ],
+      "codename": "view_hold"
+    }
+  },
+  {
+    "model": "users.alexandriauser",
+    "pk": 1234,
+    "fields": {
+      "password": "pbkdf2_sha256$216000$4VevkrYKo6Fe$7p3LzK7Xa7doX3jUIJMLJAbFm5e768NcGMwdUduU/Ak=",
+      "last_login": "2021-04-18T03:39:18.969Z",
+      "is_superuser": true,
+      "address": null,
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_minor": false,
+      "birth_year": null,
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2021-03-23T00:16:56.639Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.734Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "16",
+      "object_repr": "Honor Among Enemies | David Weber | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.739Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "15",
+      "object_repr": "Flag in Exile | David Weber | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.745Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "14",
+      "object_repr": "Field of Dishonor | David Weber | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 4,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.751Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "13",
+      "object_repr": "The Honor of the Queen | David Weber | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 5,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.757Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "12",
+      "object_repr": "The Short Victorious War | David Weber | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 6,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.763Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "10",
+      "object_repr": "Hidden Path | Elena Fortún | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 7,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.768Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "9",
+      "object_repr": "The Myth of Sisyphus | Translated from the French by Justin O'Brien. | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 8,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.774Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "8",
+      "object_repr": "Saturn's Children | Charles Stross | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 9,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.779Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "7",
+      "object_repr": "The Bloodline Feud | Charles Stross | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 10,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.785Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "6",
+      "object_repr": "The Revolution Trade | Charles Stross | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 11,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.791Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "4",
+      "object_repr": "Xenocide | Orson Scott Card | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 12,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.796Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "3",
+      "object_repr": "Isaac Asimov | James Gunn | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 13,
+    "fields": {
+      "action_time": "2021-04-18T03:40:38.802Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "record"
+      ],
+      "object_id": "2",
+      "object_repr": "The Trivia Lover's Guide to the World | Gary Fuller | Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 14,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.784Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "29",
+      "object_repr": "Ender's Game | Orson Scott Card | 787131220 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 15,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.804Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "28",
+      "object_repr": "Ender's Game | Orson Scott Card | 2119222177 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 16,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.810Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "26",
+      "object_repr": "Ender's Game | Orson Scott Card | 4168380483 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 17,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.815Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "25",
+      "object_repr": "Ender's Game | Orson Scott Card | 2466346677 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 18,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.821Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "23",
+      "object_repr": "Ender's Game | Orson Scott Card | 3928125105 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 19,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.827Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "22",
+      "object_repr": "Ender's Game | Orson Scott Card | 1863378557 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 20,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.833Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "20",
+      "object_repr": "Ender's Game | Orson Scott Card | 3923006177 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 21,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.838Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "19",
+      "object_repr": "Ender's Game | Orson Scott Card | 373563344 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 22,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.844Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "18",
+      "object_repr": "Ender's Game | Orson Scott Card | 3592668924 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 23,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.850Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "17",
+      "object_repr": "Ender's Game | Orson Scott Card | 3246953087 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 24,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.855Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "16",
+      "object_repr": "Ender's Game | Orson Scott Card | 426874965 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 25,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.861Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "15",
+      "object_repr": "Ender's Game | Orson Scott Card | 2974949001 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 26,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.867Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "14",
+      "object_repr": "Ender's Game | Orson Scott Card | 3287074377 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 27,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.873Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "13",
+      "object_repr": "Ender's Game | Orson Scott Card | 1175885738 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 28,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.878Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "12",
+      "object_repr": "Ender's Game | Orson Scott Card | 1616930539 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 29,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.884Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "11",
+      "object_repr": "Ender's Game | Orson Scott Card | 2988037587 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 30,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.890Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "10",
+      "object_repr": "Ender's Game | Orson Scott Card | 2500858224 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 31,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.895Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "9",
+      "object_repr": "Ender's Game | Orson Scott Card | 2269331927 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 32,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.901Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "8",
+      "object_repr": "Ender's Game | Orson Scott Card | 2086802826 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 33,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.906Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "7",
+      "object_repr": "Ender's Game | Orson Scott Card | 160778831 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 34,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.912Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "6",
+      "object_repr": "Ender's Game | Orson Scott Card | 1319842033 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 35,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.918Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "5",
+      "object_repr": "Ender's Game | Orson Scott Card | 1851794803 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 36,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.923Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "4",
+      "object_repr": "Ender's Game | Orson Scott Card | 325643288 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 37,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.929Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "3",
+      "object_repr": "Ender's Game | Orson Scott Card | 3896219665 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 38,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.935Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "1",
+      "object_repr": "Ender's Game | Orson Scott Card | 2196711467 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 39,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.940Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "273",
+      "object_repr": "On Basilisk Station | David Weber | 1387939528 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 40,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.946Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "269",
+      "object_repr": "On Basilisk Station | David Weber | 838159606 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 41,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.952Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "268",
+      "object_repr": "On Basilisk Station | David Weber | 3339723930 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 42,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.958Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "267",
+      "object_repr": "On Basilisk Station | David Weber | 815214379 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 43,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.963Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "266",
+      "object_repr": "On Basilisk Station | David Weber | 339167153 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 44,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.969Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "265",
+      "object_repr": "On Basilisk Station | David Weber | 1864913769 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 45,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.975Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "264",
+      "object_repr": "On Basilisk Station | David Weber | 1588860509 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 46,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.980Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "263",
+      "object_repr": "On Basilisk Station | David Weber | 4137327226 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 47,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.986Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "262",
+      "object_repr": "On Basilisk Station | David Weber | 1916764284 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 48,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.992Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "261",
+      "object_repr": "On Basilisk Station | David Weber | 2836722476 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 49,
+    "fields": {
+      "action_time": "2021-04-18T03:41:38.998Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "260",
+      "object_repr": "On Basilisk Station | David Weber | 894418952 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 50,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.003Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "259",
+      "object_repr": "On Basilisk Station | David Weber | 418066535 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 51,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.009Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "258",
+      "object_repr": "On Basilisk Station | David Weber | 3012744289 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 52,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.014Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "257",
+      "object_repr": "On Basilisk Station | David Weber | 3904830705 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 53,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.020Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "256",
+      "object_repr": "On Basilisk Station | David Weber | 706932800 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 54,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.026Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "255",
+      "object_repr": "On Basilisk Station | David Weber | 1744738761 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 55,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.031Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "254",
+      "object_repr": "On Basilisk Station | David Weber | 360529840 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 56,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.037Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "253",
+      "object_repr": "On Basilisk Station | David Weber | 1296148706 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 57,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.044Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "252",
+      "object_repr": "On Basilisk Station | David Weber | 3461175599 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 58,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.049Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "251",
+      "object_repr": "On Basilisk Station | David Weber | 2241271993 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 59,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.055Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "249",
+      "object_repr": "On Basilisk Station | David Weber | 3821977059 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 60,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.061Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "248",
+      "object_repr": "On Basilisk Station | David Weber | 2206022110 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 61,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.066Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "247",
+      "object_repr": "On Basilisk Station | David Weber | 499045105 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 62,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.072Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "244",
+      "object_repr": "On Basilisk Station | David Weber | 2679003453 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 63,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.077Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "243",
+      "object_repr": "On Basilisk Station | David Weber | 537523743 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 64,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.083Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "242",
+      "object_repr": "On Basilisk Station | David Weber | 839090746 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 65,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.089Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "241",
+      "object_repr": "On Basilisk Station | David Weber | 1910515009 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 66,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.094Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "240",
+      "object_repr": "On Basilisk Station | David Weber | 1524828329 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 67,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.100Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "239",
+      "object_repr": "On Basilisk Station | David Weber | 1925695961 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 68,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.105Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "238",
+      "object_repr": "On Basilisk Station | David Weber | 3880320483 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 69,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.111Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "237",
+      "object_repr": "On Basilisk Station | David Weber | 2927771183 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 70,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.116Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "236",
+      "object_repr": "On Basilisk Station | David Weber | 3200760028 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 71,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.122Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "235",
+      "object_repr": "On Basilisk Station | David Weber | 2959575370 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 72,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.128Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "234",
+      "object_repr": "On Basilisk Station | David Weber | 1623849276 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 73,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.133Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "233",
+      "object_repr": "On Basilisk Station | David Weber | 3877049477 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 74,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.139Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "232",
+      "object_repr": "On Basilisk Station | David Weber | 13295274 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 75,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.144Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "231",
+      "object_repr": "On Basilisk Station | David Weber | 3249340615 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 76,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.150Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "230",
+      "object_repr": "On Basilisk Station | David Weber | 2306773760 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 77,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.156Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "99",
+      "object_repr": "The Family Trade | Charles Stross | 3361166316 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 78,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.161Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "98",
+      "object_repr": "The Family Trade | Charles Stross | 999708718 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 79,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.167Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "97",
+      "object_repr": "The Family Trade | Charles Stross | 2423855679 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 80,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.172Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "92",
+      "object_repr": "The Family Trade | Charles Stross | 866997474 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 81,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.178Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "91",
+      "object_repr": "The Family Trade | Charles Stross | 81389644 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 82,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.184Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "90",
+      "object_repr": "The Family Trade | Charles Stross | 1204140624 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 83,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.189Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "89",
+      "object_repr": "The Family Trade | Charles Stross | 3241459201 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 84,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.195Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "88",
+      "object_repr": "The Family Trade | Charles Stross | 1871903409 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 85,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.201Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "87",
+      "object_repr": "The Family Trade | Charles Stross | 2515853130 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 86,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.206Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "86",
+      "object_repr": "The Family Trade | Charles Stross | 1554882533 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 87,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.212Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "85",
+      "object_repr": "The Family Trade | Charles Stross | 1217500700 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 88,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.218Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "84",
+      "object_repr": "The Family Trade | Charles Stross | 3188986465 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 89,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.223Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "83",
+      "object_repr": "The Family Trade | Charles Stross | 134263535 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 90,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.229Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "82",
+      "object_repr": "The Family Trade | Charles Stross | 363559290 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 91,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.235Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "81",
+      "object_repr": "The Family Trade | Charles Stross | 2884643701 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 92,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.241Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "80",
+      "object_repr": "The Family Trade | Charles Stross | 2778440475 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 93,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.246Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "77",
+      "object_repr": "The Family Trade | Charles Stross | 3098201924 Audiobook (Cassette)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 94,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.252Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "76",
+      "object_repr": "The Family Trade | Charles Stross | 1100249258 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 95,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.258Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "75",
+      "object_repr": "The Family Trade | Charles Stross | 157883860 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 96,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.263Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "74",
+      "object_repr": "The Family Trade | Charles Stross | 1551536070 Book",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 97,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.269Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "73",
+      "object_repr": "The Family Trade | Charles Stross | 3082768008 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 98,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.275Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "72",
+      "object_repr": "The Family Trade | Charles Stross | 946811403 Ebook",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 99,
+    "fields": {
+      "action_time": "2021-04-18T03:41:39.280Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "item"
+      ],
+      "object_id": "71",
+      "object_repr": "The Family Trade | Charles Stross | 2787439765 Audiobook (CD)",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 100,
+    "fields": {
+      "action_time": "2021-04-18T03:42:54.947Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "24",
+      "object_repr": "Women Diplomats",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 101,
+    "fields": {
+      "action_time": "2021-04-18T03:42:54.952Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "23",
+      "object_repr": "Life on other planets",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 102,
+    "fields": {
+      "action_time": "2021-04-18T03:42:54.958Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "18",
+      "object_repr": "Spanish Literature",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 103,
+    "fields": {
+      "action_time": "2021-04-18T03:42:54.964Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "17",
+      "object_repr": "LGBTQ Literature",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 104,
+    "fields": {
+      "action_time": "2021-04-18T03:42:54.969Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "15",
+      "object_repr": "Boston (Mass.) Fiction.",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 105,
+    "fields": {
+      "action_time": "2021-04-18T03:43:20.601Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "16",
+      "object_repr": "Androids Fiction.",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 106,
+    "fields": {
+      "action_time": "2021-04-18T03:43:20.607Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "14",
+      "object_repr": "Washington (D.C.) Fiction.",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 107,
+    "fields": {
+      "action_time": "2021-04-18T03:43:20.613Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "13",
+      "object_repr": "Nuclear weapons Fiction.",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 108,
+    "fields": {
+      "action_time": "2021-04-18T03:43:20.618Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "12",
+      "object_repr": "Merchants Family relationships Fiction.",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 109,
+    "fields": {
+      "action_time": "2021-04-18T03:43:41.025Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "7",
+      "object_repr": "Science fiction, American History and criticism.",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 110,
+    "fields": {
+      "action_time": "2021-04-18T03:43:41.031Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "6",
+      "object_repr": "Authors, American 20th century Biography.",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 111,
+    "fields": {
+      "action_time": "2021-04-18T03:43:41.036Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "5",
+      "object_repr": "Asimov, Isaac, 1920-1992.",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  },
+  {
+    "model": "admin.logentry",
+    "pk": 112,
+    "fields": {
+      "action_time": "2021-04-18T03:43:41.041Z",
+      "user": [
+        1234
+      ],
+      "content_type": [
+        "catalog",
+        "subject"
+      ],
+      "object_id": "4",
+      "object_repr": "Geography Miscellanea.",
+      "action_flag": 3,
+      "change_message": ""
+    }
+  }
+]

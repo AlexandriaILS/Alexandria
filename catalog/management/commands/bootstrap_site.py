@@ -12,10 +12,9 @@ class Command(BaseCommand):
             card_number=1234,
             is_staff=True,
             is_superuser=True,
-            first_name='Admin',
+            first_name="Admin",
             last_name="von Admin",
         )
         if created:
             user.set_password("asdf")
             user.save()
-
