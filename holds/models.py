@@ -26,4 +26,7 @@ class Hold(models.Model):
     )
 
     def __str__(self):
-        return f"{self.target} heading to {self.destination}"
+        if self.item:
+            return f"{self.item} heading to {self.destination}"
+        else:
+            return f"{self.record} heading to {self.destination}"
