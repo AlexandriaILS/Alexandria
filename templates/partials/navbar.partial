@@ -1,4 +1,6 @@
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+{% load i18n %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">{{ library_data.LIBRARY_SYSTEM_NAME }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -6,11 +8,9 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item dropdown">
+            <div class="navbar-nav me-auto mb-2 mb-lg-0">
+                <a class="nav-link" href="#">Link</a>
+                <div class="dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
                         Dropdown
@@ -23,15 +23,37 @@
                         </li>
                         <li><a class="dropdown-item" href="#">Something else here</a></li>
                     </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
-            </ul>
+                </div>
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </div>
+            <div class="navbar-nav">
+                <div class="dropdown nav-link">
+                    <a class="btn btn-outline-primary dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        {% translate "My Account" %}
+                    </a>
+                    <ul class="dropdown-menu" aria-label="{% translate 'Navbar Account Dropdown' %}">
+                        <li><a class="dropdown-item" href="#">{% translate 'Checked Out' %}</a></li>
+                        <li><a class="dropdown-item" href="#">{% translate "Holds" %}</a></li>
+                        <li><a class="dropdown-item" href="#">{% translate "Payments" %}</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">{% translate "Settings" %}</a></li>
+                        {% if request.user.is_authenticated %}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">{% translate "Log Out" %}</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
             <form class="d-flex my-1">
-                <input id="navbarSearchField" class="form-control me-2" type="search" placeholder="Search Catalog"
+                <input id="navbarSearchField" class="form-control me-2" type="search"
+                       placeholder="{% translate 'Search Catalog' %}"
                        aria-label="Search">
-                <div id="navbarSearchButton" class="btn btn-outline-success">Search</div>
+                <div id="navbarSearchButton" class="btn btn-outline-success">{% translate "Search" %}</div>
             </form>
         </div>
     </div>
