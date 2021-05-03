@@ -40,10 +40,6 @@ def logout_view(request):
     return HttpResponseRedirect(request.GET.get("next", reverse("homepage")))
 
 
-def profile_view(request):
-    ...
-
-
 def profile_settings(request):
     ...
 

@@ -13,6 +13,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, reverse
 from django.views.generic import View
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
 from catalog.forms import CombinedRecordItemEditForm, LoCSearchForm
 from catalog.helpers import get_results_per_page
@@ -43,24 +44,26 @@ def search(request: WSGIRequest) -> HttpResponse:
         [i for i in search_term.split() if i not in settings.IGNORED_SEARCH_TERMS]
     )
 
-    # TODO: refactor for SearchVector and SearchRank -- requires Postgres
-    # https://docs.djangoproject.com/en/dev/ref/contrib/postgres/search/#searchvector
-
-    results = (
-        Record.objects.filter(
-            Q(title__icontains=search_term) | Q(authors__icontains=search_term)
-        )
-        .exclude(
-            id__in=(
-                Record.objects.annotate(total_count=Count("item", distinct=True))
-                .filter(item__is_active=False)
-                .annotate(is_active=Count("item", distinct=True))
-                .filter(Q(is_active=F("total_count")))
+    if settings.DATABASES['default']['ENGINE'] == "django.db.backends.postgresql":
+        # TODO: refactor for SearchVector and SearchRank -- requires Postgres
+        # https://docs.djangoproject.com/en/dev/ref/contrib/postgres/search/#searchvector
+        ...
+    else:
+        results = (
+            Record.objects.filter(
+                Q(title__icontains=search_term) | Q(authors__icontains=search_term)
             )
+            .exclude(
+                id__in=(
+                    Record.objects.annotate(total_count=Count("item", distinct=True))
+                    .filter(item__is_active=False)
+                    .annotate(is_active=Count("item", distinct=True))
+                    .filter(Q(is_active=F("total_count")))
+                )
+            )
+            .exclude(id__in=Record.objects.filter(item__isnull=True))
+            .order_by(Lower("title"))
         )
-        .exclude(id__in=Record.objects.filter(item__isnull=True))
-        .order_by(Lower("title"))
-    )
     results_per_page = get_results_per_page(request)
 
     paginator = Paginator(results, results_per_page)
@@ -112,6 +115,12 @@ def import_marc_record_from_loc(request):
 
     return HttpResponseRedirect(reverse("item_edit", args=(item.id,)))
 
+
+@login_required()
+def my_checkouts(request):
+    # todo: finish next
+    my_materials = Item.objects.filter(checked_out_to=request.user)
+    return render(request, "")
 
 def item_detail(request, item_id):
     item = get_object_or_404(Record, id=item_id)

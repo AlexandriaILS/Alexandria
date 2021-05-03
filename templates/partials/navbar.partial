@@ -10,32 +10,18 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="navbar-nav me-auto mb-2 mb-lg-0">
                 <a class="nav-link" href="#">Link</a>
-                <div class="dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </div>
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
             </div>
             <div class="navbar-nav">
                 <div class="dropdown nav-link">
-                    <a class="btn btn-outline-primary dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                    <button class="btn btn-outline-primary dropdown-toggle" id="navbarAccountDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
                         {% translate "My Account" %}
-                    </a>
+                    </button>
                     <ul class="dropdown-menu" aria-label="{% translate 'Navbar Account Dropdown' %}">
                         <li><a class="dropdown-item" href="#">{% translate 'Checked Out' %}</a></li>
                         <li><a class="dropdown-item" href="#">{% translate "Holds" %}</a></li>
-                        <li><a class="dropdown-item" href="#">{% translate "Payments" %}</a></li>
+                        <li><a class="dropdown-item" href="#">{% translate "Fees" %}</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -44,7 +30,7 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="#">{% translate "Log Out" %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">{% translate "Log Out" %}</a></li>
                         {% endif %}
                     </ul>
                 </div>
