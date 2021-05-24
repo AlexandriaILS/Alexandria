@@ -44,10 +44,10 @@ def search(request: WSGIRequest) -> HttpResponse:
         [i for i in search_term.split() if i not in settings.IGNORED_SEARCH_TERMS]
     )
 
-    if settings.DATABASES['default']['ENGINE'] == "django.db.backends.postgresql":
+    if settings.DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
         # TODO: refactor for SearchVector and SearchRank -- requires Postgres
         # https://docs.djangoproject.com/en/dev/ref/contrib/postgres/search/#searchvector
-        ...
+        results = ...
     else:
         results = (
             Record.objects.filter(
@@ -115,12 +115,6 @@ def import_marc_record_from_loc(request):
 
     return HttpResponseRedirect(reverse("item_edit", args=(item.id,)))
 
-
-@login_required()
-def my_checkouts(request):
-    # todo: finish next
-    my_materials = Item.objects.filter(checked_out_to=request.user)
-    return render(request, "")
 
 def item_detail(request, item_id):
     item = get_object_or_404(Record, id=item_id)

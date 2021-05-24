@@ -24,6 +24,7 @@
     {% include "partials/navbar.partial" %}
     <div class="container mt-3" style="height:100%; width: 100%">
         {% block content %}
+            <h1>Sorry, this page isn't done yet!</h1>
         {% endblock %}
     </div>
 </main>

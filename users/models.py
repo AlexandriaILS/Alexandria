@@ -1,11 +1,11 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from localflavor.us.models import USStateField, USZipCodeField
-
 
 class AlexandriaUserManager(UserManager):
     use_in_migrations = True
@@ -106,6 +106,8 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
 
+    checkouts = GenericRelation("catalog.Item", related_query_name='user_checked_out_to')
+
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "card_number"
     REQUIRED_FIELDS = []
@@ -129,6 +131,7 @@ class BranchLocation(models.Model):
     address = models.ForeignKey(
         USLocation, on_delete=models.CASCADE, null=True, blank=True
     )
+    checkouts = GenericRelation("catalog.Item", related_query_name='branch_checked_out_to')
 
     def __str__(self):
         if self.address:

@@ -180,3 +180,8 @@ DEFAULT_RESULTS_PER_PAGE = 25
 # optional (but recommended) -- it helps out other users of Alexandria!
 ZENODOTUS_URL = "https://zenodotus.alexandrialibrary.dev/api/"
 ZENODOTUS_AUTO_UPLOAD = True
+
+# How many times can an object be renewed?
+DEFAULT_MAX_RENEWS = 5
+
+DEFAULT_CHECKOUT_DURATION_DAYS = 21

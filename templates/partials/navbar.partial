@@ -19,9 +19,9 @@
                         {% translate "My Account" %}
                     </button>
                     <ul class="dropdown-menu" aria-label="{% translate 'Navbar Account Dropdown' %}">
-                        <li><a class="dropdown-item" href="#">{% translate 'Checked Out' %}</a></li>
-                        <li><a class="dropdown-item" href="#">{% translate "Holds" %}</a></li>
-                        <li><a class="dropdown-item" href="#">{% translate "Fees" %}</a></li>
+                        <li><a class="dropdown-item" href="{% url "my_checkouts" %}">{% translate 'Checked Out' %}</a></li>
+                        <li><a class="dropdown-item" href="{% url "my_holds" %}">{% translate "Holds" %}</a></li>
+                        <li><a class="dropdown-item" href="{% url "my_fees" %}">{% translate "Fees" %}</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>

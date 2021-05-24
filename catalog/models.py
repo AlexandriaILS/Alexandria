@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import pymarc
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -5,6 +7,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType as DjangoContentType
 from django.db import models
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 from taggit.managers import TaggableManager
 import requests
 
@@ -96,7 +99,7 @@ class ItemTypeBase(models.Model):
         (MIXED_MATERIALS, _("Mixed materials")),
         (
             THREE_DIMENSIONAL_ARTIFACT,
-            _("Three dimensional artifact or naturally occuring object"),
+            _("Three dimensional artifact or naturally occurring object"),
         ),
         (MANUSCRIPT_LANGUAGE_MATERIAL, _("Manuscript language material")),
     ]
@@ -110,6 +113,12 @@ class ItemTypeBase(models.Model):
 class ItemType(models.Model):
     name = models.CharField(max_length=40)
     base = models.ForeignKey(ItemTypeBase, on_delete=models.CASCADE)
+    # Movies might be only checkout-able for three days, but books might get 21.
+    number_of_days_per_checkout = models.IntegerField(
+        default=settings.DEFAULT_CHECKOUT_DURATION_DAYS
+    )
+    # Movies might only have one renew, but books might have five.
+    number_of_allowed_renews = models.IntegerField(default=settings.DEFAULT_MAX_RENEWS)
 
     def __str__(self):
         return self.name
@@ -211,6 +220,9 @@ class Item(models.Model):
         (POOR, "Poor"),
     ]
 
+    def get_due_date(self):
+        return timezone.now() + timedelta(days=self.type.number_of_days_per_checkout)
+
     # the scanned bar code, usually purchased from an outside vendor
     barcode = models.CharField(_("barcode"), max_length=50)
     # what material is this?
@@ -303,6 +315,12 @@ class Item(models.Model):
     )
 
     type = models.ForeignKey(ItemType, on_delete=models.CASCADE, blank=True, null=True)
+
+    # These fields are only used when something is checked out to a patron.
+    due_date = models.DateField(
+        _("due_date"), default=timezone.datetime(year=1970, month=1, day=1)
+    )
+    renewal_count = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
         if self.type:

@@ -12,5 +12,4 @@ urlpatterns = [
         views.import_marc_record_from_loc,
         name="add_marc_from_loc",
     ),
-    path("mycheckouts", views.my_checkouts, name="my_checkouts"),
 ]
