@@ -20,9 +20,12 @@
     </div>
 </div>
 
+{% block main %}
 <main class="flex-fill mb-5">
-    {% include "partials/navbar.partial" %}
-    <div class="container mt-3" style="height:100%; width: 100%">
+    {% block navbar %}
+        {% include "partials/navbar.partial" %}
+    {% endblock %}
+    <div class="container flex-shrink-0 mt-3" style="height:100%; width: 100%">
         {% block content %}
             <h1>Sorry, this page isn't done yet!</h1>
         {% endblock %}
@@ -30,10 +33,11 @@
 </main>
 
 {% include 'partials/footer.partial' %}
+<script src="{% static 'js/holdbuttons.js' %}" async defer></script>
+{% endblock %}
 
 {{ alerts|json_script:"alert-data" }}
 {{ library_data|json_script:"library-data" }}
-<script src="{% static 'js/holdbuttons.js' %}" async defer></script>
 
 </body>
 </html>

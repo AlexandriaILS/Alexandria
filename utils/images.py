@@ -1,5 +1,6 @@
 import os
 from io import BytesIO
+from typing import Any
 from uuid import uuid4
 
 import requests
@@ -9,7 +10,7 @@ from django.core.files.images import ImageFile
 from django.core.files.storage import default_storage
 
 
-def get_and_save_image(url: str, item):
+def get_and_save_image(url: str, item: Any) -> Any:
     # `item` should be either a Record or an Item instance.
     # Returns the record that was passed in.
     result = requests.get(url)

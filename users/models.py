@@ -65,7 +65,10 @@ class USLocation(models.Model):
 
 class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
     # http://www.ala.org/advocacy/privacy/checklists/library-management-systems
-    card_number = models.IntegerField(primary_key=True)
+    # Even though this should be an integer, there are too many edge cases
+    # where it might not be, so we'll store it as a string with the expectation
+    # that it's a very large number.
+    card_number = models.CharField(primary_key=True, max_length=50)
     # We only need one address, no need to keep their history.
     address = models.ForeignKey(
         USLocation, on_delete=models.CASCADE, null=True, blank=True
@@ -94,6 +97,15 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
         _("staff status"),
         default=False,
         help_text=_("Designates whether the user is a library staff member."),
+    )
+
+    is_manager = models.BooleanField(
+        _("manager status"),
+        default=False,
+        help_text=_(
+            "Designates whether the user is a library manager with additional"
+            " permissions."
+        )
     )
 
     is_active = models.BooleanField(
