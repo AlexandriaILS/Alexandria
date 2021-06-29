@@ -284,7 +284,11 @@ class Item(models.Model):
 
     # ebooks don't have call numbers, but pretty much everything else does.
     call_number = models.CharField(
-        _("call_number"), max_length=100, unique=settings.FORCE_UNIQUE_CALL_NUMBERS, null=True, blank=True
+        _("call_number"),
+        max_length=100,
+        unique=settings.FORCE_UNIQUE_CALL_NUMBERS,
+        null=True,
+        blank=True,
     )
 
     # How many times has the complete process of checking out and returning happened
@@ -343,13 +347,13 @@ class Item(models.Model):
         isbn = "978" + isbn
         # seriously why
         check_digit = (
-                sum(
-                    [
-                        int(integer) if position % 2 == 0 else int(integer) * 3
-                        for position, integer in enumerate(str(isbn))
-                    ]
-                )
-                % 10
+            sum(
+                [
+                    int(integer) if position % 2 == 0 else int(integer) * 3
+                    for position, integer in enumerate(str(isbn))
+                ]
+            )
+            % 10
         )
         if check_digit != 0:
             check_digit = 10 - check_digit
