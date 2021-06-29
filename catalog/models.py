@@ -224,7 +224,8 @@ class Item(models.Model):
         return timezone.now() + timedelta(days=self.type.number_of_days_per_checkout)
 
     # the scanned bar code, usually purchased from an outside vendor
-    barcode = models.CharField(_("barcode"), max_length=50)
+    # Also, ebooks don't have barcodes.
+    barcode = models.CharField(_("barcode"), max_length=50, null=True, blank=True)
     # what material is this?
     record = models.ForeignKey(Record, on_delete=models.CASCADE)
     # how much was it purchased for?
@@ -281,8 +282,9 @@ class Item(models.Model):
     object_id = models.PositiveIntegerField(null=True, blank=True)
     checked_out_to = GenericForeignKey("content_type", "object_id")
 
+    # ebooks don't have call numbers, but pretty much everything else does.
     call_number = models.CharField(
-        _("call_number"), max_length=100, unique=settings.FORCE_UNIQUE_CALL_NUMBERS
+        _("call_number"), max_length=100, unique=settings.FORCE_UNIQUE_CALL_NUMBERS, null=True, blank=True
     )
 
     # How many times has the complete process of checking out and returning happened
@@ -341,13 +343,13 @@ class Item(models.Model):
         isbn = "978" + isbn
         # seriously why
         check_digit = (
-            sum(
-                [
-                    int(integer) if position % 2 == 0 else int(integer) * 3
-                    for position, integer in enumerate(str(isbn))
-                ]
-            )
-            % 10
+                sum(
+                    [
+                        int(integer) if position % 2 == 0 else int(integer) * 3
+                        for position, integer in enumerate(str(isbn))
+                    ]
+                )
+                % 10
         )
         if check_digit != 0:
             check_digit = 10 - check_digit
