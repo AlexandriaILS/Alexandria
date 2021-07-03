@@ -379,7 +379,9 @@ class Item(models.Model):
         return isinstance(self.checked_out_to, get_user_model())
 
     def __str__(self):
-        string = f"{self.record.title} | {self.record.authors} | {self.call_number}"
+        string = f"{self.record.title} | {self.record.authors}"
+        if self.call_number:
+            string += f" | {self.call_number}"
         if self.type:
-            string += f" {self.type.name}"
+            string += f" | {self.type.name}"
         return string

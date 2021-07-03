@@ -28,13 +28,13 @@ def index(request):
         additions = []
         search_text = request.POST.get("search_text")
         search_type = request.POST.get("search_type")
-        breakpoint()
-        if search_text or search_type:
+        if search_text:
             additions += ["q=" + quote_plus(search_text) if search_text else ""]
             additions += ["type=" + quote_plus(search_type) if search_type else ""]
             additions = "?" + "&".join(additions)
         else:
-            additions = ""
+            # form was submitted, but no content was detected.
+            return HttpResponseRedirect(reverse("staff_index"))
         return HttpResponseRedirect(reverse("staff_search") + additions)
     context = build_context()
     context.update({"page_title": "Quick Search"})
@@ -42,12 +42,12 @@ def index(request):
 
 
 def staff_search(request):
-    def record_search(term, title=True, author=True):
+    def record_search(term, title=False, author=False):
         filters = Q()
         if title:
-            filters | Q(title__icontains=term)
+            filters = filters | Q(title__icontains=term)
         if author:
-            filters | Q(authors__icontains=term)
+            filters = filters | Q(authors__icontains=term)
         return (
             Record.objects.filter(filters)
             .exclude(
@@ -84,9 +84,9 @@ def staff_search(request):
     )
     data = {}
     if search_type == "title":
-        data["records"] = record_search(search_term, author=False)
+        data["records"] = record_search(search_term, title=True)
     elif search_type == "author":
-        data["records"] = record_search(search_term, title=False)
+        data["records"] = record_search(search_term, author=True)
     elif search_type == "barcode":
         data["items"] = item_search(search_term)
         data["patrons"] = patron_search(search_term)
@@ -94,7 +94,7 @@ def staff_search(request):
         data["patrons"] = patron_search(search_term)
     else:
         # everything
-        data["records"] = record_search(search_term)
+        data["records"] = record_search(search_term, author=True, title=True)
         data["items"] = item_search(search_term)
         data["patrons"] = patron_search(search_term)
 

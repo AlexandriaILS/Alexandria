@@ -1,8 +1,57 @@
 {% extends "partials/staff/base.partial" %}
+{% load i18n %}
 
 {% block content %}
 
-    <h1>wat</h1>
-    {{ results }}
+    <h1>{% translate "Results:" %}</h1>
+    {# TODO: show images for items and records #}
+    {% if results.records %}
+        <h2>{% translate "Records" %}</h2>
+        <ul>
+            {% for obj in results.records %}
+                <li>
+                    <em>{{ obj.title }}</em>, by {{ obj.authors }}
 
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if results.items %}
+        <h2>{% translate "Items" %}</h2>
+        <ul>
+            {% for obj in results.items %}
+                {# TODO: Add service information. Is this served through Libby? Show that. #}
+                <li>
+                    <em>{{ obj.record.title }}</em>, by {{ obj.record.authors }}.
+                    {{ obj.type }}. {{ obj.pubyear }}.
+                    {% if obj.call_number %}{{ obj.call_number }}.{% endif %}
+                    {% if obj.barcode %}{{ obj.barcode }}.{% endif %}
+                    {% if obj.is_checked_out %}
+                        <span data-bs-toggle="tooltip" data-bs-placement="right" title="This item is checked out.">✗</span>
+                    {% else %}
+                        <span data-bs-toggle="tooltip" data-bs-placement="right" title="This item is checked in!">✓</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
+    {% endif %}
+
+    {% if results.patrons %}
+        <h2>{% translate "Patrons" %}</h2>
+        <ul>
+            {% for obj in results.patrons %}
+                <li>{{ obj }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+    </script>
 {% endblock %}
