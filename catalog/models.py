@@ -17,6 +17,7 @@ from users.models import BranchLocation
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
+    host = models.CharField(max_length=100, default="default")
 
     def __str__(self):
         return self.name
@@ -28,6 +29,7 @@ class Collection(models.Model):
         BranchLocation, null=True, blank=True, on_delete=models.CASCADE
     )
     can_circulate = models.BooleanField(default=True)
+    host = models.CharField(max_length=100, default="default")
 
     def __str__(self):
         return self.name
@@ -53,6 +55,7 @@ class BibliographicLevel(models.Model):
     ]
 
     name = models.CharField(max_length=1, choices=LEVEL_OPTIONS)
+    host = models.CharField(max_length=100, default="default")
 
     def __str__(self):
         return self.get_name_display()
@@ -105,6 +108,7 @@ class ItemTypeBase(models.Model):
     ]
 
     name = models.CharField(max_length=1, choices=TYPE_OPTIONS)
+    host = models.CharField(max_length=100, default="default")
 
     def __str__(self):
         return self.get_name_display()
@@ -114,11 +118,10 @@ class ItemType(models.Model):
     name = models.CharField(max_length=40)
     base = models.ForeignKey(ItemTypeBase, on_delete=models.CASCADE)
     # Movies might be only checkout-able for three days, but books might get 21.
-    number_of_days_per_checkout = models.IntegerField(
-        default=settings.DEFAULT_CHECKOUT_DURATION_DAYS
-    )
+    number_of_days_per_checkout = models.IntegerField(null=True, blank=True)
     # Movies might only have one renew, but books might have five.
-    number_of_allowed_renews = models.IntegerField(default=settings.DEFAULT_MAX_RENEWS)
+    number_of_allowed_renews = models.IntegerField(null=True, blank=True)
+    host = models.CharField(max_length=100, default="default")
 
     def __str__(self):
         return self.name
@@ -166,6 +169,7 @@ class Record(models.Model):
 
     zenodotus_id = models.IntegerField(blank=True, null=True)
     zenodotus_record_version = models.IntegerField(blank=True, null=True)
+    host = models.CharField(max_length=100, default="default")
 
     def __str__(self):
         val = f"{self.title}"
@@ -241,10 +245,7 @@ class Item(models.Model):
         default=NEW,
     )
     home_location = models.ForeignKey(
-        BranchLocation,
-        on_delete=models.CASCADE,
-        null=settings.FLOATING_COLLECTION,
-        blank=settings.FLOATING_COLLECTION,
+        BranchLocation, on_delete=models.CASCADE, null=True, blank=True
     )
     is_active = models.BooleanField(
         _("active"),
@@ -286,7 +287,6 @@ class Item(models.Model):
     call_number = models.CharField(
         _("call_number"),
         max_length=100,
-        unique=settings.FORCE_UNIQUE_CALL_NUMBERS,
         null=True,
         blank=True,
     )
@@ -327,6 +327,7 @@ class Item(models.Model):
         _("due_date"), default=timezone.datetime(year=1970, month=1, day=1)
     )
     renewal_count = models.IntegerField(default=0)
+    host = models.CharField(max_length=100, default="default")
 
     def save(self, *args, **kwargs):
         if self.type:

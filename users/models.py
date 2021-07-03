@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.mail import send_mail
@@ -6,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from localflavor.us.models import USStateField, USZipCodeField
+
 
 class AlexandriaUserManager(UserManager):
     use_in_migrations = True
@@ -46,10 +46,11 @@ class USLocation(models.Model):
     address_2 = models.CharField(_("Address cont'd"), max_length=128, blank=True)
 
     city = models.CharField(
-        _("City"), max_length=64, default=settings.DEFAULT_ADDRESS_CITY
+        _("City"), max_length=64, null=True, blank=True
     )
-    state = USStateField(default=settings.DEFAULT_ADDRESS_STATE_OR_REGION)
-    zip_code = USZipCodeField(default=settings.DEFAULT_ADDRESS_ZIP_CODE)
+    state = USStateField(null=True, blank=True)
+    zip_code = USZipCodeField(null=True, blank=True)
+    host = models.CharField(max_length=100, default="default")
 
     class Meta:
         verbose_name = "US Location"
@@ -119,6 +120,7 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
 
     checkouts = GenericRelation("catalog.Item", related_query_name='user_checked_out_to')
+    host = models.CharField(max_length=100, default="default")
 
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "card_number"
@@ -144,6 +146,7 @@ class BranchLocation(models.Model):
         USLocation, on_delete=models.CASCADE, null=True, blank=True
     )
     checkouts = GenericRelation("catalog.Item", related_query_name='branch_checked_out_to')
+    host = models.CharField(max_length=100, default="default")
 
     def __str__(self):
         if self.address:

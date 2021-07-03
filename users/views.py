@@ -32,7 +32,7 @@ class LoginView(View):
             user = authenticate(
                 request, username=data["card_number"], password=data["password"]
             )
-            if user:
+            if user and user.host == request.host:
                 login(request, user)
                 return HttpResponseRedirect(next_or_reverse(request, "homepage"))
             messages.error(request, _("Invalid login information. Try again?"))

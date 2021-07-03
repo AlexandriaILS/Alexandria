@@ -49,7 +49,7 @@ def staff_search(request):
         if author:
             filters = filters | Q(authors__icontains=term)
         return (
-            Record.objects.filter(filters)
+            Record.objects.filter(filters, host=request.host)
             .exclude(
                 id__in=(
                     Record.objects.annotate(total_count=Count("item", distinct=True))
@@ -63,7 +63,7 @@ def staff_search(request):
         )
 
     def item_search(term):
-        return Item.objects.filter(barcode=search_term, is_active=True)
+        return Item.objects.filter(barcode=search_term, is_active=True, host=request.host)
 
     def patron_search(term):
         return AlexandriaUser.objects.filter(
@@ -71,6 +71,7 @@ def staff_search(request):
             | Q(last_name__icontains=term)
             | Q(card_number=term),
             is_active=True,
+            host=request.host
         )
 
     context = build_context()
