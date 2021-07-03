@@ -4,7 +4,7 @@
         <div class="container">
             <div class="row text-center">
                 <div class="col">
-                    <a href="{{ library_data.LIBRARY_SYSTEM_URL }}" style="color:black">{{ library_data.LIBRARY_SYSTEM_NAME }}</a>
+                    <a href="{{ request.context.url }}" style="color:black">{{ request.context.name }}</a>
                 </div>
                 <div class="col">
                     <a href="https://github.com/AlexandriaILS/Alexandria" target="_blank"

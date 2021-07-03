@@ -1,0 +1,27 @@
+{
+  "DEFAULT": {
+    "name": "Neverland Library",
+    "url": "https://alexandrialibrary.dev",
+    "logo_url": null,
+    "address": "123 Neverland Lane, Neverland, USA, 12345",
+    "phone_number": "1-123-555-6789",
+    "enable_running_borrow_saved_money": true,
+    "floating_collection": false,
+    "force_unique_call_numbers": false,
+    "ignored_search_terms": [
+      "a",
+      "an",
+      "the"
+    ],
+    "zenodotus_url": "https://zenodotus.alexandrialibrary.dev/api/",
+    "zenodotus_auto_upload": true,
+    "default_address_state_or_region": "IN",
+    "default_address_city": "Indianapolis",
+    "default_address_zip_code": "46227",
+    "default_address_country": "USA",
+    "default_results_per_page": 25,
+    "default_max_renews": 5,
+    "default_checkout_duration_days": 21,
+    "default_location_id": 1
+  }
+}

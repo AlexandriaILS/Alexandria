@@ -51,7 +51,8 @@ def search(request: WSGIRequest) -> HttpResponse:
     else:
         results = (
             Record.objects.filter(
-                Q(title__icontains=search_term) | Q(authors__icontains=search_term)
+                Q(title__icontains=search_term) | Q(authors__icontains=search_term),
+                host=request.host
             )
             .exclude(
                 id__in=(
