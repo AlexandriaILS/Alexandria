@@ -1,5 +1,6 @@
 from typing import Dict
 
+from django.conf import settings
 from django.utils.translation import ugettext as _
 
 
@@ -23,6 +24,7 @@ def build_context(data: Dict = None) -> Dict:
                     "hold_number": "(holdNum)",
                 },
             },
+            "current_hash": settings.CURRENT_HASH,
         }
     )
 

@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from catalog.models import Item, Record
 from users.models import AlexandriaUser
 from utils import build_context
+from utils.db import filter
 from utils.decorators import library_staff_required
 
 
@@ -42,6 +43,8 @@ def index(request):
 
 
 def staff_search(request):
+    # TODO: Add colors to checked in or checked out in staff view
+
     def record_search(term, title=False, author=False):
         filters = Q()
         if title:
@@ -49,7 +52,7 @@ def staff_search(request):
         if author:
             filters = filters | Q(authors__icontains=term)
         return (
-            Record.objects.filter(filters, host=request.host)
+            filter(request, Record, filters)
             .exclude(
                 id__in=(
                     Record.objects.annotate(total_count=Count("item", distinct=True))
@@ -63,15 +66,16 @@ def staff_search(request):
         )
 
     def item_search(term):
-        return Item.objects.filter(barcode=search_term, is_active=True, host=request.host)
+        return filter(request, Item, barcode=search_term, is_active=True)
 
     def patron_search(term):
-        return AlexandriaUser.objects.filter(
+        return filter(
+            request,
+            AlexandriaUser,
             Q(first_name__icontains=term)
             | Q(last_name__icontains=term)
             | Q(card_number=term),
             is_active=True,
-            host=request.host
         )
 
     context = build_context()
@@ -81,7 +85,11 @@ def staff_search(request):
         return render(request, "staff/search.html", context)
 
     search_term = " ".join(
-        [i for i in search_term.split() if i not in settings.IGNORED_SEARCH_TERMS]
+        [
+            i
+            for i in search_term.split()
+            if i not in request.context["ignored_search_terms"]
+        ]
     )
     data = {}
     if search_type == "title":

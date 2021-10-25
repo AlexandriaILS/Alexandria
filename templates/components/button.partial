@@ -1,0 +1,8 @@
+<{{ element }}
+    class="btn btn-{{ variant }} {{ extra_classes }}"
+    {% attrs id href value type%}
+{% if children %}
+>{{ children }}</{{ element }}>
+{% else %}
+>
+{% endif %}

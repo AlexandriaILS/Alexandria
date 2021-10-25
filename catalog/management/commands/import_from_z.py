@@ -3,11 +3,9 @@ import sys
 from typing import Dict
 
 import requests
-from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from alexandria.configs import sites
-from utils.images import get_and_save_image
 from catalog.models import (
     Record,
     Subject,
@@ -18,6 +16,7 @@ from catalog.models import (
 )
 from catalog.zenodotus_utils import slash_join
 from users.models import BranchLocation
+from utils.images import get_and_save_image
 
 
 def build_record(item: Dict) -> Record:

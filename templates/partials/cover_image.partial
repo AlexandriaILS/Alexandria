@@ -1,4 +1,6 @@
 {% load multiply %}
+{% load multiply %}
+{% load multiply %}
 
 <div class="position-relative" style="height: {{ img_height|default:250 }}px;">
     <div class="position-absolute top-50 start-50 translate-middle">

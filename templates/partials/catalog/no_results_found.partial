@@ -4,7 +4,8 @@
     <div class="position-absolute top-50 start-50 translate-middle">
         <div class="text-center">
             <h1>{% translate "No search term entered." %}</h1>
-            <a href="{% url "homepage" %}" class="btn btn-primary">{% translate "Home" %}</a>
+            {% url "homepage" as homepage %}
+            {% #button element="a" href=homepage variant="primary"%}{% translate "Home" %}{% /button %}
         </div>
     </div>
 </div>

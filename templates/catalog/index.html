@@ -1,5 +1,6 @@
 {% extends 'partials/base.partial' %}
 {% load i18n %}
+{% load slippers %}
 
 {% block content %}
     <table style="width: 100%; height: 80%" class="mx-auto">
@@ -23,9 +24,8 @@
                                         <div class="row">
                                             <div class="col-0 col-lg-4"></div>
                                             <div class="col-12 col-lg-4 d-grid mt-5">
-                                                <input type="submit" id="mainSearchButton"
-                                                       class="btn btn-block btn-success"
-                                                       value="{% translate "Search!" %}">
+                                                {% translate "Search!" as search_text %}
+                                                {% button element="input" type="submit" id="mainSearchButton" variant="success" extra_classes="btn-block" value=search_text %}
                                             </div>
                                             <div class="col-0 col-lg-4"></div>
                                         </div>

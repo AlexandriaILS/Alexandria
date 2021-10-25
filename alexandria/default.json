@@ -22,6 +22,14 @@
     "default_results_per_page": 25,
     "default_max_renews": 5,
     "default_checkout_duration_days": 21,
-    "default_location_id": 1
+    "default_location_id": 1,
+    "navbar": {
+      "link_1_title": "Example!",
+      "link_1_url": "https://example.com",
+      "link_2_title": "Libby",
+      "link_2_url": "https://example.com",
+      "link_3_title": "Overdrive",
+      "link_3_url": "https://example.com"
+    }
   }
 }

@@ -1,25 +1,39 @@
 {% load i18n %}
+{% load static %}
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">{{ request.context.name }}</a>
+        <a class="navbar-brand" href="/"><img src="{% static 'favicons/black/favicon-32x32.png' %}" width="30"
+                                              height="30" class="d-inline-block align-top"
+                                              alt="">{{ request.context.name }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="navbar-nav me-auto mb-2 mb-lg-0">
-                <a class="nav-link" href="#">Link</a>
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                {% if request.context.navbar.link_1_title %}
+                    <a class="nav-link" target="_blank"
+                       href="{{ request.context.navbar.link_1_url }}">{{ request.context.navbar.link_1_title }}</a>
+                {% endif %}
+                {% if request.context.navbar.link_2_title %}
+                    <a class="nav-link" target="_blank"
+                       href="{{ request.context.navbar.link_2_url }}">{{ request.context.navbar.link_2_title }}</a>
+                {% endif %}
+                {% if request.context.navbar.link_3_title %}
+                    <a class="nav-link" target="_blank"
+                       href="{{ request.context.navbar.link_3_url }}">{{ request.context.navbar.link_3_title }}</a>
+                {% endif %}
             </div>
             <div class="navbar-nav">
                 <div class="dropdown nav-link">
                     <button class="btn btn-outline-primary dropdown-toggle" id="navbarAccountDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
+                            data-bs-toggle="dropdown" aria-expanded="false">
                         {% translate "My Account" %}
                     </button>
                     <ul class="dropdown-menu" aria-label="{% translate 'Navbar Account Dropdown' %}">
-                        <li><a class="dropdown-item" href="{% url "my_checkouts" %}">{% translate 'Checked Out' %}</a></li>
+                        <li><a class="dropdown-item" href="{% url "my_checkouts" %}">{% translate 'Checked Out' %}</a>
+                        </li>
                         <li><a class="dropdown-item" href="{% url "my_holds" %}">{% translate "Holds" %}</a></li>
                         <li><a class="dropdown-item" href="{% url "my_fees" %}">{% translate "Fees" %}</a></li>
                         <li>
@@ -39,7 +53,7 @@
                 <input id="navbarSearchField" class="form-control me-2" type="search"
                        placeholder="{% translate 'Search Catalog' %}"
                        aria-label="Search">
-                <div id="navbarSearchButton" class="btn btn-outline-success">{% translate "Search" %}</div>
+                {% #button element="div" id="navbarSearchButton" variant="outline-success" %}{% translate "Search" %}{% /button %}
             </form>
         </div>
     </div>
