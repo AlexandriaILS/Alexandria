@@ -1,0 +1,19 @@
+<div class="modal fade" {% attrs id %} tabindex="-1" role="dialog">
+  <div class="modal-dialog{% if centered %} modal-dialog-centered{% endif %}" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ title }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          {{ children }}
+      </div>
+      <div class="modal-footer">
+          {% if save_button %}
+            <button type="button" class="btn btn-primary">{{ save_button }}</button>
+          {% endif %}
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

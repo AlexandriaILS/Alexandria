@@ -2,9 +2,12 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserM
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.mail import send_mail
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from localflavor.us.models import USStateField, USZipCodeField
+
+from alexandria.configs import load_site_config
 
 
 class AlexandriaUserManager(UserManager):
@@ -45,12 +48,10 @@ class USLocation(models.Model):
     address_1 = models.CharField(_("Address"), max_length=128)
     address_2 = models.CharField(_("Address cont'd"), max_length=128, blank=True)
 
-    city = models.CharField(
-        _("City"), max_length=64, null=True, blank=True
-    )
+    city = models.CharField(_("City"), max_length=64, null=True, blank=True)
     state = USStateField(null=True, blank=True)
     zip_code = USZipCodeField(null=True, blank=True)
-    host = models.CharField(max_length=100, default="default")
+    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     class Meta:
         verbose_name = "US Location"
@@ -62,6 +63,27 @@ class USLocation(models.Model):
             addy += f" {self.address_2}"
         addy += f", {self.city}, {self.state} {self.zip_code}"
         return addy
+
+
+class BranchLocation(models.Model):
+    name = models.CharField(max_length=150)
+    address = models.ForeignKey(
+        USLocation, on_delete=models.CASCADE, null=True, blank=True
+    )
+    checkouts = GenericRelation(
+        "catalog.Item", related_query_name="branch_checked_out_to"
+    )
+    open_to_public = models.BooleanField(
+        _("open to public"),
+        default=True,
+        help_text="Set to false if this building is staff-only or a processing center.",
+    )
+    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+
+    def __str__(self):
+        if self.address:
+            return f"{self.name} - {self.address.address_1}"
+        return f"{self.name}"
 
 
 class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
@@ -106,7 +128,7 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
         help_text=_(
             "Designates whether the user is a library manager with additional"
             " permissions."
-        )
+        ),
     )
 
     is_active = models.BooleanField(
@@ -119,12 +141,19 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
     )
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
 
-    checkouts = GenericRelation("catalog.Item", related_query_name='user_checked_out_to')
-    host = models.CharField(max_length=100, default="default")
+    checkouts = GenericRelation(
+        "catalog.Item", related_query_name="user_checked_out_to"
+    )
+    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    default_branch = models.ForeignKey(
+        BranchLocation, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "card_number"
     REQUIRED_FIELDS = []
+
+    SERIALIZER_SHORT_FIELDS = ["id", "name", "address__address_1"]
 
     objects = AlexandriaUserManager()
 
@@ -139,16 +168,30 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+    def get_branches(self):
+        return BranchLocation.objects.filter(
+            host=self.host, open_to_public=True
+        ).order_by("name")
 
-class BranchLocation(models.Model):
-    name = models.CharField(max_length=150)
-    address = models.ForeignKey(
-        USLocation, on_delete=models.CASCADE, null=True, blank=True
-    )
-    checkouts = GenericRelation("catalog.Item", related_query_name='branch_checked_out_to')
-    host = models.CharField(max_length=100, default="default")
+    def get_serializable_branches(self) -> list:
+        return list(self.get_branches().values(*self.SERIALIZER_SHORT_FIELDS))
 
-    def __str__(self):
-        if self.address:
-            return f"{self.name} - {self.address.address_1}"
-        return f"{self.name}"
+    def get_default_branch(self):
+        if not self.default_branch:
+            # this shouldn't really happen, but we can at least correct for it if it does
+            self.default_branch = BranchLocation.objects.get(
+                id=load_site_config(self.host)['default_location_id']
+            )
+            self.save()
+        return self.default_branch
+
+    def get_branches_for_holds(self):
+        # Return a dict where the user default is directly available.
+        # wrap default in queryset
+        default_branch = BranchLocation.objects.filter(id=self.get_default_branch().id)
+        branches = self.get_branches().exclude(pk__in=default_branch)
+        data = {
+            "default": default_branch.values(*self.SERIALIZER_SHORT_FIELDS)[0],
+            "others": branches.values(*self.SERIALIZER_SHORT_FIELDS)
+        }
+        return data

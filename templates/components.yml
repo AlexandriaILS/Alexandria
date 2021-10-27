@@ -1,2 +1,5 @@
 components:
-  button: 'components/button.partial'
+  button: 'components/button.component'
+  centered_column: 'components/centered_column.component'
+  modal: 'components/modal.component'
+

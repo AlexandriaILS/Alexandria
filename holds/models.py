@@ -1,5 +1,4 @@
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType as DjangoContentType
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -9,9 +8,8 @@ from users.models import AlexandriaUser, BranchLocation
 class Hold(models.Model):
     date_created = models.DateTimeField(default=timezone.now)
     placed_by = models.ForeignKey(AlexandriaUser, on_delete=models.CASCADE)
-    # TODO: setting CASCADE here will kill all active hold requests if a location is
-    #  deleted -- is that really what we want? Is there a better way to handle this?
-    destination = models.ForeignKey(BranchLocation, on_delete=models.CASCADE)
+    # TODO: Add data cleanup to remove expired holds / migrate to primary location
+    destination = models.ForeignKey(BranchLocation, on_delete=models.SET_NULL, null=True)
 
     item = models.ForeignKey(
         "catalog.Item", null=True, blank=True, on_delete=models.CASCADE
@@ -24,6 +22,9 @@ class Hold(models.Model):
     requested_item_type = models.ForeignKey(
         "catalog.ItemType", null=True, blank=True, on_delete=models.CASCADE
     )
+
+    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+
 
     def __str__(self):
         if self.item:

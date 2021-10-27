@@ -2,11 +2,9 @@ import sys
 from better_exceptions import excepthook
 
 from django.utils.deprecation import MiddlewareMixin
+from django.conf import settings
 from django.core.exceptions import DisallowedHost
-from alexandria.configs import sites
-
-
-DEFAULT_HOSTS = ["localhost:8000", "alexandrialibrary.dev"]
+from alexandria.configs import load_site_config
 
 
 class HostValidationMiddleware(MiddlewareMixin):
@@ -15,18 +13,16 @@ class HostValidationMiddleware(MiddlewareMixin):
     # to the object.
     def process_request(self, request):
         host = request.get_host()
-        if host in DEFAULT_HOSTS:
-            request.context = sites["DEFAULT"]
-            request.host = "default"
-        elif host_data := sites.get(host):
+        if host_data := load_site_config(host):
             request.context = host_data
-            request.host = host
-            for key in sites["DEFAULT"].keys():
-                # make sure that any missing fields are populated with the defaults
-                if not request.context.get(key):
-                    request.context[key] = sites["DEFAULT"][key]
+            request.host = (
+                host
+                if host not in settings.DEFAULT_HOSTS
+                else settings.DEFAULT_HOST_KEY
+            )
         else:
             raise DisallowedHost
+
 
 # For debug purposes only. Link to local_settings by adding
 # `blossom.middleware.BetterExceptionsMiddleware`

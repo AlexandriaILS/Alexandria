@@ -17,7 +17,7 @@ from users.models import BranchLocation
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
-    host = models.CharField(max_length=100, default="default")
+    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     def __str__(self):
         return self.name
@@ -29,7 +29,7 @@ class Collection(models.Model):
         BranchLocation, null=True, blank=True, on_delete=models.CASCADE
     )
     can_circulate = models.BooleanField(default=True)
-    host = models.CharField(max_length=100, default="default")
+    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     def __str__(self):
         return self.name
@@ -55,7 +55,7 @@ class BibliographicLevel(models.Model):
     ]
 
     name = models.CharField(max_length=1, choices=LEVEL_OPTIONS)
-    host = models.CharField(max_length=100, default="default")
+    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     def __str__(self):
         return self.get_name_display()
@@ -108,7 +108,7 @@ class ItemTypeBase(models.Model):
     ]
 
     name = models.CharField(max_length=1, choices=TYPE_OPTIONS)
-    host = models.CharField(max_length=100, default="default")
+    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     def __str__(self):
         return self.get_name_display()
@@ -121,7 +121,7 @@ class ItemType(models.Model):
     number_of_days_per_checkout = models.IntegerField(null=True, blank=True)
     # Movies might only have one renew, but books might have five.
     number_of_allowed_renews = models.IntegerField(null=True, blank=True)
-    host = models.CharField(max_length=100, default="default")
+    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     def __str__(self):
         return self.name
@@ -169,7 +169,7 @@ class Record(models.Model):
 
     zenodotus_id = models.IntegerField(blank=True, null=True)
     zenodotus_record_version = models.IntegerField(blank=True, null=True)
-    host = models.CharField(max_length=100, default="default")
+    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     def __str__(self):
         val = f"{self.title}"
@@ -327,7 +327,7 @@ class Item(models.Model):
         _("due_date"), default=timezone.datetime(year=1970, month=1, day=1)
     )
     renewal_count = models.IntegerField(default=0)
-    host = models.CharField(max_length=100, default="default")
+    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     def save(self, *args, **kwargs):
         if self.type:

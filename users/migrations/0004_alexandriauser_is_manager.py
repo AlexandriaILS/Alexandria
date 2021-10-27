@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0003_auto_20210208_0158'),
+        ("users", "0003_auto_20210208_0158"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='alexandriauser',
-            name='is_manager',
-            field=models.BooleanField(default=False, help_text='Designates whether the user is a library manager with additional permissions.', verbose_name='manager status'),
+            model_name="alexandriauser",
+            name="is_manager",
+            field=models.BooleanField(
+                default=False,
+                help_text="Designates whether the user is a library manager with additional permissions.",
+                verbose_name="manager status",
+            ),
         ),
     ]

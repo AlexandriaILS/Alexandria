@@ -23,3 +23,18 @@ if os.path.exists(os.path.join(settings.BASE_DIR, "configs")):
             domain = list(data.keys()[0])
             logger.debug(f"Loading {domain}...")
             sites[domain] = data[domain]
+
+
+def load_site_config(domain: str) -> Dict:
+    if domain in settings.DEFAULT_HOSTS or domain == settings.DEFAULT_HOST_KEY:
+        return sites['DEFAULT']
+
+    if domain in sites:
+        config = sites[domain]
+        for key in sites["DEFAULT"].keys():
+            # make sure that any missing fields are populated with the defaults
+            if not config.get(key):
+                config[key] = sites["DEFAULT"][key]
+        return config
+
+    return {}

@@ -1,0 +1,14 @@
+<{{ element }}
+    class="btn btn-{{ variant }} {{ extra_classes }}"
+    {% attrs id href value type onclick data-target=modal_target %}
+    {% if modal_target %}
+        data-toggle="modal" data-target="#{{ target }}"
+    {% endif %}
+    {% if dismiss %}
+        data-bs-dismiss="modal"
+    {% endif %}
+{% if children %}
+>{{ children }}</{{ element }}>
+{% else %}
+>
+{% endif %}

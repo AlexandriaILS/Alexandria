@@ -4,7 +4,7 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 
 
-def build_context(data: Dict = None) -> Dict:
+def build_context(data: Dict = None, request=None) -> Dict:
     """Prepare everything that needs to be passed to the templates on every request."""
     if not data:
         data = {}
@@ -25,6 +25,7 @@ def build_context(data: Dict = None) -> Dict:
                 },
             },
             "current_hash": settings.CURRENT_HASH,
+            "branches": request.user.get_serializable_branches() if request else [],
         }
     )
 

@@ -21,7 +21,7 @@ from catalog.marc import import_from_marc
 from catalog.models import Record, Item
 from users.mixins import LibraryStaffRequiredMixin
 from utils import build_context
-from utils.db import filter
+from utils.db import filter_db
 
 
 @csrf_exempt
@@ -51,7 +51,7 @@ def search(request: WSGIRequest) -> HttpResponse:
         results = ...
     else:
         results = (
-            filter(request, Record, Q(title__icontains=search_term) | Q(authors__icontains=search_term))
+            filter_db(request, Record, Q(title__icontains=search_term) | Q(authors__icontains=search_term))
             .exclude(
                 id__in=(
                     Record.objects.annotate(total_count=Count("item", distinct=True))
@@ -117,7 +117,7 @@ def import_marc_record_from_loc(request):
 
 def item_detail(request, item_id):
     item = get_object_or_404(Record, id=item_id, host=request.host)
-    return render(request, "catalog/item_detail.html", build_context({"item": item}))
+    return render(request, "catalog/item_detail.html", build_context({"item": item}, request))
 
 
 class ItemEdit(LibraryStaffRequiredMixin, View):

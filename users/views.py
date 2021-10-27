@@ -14,6 +14,7 @@ from catalog.models import Item
 from holds.models import Hold
 from utils.views import next_or_reverse
 
+
 class LoginView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         context = build_context({"slim_form": True, "form": LoginForm})
@@ -26,7 +27,9 @@ class LoginView(View):
             try:
                 int(data["card_number"])
             except ValueError:
-                messages.error(request, _("Card number needs to be the number on your card."))
+                messages.error(
+                    request, _("Card number needs to be the number on your card.")
+                )
                 return HttpResponseRedirect(next_or_reverse(request, "login"))
 
             user = authenticate(
@@ -58,18 +61,22 @@ def my_checkouts(request: HttpRequest) -> HttpResponse:
     # https://stackoverflow.com/a/36166644
     # Item.objects.filter(Q(user_checked_out_to__isnull=False) | Q(branch_checked_out_to__isnull=False))
     my_materials = Item.objects.filter(user_checked_out_to=request.user)
-    return render(request, "user/my_checked_out.html", build_context({'checkouts': my_materials}))
+    return render(
+        request, "user/my_checked_out.html", build_context({"checkouts": my_materials})
+    )
 
 
 @login_required()
 def my_holds(request: HttpRequest) -> HttpResponse:
     # todo: finish next
     my_holds = Hold.objects.filter(placed_by=request.user)
-    return render(request, "user/my_holds.html", build_context({'checkouts': my_holds}))
+    return render(request, "user/my_holds.html", build_context({"checkouts": my_holds}))
 
 
 @login_required()
 def my_fees(request: HttpRequest) -> HttpResponse:
     # todo: finish next
     my_materials = Item.objects.filter(user_checked_out_to=request.user)
-    return render(request, "user/my_fees.html", build_context({'checkouts': my_materials}))
+    return render(
+        request, "user/my_fees.html", build_context({"checkouts": my_materials})
+    )

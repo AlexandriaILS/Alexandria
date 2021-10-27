@@ -7,23 +7,29 @@ import localflavor.us.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0006_auto_20210626_1831'),
+        ("users", "0006_auto_20210626_1831"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='uslocation',
-            name='city',
-            field=models.CharField(blank=True, max_length=64, null=True, verbose_name='City'),
+            model_name="uslocation",
+            name="city",
+            field=models.CharField(
+                blank=True, max_length=64, null=True, verbose_name="City"
+            ),
         ),
         migrations.AlterField(
-            model_name='uslocation',
-            name='state',
-            field=localflavor.us.models.USStateField(blank=True, max_length=2, null=True),
+            model_name="uslocation",
+            name="state",
+            field=localflavor.us.models.USStateField(
+                blank=True, max_length=2, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='uslocation',
-            name='zip_code',
-            field=localflavor.us.models.USZipCodeField(blank=True, max_length=10, null=True),
+            model_name="uslocation",
+            name="zip_code",
+            field=localflavor.us.models.USZipCodeField(
+                blank=True, max_length=10, null=True
+            ),
         ),
     ]

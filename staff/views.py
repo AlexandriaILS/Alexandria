@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from catalog.models import Item, Record
 from users.models import AlexandriaUser
 from utils import build_context
-from utils.db import filter
+from utils.db import filter_db
 from utils.decorators import library_staff_required
 
 
@@ -52,7 +52,7 @@ def staff_search(request):
         if author:
             filters = filters | Q(authors__icontains=term)
         return (
-            filter(request, Record, filters)
+            filter_db(request, Record, filters)
             .exclude(
                 id__in=(
                     Record.objects.annotate(total_count=Count("item", distinct=True))
@@ -66,10 +66,10 @@ def staff_search(request):
         )
 
     def item_search(term):
-        return filter(request, Item, barcode=search_term, is_active=True)
+        return filter_db(request, Item, barcode=search_term, is_active=True)
 
     def patron_search(term):
-        return filter(
+        return filter_db(
             request,
             AlexandriaUser,
             Q(first_name__icontains=term)

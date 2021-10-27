@@ -34,6 +34,9 @@ DEBUG = False
 
 # actual validation handled in middleware
 ALLOWED_HOSTS = ["*"]
+# used for handling configs on the request
+DEFAULT_HOSTS = ["localhost:8000", "alexandrialibrary.dev"]
+DEFAULT_HOST_KEY = "default"
 
 AUTH_USER_MODEL = "users.AlexandriaUser"
 LOGIN_URL = "/login/"

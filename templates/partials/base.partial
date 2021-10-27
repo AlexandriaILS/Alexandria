@@ -37,7 +37,8 @@
 {% endblock %}
 
 {{ alerts|json_script:"alert-data" }}
-{{ library_data|json_script:"library-data" }}
+{{ request.context|json_script:"library-data" }}
+{{ branches|json_script:"branch-data" }}
 
 </body>
 </html>
