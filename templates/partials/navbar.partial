@@ -3,9 +3,11 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/"><img src="{% static 'favicons/black/favicon-32x32.png' %}" width="30"
-                                              height="30" class="d-inline-block align-top"
-                                              alt="">{{ request.context.name }}</a>
+        <a class="navbar-brand" href="/">
+            <img src="{% static 'favicons/black/favicon-32x32.png' %}" width="30"
+                 height="30" class="d-inline-block align-top"
+                 alt="">{{ request.context.name }}
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -40,11 +42,18 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li><a class="dropdown-item" href="#">{% translate "Settings" %}</a></li>
+                        {% if request.user.is_staff %}
+                            <li><a class="dropdown-item" href="{% url 'staff_index' %}">{% translate "Staff" %}</a></li>
+                        {% endif %}
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         {% if request.user.is_authenticated %}
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">{% translate "Log Out" %}</a></li>
+                            <li class="d-grid gap-2"><a class="btn btn-outline-danger mx-1"
+                                                        href="{% url 'logout' %}">{% translate "Log Out" %}</a></li>
+                        {% else %}
+                            <li class="d-grid gap-2"><a class="btn btn-primary mx-1"
+                                                        href="{% url 'login' %}">{% translate "Log In" %}</a></li>
                         {% endif %}
                     </ul>
                 </div>
