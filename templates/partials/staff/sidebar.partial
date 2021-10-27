@@ -56,6 +56,11 @@
     <div class="position-sticky pt-3">
         <ul class="list-unstyled ps-0">
             <li class="mb-1">
+                <a class="btn btn-toggle btn-chevron-padding align-items-center rounded" href="{% url 'staff_index' %}">
+                    Home
+                </a>
+            </li>
+            <li class="mb-1">
                 <button class="btn btn-toggle btn-toggle-chevron align-items-center rounded collapsed"
                         data-bs-toggle="collapse"
                         data-bs-target="#circ-collapse" aria-expanded="false">
@@ -115,7 +120,7 @@
         </li>
     </ul>
 
-        <script>
+    <script>
         // run on first load
         document.addEventListener("DOMContentLoaded", adjustSidebarHeight);
         // run the rest of the time
