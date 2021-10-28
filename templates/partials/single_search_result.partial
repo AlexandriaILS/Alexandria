@@ -54,7 +54,8 @@
                                             <div class="d-grid">
                                                 <div data-subitem-id="{{ subitem.1 }}" data-item-id="{{ item.id }}"
                                                      data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
-                                                     class="btn btn-block btn-primary HoldButton">
+                                                     data-bs-target="#holdModal" data-bs-toggle="modal"
+                                                     class="btn btn-block btn-primary holdButtonInitial">
                                                     {% translate "Put this on hold" %}
                                                 </div>
                                             </div>

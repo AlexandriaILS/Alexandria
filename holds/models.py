@@ -9,7 +9,9 @@ class Hold(models.Model):
     date_created = models.DateTimeField(default=timezone.now)
     placed_by = models.ForeignKey(AlexandriaUser, on_delete=models.CASCADE)
     # TODO: Add data cleanup to remove expired holds / migrate to primary location
-    destination = models.ForeignKey(BranchLocation, on_delete=models.SET_NULL, null=True)
+    destination = models.ForeignKey(
+        BranchLocation, on_delete=models.SET_NULL, null=True
+    )
 
     item = models.ForeignKey(
         "catalog.Item", null=True, blank=True, on_delete=models.CASCADE
@@ -24,7 +26,6 @@ class Hold(models.Model):
     )
 
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
-
 
     def __str__(self):
         if self.item:

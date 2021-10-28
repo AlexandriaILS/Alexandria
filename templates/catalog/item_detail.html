@@ -63,7 +63,12 @@
         <div class="col-xl-4 d-none d-xl-block">
             {% include 'partials/cover_image.partial' with item=item %}
             <div class="text-center">
-                <div class="btn btn-primary mt-3">{% translate "Reserve next available copy" %}</div>
+                <div data-subitem-id="{{ item.type.id }}" data-item-id="{{ item.id }}"
+                     data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
+                     data-bs-target="#holdModal" data-bs-toggle="modal"
+                     class="btn btn-block btn-primary mt-3 holdButtonInitial">
+                    {% translate "Reserve next available copy" %}
+                </div>
             </div>
         </div>
     </div>
@@ -103,26 +108,5 @@
             </div>
         {% endfor %}
     </div>
-    {% translate "Finishing that hold..." as finishing_text %}
-    {% #modal id="holdModal" centered=True title=finishing_text %}
-        <p>Which branch should we send your hold to for pickup?</p>
-        <select class="form-select" id="holdBranchSelector" aria-label="Pick your branch!">
-            {% with request.user.get_branches_for_holds as branches %}
-                <option selected
-                        value="{{ branches.default.id }}">{{ branches.default.name }}, {{ branches.default.address__address_1 }}
-                    (Default)
-                </option>
-                {% for different_branch in branches.others %}
-                    <option value="{{ different_branch.id }}">{{ different_branch.name }}, {{ different_branch.address__address_1 }}</option>
-                {% endfor %}
-                </select>
-            {% endwith %}
-        {% #centered_column %}
-        <div class="d-grid gap-2">
-            {% #button element="button" extra_classes="mt-3" id="holdSubmitButton" onclick="processHold()" variant="primary" dismiss=True %}
-                {% translate "Place Hold" %}
-            {% /button %}
-        </div>
-        {% /centered_column %}
-    {% /modal %}
+    {% include 'partials/catalog/hold_location.partial' %}
 {% endblock %}

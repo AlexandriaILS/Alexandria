@@ -7,14 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0010_alexandriauser_default_branch'),
-        ('holds', '0008_hold_host'),
+        ("users", "0010_alexandriauser_default_branch"),
+        ("holds", "0008_hold_host"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='hold',
-            name='destination',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='users.branchlocation'),
+            model_name="hold",
+            name="destination",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="users.branchlocation",
+            ),
         ),
     ]

@@ -14,6 +14,7 @@
         {% for item in page %}
             {% include "partials/single_search_result.partial" with item=item %}
         {% endfor %}
+        {% include 'partials/catalog/hold_location.partial' %}
         {% if page.paginator.num_pages > 1 %}
             {# Only show the pagination buttons if we actually got results. #}
             {% include 'partials/pagination.partial' %}

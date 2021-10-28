@@ -25,8 +25,10 @@ function processHold() {
     let locationId = document.getElementById('holdBranchSelector').value;
     let url = `/placehold/THING/${window.holdContext['itemId']}/${window.holdContext['subitemId']}/${locationId}/`;
     if (window.holdContext['isItem']) {
+        console.log("ITEM!")
         url = url.replace("THING", "item")
     } else {
+        console.log("RECORD!")
         url = url.replace("THING", "record")
     }
 
@@ -48,9 +50,9 @@ function processHold() {
         return response.ok ? response.json() : Promise.reject(response);
     }).then(function (resp) {
         let message = DATA['hold_success_message'];
-        message = message.replace(DATA['name_keys']['item_title'], window.holdContext['title']);
-        message = message.replace(DATA['name_keys']['item_type_name'], resp['name']);
-        message = message.replace(DATA['name_keys']['hold_number'], resp['hold_number']);
+        message = message.replace("(itemTitle)", window.holdContext['title']);
+        message = message.replace("(itemType)", resp['name']);
+        message = message.replace("(holdNum)", resp['hold_number']);
         newtoast = createToastHTML(
             message, colorClass = "bg-success", id = window.holdContext['itemId'], itemTypeId = window.holdContext['subitemId']
         );

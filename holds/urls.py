@@ -5,11 +5,11 @@ urlpatterns = [
     path(
         "placehold/record/<int:item_id>/<int:item_type_id>/<int:location_id>/",
         views.place_hold_on_record,
-        name="place_hold",
+        name="place_hold_on_record",
     ),
     path(
         "placehold/item/<int:item_id>/<int:item_type_id>/<int:location_id>/",
         views.place_hold_on_item,
-        name="place_hold",
+        name="place_hold_on_item",
     ),
 ]
