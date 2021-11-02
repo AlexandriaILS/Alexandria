@@ -1,4 +1,5 @@
 from datetime import timedelta
+import re
 
 import pymarc
 from django.conf import settings
@@ -122,10 +123,45 @@ class ItemType(models.Model):
     # Movies might only have one renew, but books might have five.
     number_of_allowed_renews = models.IntegerField(null=True, blank=True)
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    icon_name = models.CharField(
+        _("icon name"),
+        max_length=30,
+        null=True,
+        blank=True,
+        help_text=(
+            "The name of the Material Design icon that you'd like to display in the"
+            " catalog for this type. https://fonts.google.com/icons?selected=Material+Icons"
+        ),
+    )
+    icon_svg = models.TextField(
+        _("icon svg"),
+        null=True,
+        blank=True,
+        help_text=(
+            "Don't have a matching option in the Material Design icons? Copy the full"
+            " SVG html here to display that instead. WARNING: must be fully formed SVG"
+            " element; it will not be saved otherwise."
+        ),
+    )
 
     def __str__(self):
         return self.name
 
+    def check_icon_svg(self):
+        # Because we're storing raw HTML, we should have some basic checks to make sure
+        # that we're actually storing an SVG element.
+        # https://stackoverflow.com/a/63419911
+        SVG_R = r'(?:<\?xml\b[^>]*>[^<]*)?(?:<!--.*?-->[^<]*)*(?:<svg|<!DOCTYPE svg)\b'
+        SVG_RE = re.compile(SVG_R, re.DOTALL)
+
+        return SVG_RE.match(self.icon_svg) is not None
+
+    def save(self, *args, **kwargs):
+        if self.icon_svg:
+            if not self.check_icon_svg():
+                self.icon_svg = None
+
+        super(ItemType, self).save(*args, **kwargs)
 
 class Record(models.Model):
     """
@@ -205,6 +241,11 @@ class Record(models.Model):
 
     def get_valid_items(self):
         return self.item_set.filter(is_active=True).order_by("-pubyear")
+        # .order_by("-pubyear")
+
+    def get_number_available(self):
+        items = self.get_valid_items()
+        return len([i for i in items if not i.is_checked_out()])
 
 
 class Item(models.Model):
@@ -378,6 +419,10 @@ class Item(models.Model):
 
     def is_checked_out(self):
         return isinstance(self.checked_out_to, get_user_model())
+
+    def is_checked_out_to_system(self):
+        if hasattr(self.checked_out_to, "host"):
+            return self.checked_out_to.host == settings.DEFAULT_SYSTEM_HOST_KEY
 
     def __str__(self):
         string = f"{self.record.title} | {self.record.authors}"

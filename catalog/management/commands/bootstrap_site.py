@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-from catalog.management.commands import bootstrap_types
+from catalog.management.commands import bootstrap_types, bootstrap_system_branches
 
 
 class Command(BaseCommand):
@@ -8,8 +8,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         bootstrap_types.Command().handle()
+        bootstrap_system_branches.Command().handle()
         user, created = get_user_model().objects.get_or_create(
-            card_number=1234,
+            card_number="1234",
             is_staff=True,
             is_superuser=True,
             first_name="Admin",

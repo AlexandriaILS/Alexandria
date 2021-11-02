@@ -82,25 +82,58 @@
                         <div class="col">{% include 'partials/cover_image.partial' with item=el img_height=120 %}</div>
                     </div>
                 </div>
-                <div class="col-md-6 mt-2">
-                    <div class="row">
-                        <div class="col text-center">
-                            {% if el.type %}{{ el.type.name }}{% else %}{% endif %}</div>
-                        <div class="col text-center">{{ el.pubyear }}, {{ el.publisher }}</div>
-                        <div class="col text-center">
-                            {% if el.is_checked_out %}{% translate "Checked Out" %}{% else %}
-                                {{ el.home_location.name }}{% endif %}</div>
+                <div class="col-md-1 text-center">
+                    <div class="col mt-3">
+                        {% if el.type %}
+                            {% if el.type.icon_name %}
+                                <span class="material-icons" style="font-size: 36px;">{{ el.type.icon_name }}</span>
+                            {% elif el.type.icon_svg %}
+                                {{ el.type.icon_svg|safe }}
+                            {% endif %}
+                            <br>{{ el.type.name }}
+                        {% endif %}
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6 mt-4">
+                    <div class="row">
+                        <div class="col d-flex align-items-center">
+                            <span class="material-icons me-1">book</span>
+                            {{ el.pubyear }}, {{ el.publisher }}
+                        </div>
+                        <div class="col d-flex align-items-center">
+                            <span class="material-icons me-1">place</span>
+                            {% if el.is_checked_out_to_system %}
+                                {% translate "Unavailable" %}
+                            {% elif el.is_checked_out %}
+                                {% translate "Checked Out" %}
+                            {% else %}
+                                {{ el.home_location.name }}
+                            {% endif %}</div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col d-flex align-items-center">
+                            <span class="material-icons me-1"
+                                  style="font-size: 24px;transform: scale(-1,1);">local_offer</span>
+                            {{ el.call_number }}</div>
+                        <div class="col d-flex align-items-center">
+                            <svg class="me-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                 version="1.1" width="24" height="24" viewBox="0 0 24 24">
+                                <path d="M2,6H4V18H2V6M5,6H6V18H5V6M7,6H10V18H7V6M11,6H12V18H11V6M14,6H16V18H14V6M17,6H20V18H17V6M21,6H22V18H21V6Z"/>
+                            </svg>
+                            {{ el.barcode }}</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
                     <div class="row">
                         <div class="col-2 col-md-0 col-lg-2"></div>
                         <div class="col-8 col-md-12 col-lg-8 text-center mt-2" style="height:100%">
-                            <div data-subitem-id="{{ el.type.id }}" data-item-id="{{ el.id }}"
-                                 data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
-                                 data-is-item="1" data-bs-target="#holdModal" data-bs-toggle="modal"
-                                 class="btn btn-block btn-primary holdButtonInitial">
-                                {% translate "Place hold" %}</div>
+                            <div class="d-grid gap-2">
+                                <div data-subitem-id="{{ el.type.id }}" data-item-id="{{ el.id }}"
+                                     data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
+                                     data-is-item="1" data-bs-target="#holdModal" data-bs-toggle="modal"
+                                     class="btn btn-block btn-primary holdButtonInitial">
+                                    {% translate "Place hold" %}</div>
+                            </div>
                         </div>
                         <div class="col-2 col-md-0 col-lg-2"></div>
                     </div>

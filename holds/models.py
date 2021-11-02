@@ -16,19 +16,13 @@ class Hold(models.Model):
     item = models.ForeignKey(
         "catalog.Item", null=True, blank=True, on_delete=models.CASCADE
     )
-    record = models.ForeignKey(
-        "catalog.Record", null=True, blank=True, on_delete=models.CASCADE
-    )
 
-    # for when they place a generic hold on a record
-    requested_item_type = models.ForeignKey(
-        "catalog.ItemType", null=True, blank=True, on_delete=models.CASCADE
-    )
+    # used to see whether we can recalculate a hold in the event that a hold
+    # is placed on an item but someone tries to check out the item
+    # before it can be pulled
+    specific_copy = models.BooleanField(default=False)
 
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     def __str__(self):
-        if self.item:
-            return f"{self.item} heading to {self.destination}"
-        else:
-            return f"{self.record} heading to {self.destination}"
+        return f"{self.item} heading to {self.destination}"

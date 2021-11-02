@@ -8,6 +8,12 @@ def build_context(data: Dict = None, request=None) -> Dict:
     """Prepare everything that needs to be passed to the templates on every request."""
     if not data:
         data = {}
+
+    if request and request.user.is_authenticated:
+        branches = request.user.get_serializable_branches()
+    else:
+        branches = []
+
     data.update(
         {
             "alerts": {
@@ -17,11 +23,15 @@ def build_context(data: Dict = None, request=None) -> Dict:
                 ),
                 "hold_error_message": _("Something went wrong — please try again."),
                 "hold_duplicate": _("You already have a hold on this item."),
-                "not_logged_in": _("You're not logged in! You'll need to log in before you can put items on hold."),
-                "quickhold_success_message": _("Hold placed for (itemTitle) for pickup at (branchName)!"),
+                "not_logged_in": _(
+                    "You're not logged in! You'll need to log in before you can put items on hold."
+                ),
+                "quickhold_success_message": _(
+                    "Hold placed for (itemTitle) for pickup at (branchName)!"
+                ),
             },
             "current_hash": settings.CURRENT_HASH,
-            "branches": request.user.get_serializable_branches() if request else [],
+            "branches": branches,
         }
     )
 

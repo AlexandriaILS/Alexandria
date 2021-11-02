@@ -3,25 +3,25 @@ from typing import Dict
 from users.models import BranchLocation, AlexandriaUser
 
 DEFAULT_STAFF_USER = {
-    'card_number': 1234,
-    'first_name': 'Guy',
-    'last_name': 'Montag',
-    'is_staff': True
+    "card_number": 1234,
+    "first_name": "Guy",
+    "last_name": "Montag",
+    "is_staff": True,
 }
 
 DEFAULT_PATRON_USER = {
-    'card_number': 2345,
-    'first_name': 'Guy',
-    'last_name': 'Montag',
+    "card_number": 2345,
+    "first_name": "Guy",
+    "last_name": "Montag",
 }
 
 
 DEFAULT_UNDERAGE_PATRON_USER = {
-    'card_number': 3456,
-    'first_name': 'Augustus',
-    'last_name': 'Gloop',
-    'birth_year': 2012,
-    'is_minor': True
+    "card_number": 3456,
+    "first_name": "Augustus",
+    "last_name": "Gloop",
+    "birth_year": 2012,
+    "is_minor": True,
 }
 
 

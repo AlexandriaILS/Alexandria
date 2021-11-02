@@ -1,4 +1,5 @@
 import random
+import string
 import sys
 from typing import Dict
 
@@ -19,11 +20,40 @@ from users.models import BranchLocation
 from utils.images import get_and_save_image
 
 
+BOOK_OPTIONS = ["Audiobook (CD)", "Book", "Audiobook (Cassette)", "Ebook"]
+BRANCH_LOCATIONS = [
+    "Crickhollow",
+    "Frogmorton",
+    "Gamwitch",
+    "Hobbiton",
+    "Little Delving",
+    "Michel Delving",
+    "Overhill",
+    "Rushey",
+    "Tuckborough",
+    "Willowbottom",
+    "Woodhall",
+]
+PUBLISHERS = [
+    "AntarcticBird Spork Building",
+    "Hatchet",
+    "HarpoonCollegiate",
+    "Macmillions",
+    "Simone & Shoosting",
+    "IDG Books (RIP)",
+    "CowFjord University Press",
+]
+
+SVG = """
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="mdi-cassette" width="36" height="36" viewBox="0 0 24 24"><path d="M4,5A2,2 0 0,0 2,7V17A2,2 0 0,0 4,19H6L7,17H17L18,19H20A2,2 0 0,0 22,17V7A2,2 0 0,0 20,5H4M6.5,10A1.5,1.5 0 0,1 8,11.5A1.5,1.5 0 0,1 6.5,13A1.5,1.5 0 0,1 5,11.5A1.5,1.5 0 0,1 6.5,10M9,10H15V13H9V10M17.5,10A1.5,1.5 0 0,1 19,11.5A1.5,1.5 0 0,1 17.5,13A1.5,1.5 0 0,1 16,11.5A1.5,1.5 0 0,1 17.5,10Z" /></svg>
+"""
+
+
 def build_record(item: Dict) -> Record:
     subject_list = [
         Subject.objects.get_or_create(name=subj)[0]
         for subj in [
-            requests.get(slash_join(sites['DEFAULT']['zenodotus_url'], "subject", id))
+            requests.get(slash_join(sites["DEFAULT"]["zenodotus_url"], "subject", id))
             .json()
             .get("name")
             for id in item["subjects"]
@@ -33,7 +63,7 @@ def build_record(item: Dict) -> Record:
     bib_resp = (
         requests.get(
             slash_join(
-                sites['DEFAULT']['zenodotus_url'],
+                sites["DEFAULT"]["zenodotus_url"],
                 "bibliographiclevel",
                 item["bibliographic_level"],
             )
@@ -47,12 +77,14 @@ def build_record(item: Dict) -> Record:
         bibliographic_level = None
 
     itemtype_response = requests.get(
-        slash_join(sites['DEFAULT']['zenodotus_url'], "itemtype", item["type"])
+        slash_join(sites["DEFAULT"]["zenodotus_url"], "itemtype", item["type"])
     ).json()
     itemtypebase_response = (
         requests.get(
             slash_join(
-                sites['DEFAULT']['zenodotus_url'], "itemtypebase", itemtype_response["base"]
+                sites["DEFAULT"]["zenodotus_url"],
+                "itemtypebase",
+                itemtype_response["base"],
             )
         )
         .json()
@@ -89,41 +121,57 @@ def build_record(item: Dict) -> Record:
     return new_record
 
 
-def generate_fake_item(record: Record):
+def generate_LOC_call_number(pubyear=None):
+    # Format: Section / item_ID / Cutter 1 (optional) / Cutter 2 (optional) / pubyear
+    section = "".join(
+        [random.choice(string.ascii_uppercase) for _ in range(random.randint(1, 2))]
+    )
+    item_ID = str(random.randint(1, 3000))
+    if random.random() < 0.7:
+        item_ID += "." + str(random.randint(2, 9))
+    cutters = [
+        random.choice(string.ascii_uppercase) + str(random.randint(1, 99))
+        for _ in range(random.randint(0, 2))
+    ]
+    call_number = f"{section}{item_ID}"
+    if len(cutters) == 2:
+        call_number += f".{cutters[0]} {cutters[1]}"
+    if len(cutters) == 1:
+        call_number += f".{cutters[0]}"
+    call_number += f" {str(pubyear) if pubyear else '{}'}"
+    return call_number
+
+
+def generate_fake_item(record: Record, count: int) -> None:
     if record.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
-        base = ItemTypeBase.objects.get(name=ItemTypeBase.LANGUAGE_MATERIAL)
         # it's a book.
-        options = [
-            ItemType.objects.get_or_create(name="Audiobook (CD)", base=base)[0],
-            ItemType.objects.get_or_create(name="Book", base=base)[0],
-            ItemType.objects.get_or_create(name="Audiobook (Cassette)", base=base)[0],
-            ItemType.objects.get_or_create(name="Ebook", base=base)[0],
-        ]
+        options = ItemType.objects.filter(name__in=BOOK_OPTIONS)
     else:
         options = [record.type]
 
-    Item.objects.create(
-        barcode=random.getrandbits(50),
-        record=record,
-        price=random.randrange(12, 35) + (random.randrange(0, 100) / 100),
-        home_location=random.choice(BranchLocation.objects.all()),
-        is_active=True,
-        call_number=random.getrandbits(32),
-        publisher=random.choice(
-            [
-                "AntarcticBird Spork Building",
-                "Hatchet",
-                "HarpoonCollegiate",
-                "Macmillions",
-                "Simone & Shoosting",
-                "IDG Books (RIP)",
-                "CowFjord University Press",
-            ]
-        ),
-        pubyear=random.randrange(1945, 2021),
-        bibliographic_level=record.bibliographic_level,
-        type=random.choice(options),
-    )
+    type_dict = {}
+
+    for opt in options:
+        type_dict[opt] = generate_LOC_call_number()
+
+    for i in range(count):
+        pubyear = random.randrange(1945, 2021)
+        item_type = random.choice(list(type_dict.keys()))
+        call_number = type_dict[item_type].format(pubyear)
+        Item.objects.create(
+            barcode=random.getrandbits(50),
+            record=record,
+            price=random.randrange(12, 35) + (random.randrange(0, 100) / 100),
+            home_location=random.choice(
+                BranchLocation.objects.filter(name__in=BRANCH_LOCATIONS)
+            ),
+            is_active=True,
+            call_number=call_number,
+            publisher=random.choice(PUBLISHERS),
+            pubyear=pubyear,
+            bibliographic_level=record.bibliographic_level,
+            type=item_type,
+        )
 
 
 class Command(BaseCommand):
@@ -159,8 +207,21 @@ class Command(BaseCommand):
         ]:
             BranchLocation.objects.get_or_create(name=branch)
 
+        base = ItemTypeBase.objects.get(name=ItemTypeBase.LANGUAGE_MATERIAL)
+        # ["Audiobook (CD)", "Book", "Audiobook (Cassette)", "Ebook"]
+        ItemType.objects.get_or_create(
+            name="Audiobook (CD)", base=base, icon_name="album"
+        )
+        ItemType.objects.get_or_create(
+            name="Ebook", base=base, icon_name="tablet_android"
+        )
+        ItemType.objects.get_or_create(name="Book", base=base, icon_name="auto_stories")
+        ItemType.objects.get_or_create(
+            name="Audiobook (Cassette)", base=base, icon_svg=SVG
+        )
+
         available_records = requests.get(
-            slash_join(sites['DEFAULT']['zenodotus_url'], "record")
+            slash_join(sites["DEFAULT"]["zenodotus_url"], "record")
         ).json()
         # returns a list of dicts
         for item in available_records:
@@ -170,9 +231,8 @@ class Command(BaseCommand):
                 )
                 new_record = build_record(item)
 
-                count = random.randrange(1, 45)
-                self.stdout.write(self.style.HTTP_INFO(f"Creating {count} item(s)..."))
-                for _ in range(count):
-                    generate_fake_item(new_record)
+                count = random.randrange(7, 20)
+                self.stdout.write(self.style.HTTP_INFO(f"Creating item(s)..."))
+                generate_fake_item(new_record, count)
                 self.stdout.write(self.style.SUCCESS(f"Items added!"))
         self.stdout.write(self.style.SUCCESS(f"Import finished!"))

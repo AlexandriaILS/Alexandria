@@ -30,13 +30,15 @@ SECRET_KEY = os.environ.get(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # actual validation handled in middleware
 ALLOWED_HOSTS = ["*"]
 # used for handling configs on the request
 DEFAULT_HOSTS = ["localhost:8000", "alexandrialibrary.dev"]
 DEFAULT_HOST_KEY = "default"
+DEFAULT_SYSTEM_HOST_KEY = "system"
+SITE_DATA = None  # this will get populated at runtime
 
 AUTH_USER_MODEL = "users.AlexandriaUser"
 LOGIN_URL = "/login/"
@@ -50,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_extensions",
     "widget_tweaks",
     "slippers",
     "taggit",

@@ -21,37 +21,29 @@ def get_hold_queue_number(new_hold: Hold) -> int:
     return (
         Hold.objects.filter(
             item=new_hold.item,
-            record=new_hold.record,
-            requested_item_type=new_hold.requested_item_type,
         )
-        .order_by("-date_created")
-        .count()
+            .order_by("-date_created")
+            .count()
     )
 
 
-def create_hold(request, obj, obj_type, location) -> Union[HttpResponse, JsonResponse]:
+def create_hold(request, item, location, specific_copy=False) -> Union[HttpResponse, JsonResponse]:
     filters = {
         "placed_by": request.user,
-        "requested_item_type": obj_type,
         "destination": location,
+        "item": item,
     }
-    obj_db_reference = {}
-    if isinstance(obj, Record):
-        obj_db_reference["record"] = obj
-    else:
-        # it's an Item
-        obj_db_reference["item"] = obj
 
-    filters.update(obj_db_reference)
     existing = filter_db(request, Hold, **filters).first()
     if existing:
         return HttpResponse(status=HOLD_ALREADY_EXISTS)
 
+    filters.update({'specific_copy': specific_copy})
     new_hold = Hold.objects.create(**filters)
 
     return JsonResponse(
         {
-            "name": obj.type.name,
+            "name": item.type.name,
             "hold_number": get_hold_queue_number(new_hold),
         },
         status=SUCCESS,
@@ -61,20 +53,52 @@ def create_hold(request, obj, obj_type, location) -> Union[HttpResponse, JsonRes
 def place_hold_on_record(
     request: WSGIRequest, item_id: int, item_type_id: int, location_id: int
 ) -> Union[JsonResponse, HttpResponse]:
+    # An incoming hold on a record should immediately be converted into an item.
+    # After that, the item can be placed on hold.
+    # We always want to circulate the _most recently checked out copy_. This is
+    # because the oldest circulating copy may be lost, and that's just a part
+    # of life.
     if not request.user.is_authenticated:
         return HttpResponse(status=401)
-    itemtype = get_object_or_404(ItemType, id=item_type_id)
+    item_type = get_object_or_404(ItemType, id=item_type_id)
     target = get_object_or_404(Record, id=item_id)
     location = get_object_or_404(BranchLocation, id=location_id)
-    return create_hold(request, target, itemtype, location)
+    # First, check to see if there's a copy in the location that's the hold will
+    # be picked up at.
+    item = (
+        target.item_set.filter(home_location=location, type=item_type, host=request.host)
+            .order_by("-last_checked_out")
+            .first()
+    )
+    if not item:
+        # If that doesn't work, get the most recently used copy from the system.
+        item = (
+            target.item_set.filter(
+                home_location__id__in=BranchLocation.objects.exclude(
+                    id=location.id, host=request.host
+                ),
+                type=item_type,
+                host=request.host,
+            )
+                .order_by("-last_checked_out")
+                .first()
+        )
+    if not item:
+        # We shouldn't get here. Ever. If we're placing a hold, there should always
+        # be a valid target for the hold. But just in case there isn't... we should
+        # handle it.
+        # TODO: Add handling for this in holdbuttons.js
+        return HttpResponse(status=412)  # 410 gone
+    return create_hold(request, item, location)
 
 
 def place_hold_on_item(
-    request: WSGIRequest, item_id: int, item_type_id: int, location_id: int
+    request: WSGIRequest, item_id: int, obj_type: int, location_id: int
 ) -> Union[JsonResponse, HttpResponse]:
+    # TODO: We don't actually need obj_type here because it's only used for Records,
+    #  so it should be adjusted in holdbuttons.js, the route, and here.
     if not request.user.is_authenticated:
         return HttpResponse(status=401)
-    itemtype = get_object_or_404(ItemType, id=item_type_id)
     target = get_object_or_404(Item, id=item_id)
     location = get_object_or_404(BranchLocation, id=location_id)
-    return create_hold(request, target, itemtype, location)
+    return create_hold(request, target, location, specific_copy=True)

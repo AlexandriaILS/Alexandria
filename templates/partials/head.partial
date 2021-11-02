@@ -4,52 +4,95 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <script src="{% static "js/emailmagic.js" %}" async defer></script>
 
-<link rel="apple-touch-icon" sizes="57x57" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/apple-icon-57x57.png" %}">
-<link rel="apple-touch-icon" sizes="60x60" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/apple-icon-60x60.png" %}">
-<link rel="apple-touch-icon" sizes="72x72" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/apple-icon-72x72.png" %}">
-<link rel="apple-touch-icon" sizes="76x76" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/apple-icon-76x76.png" %}">
-<link rel="apple-touch-icon" sizes="114x114" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/apple-icon-114x114.png" %}">
-<link rel="apple-touch-icon" sizes="120x120" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/apple-icon-120x120.png" %}">
-<link rel="apple-touch-icon" sizes="144x144" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/apple-icon-144x144.png" %}">
-<link rel="apple-touch-icon" sizes="152x152" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/apple-icon-152x152.png" %}">
-<link rel="apple-touch-icon" sizes="180x180" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/apple-icon-180x180.png" %}">
-<link rel="icon" type="image/png" sizes="192x192" media="(prefers-color-scheme:no-preference)"  href="{% static "favicons/black/android-icon-192x192.png" %}">
-<link rel="icon" type="image/png" sizes="32x32" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/favicon-32x32.png" %}">
-<link rel="icon" type="image/png" sizes="96x96" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/favicon-96x96.png" %}">
-<link rel="icon" type="image/png" sizes="16x16" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/favicon-16x16.png" %}">
+<link rel="apple-touch-icon" sizes="57x57" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/apple-icon-57x57.png" %}">
+<link rel="apple-touch-icon" sizes="60x60" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/apple-icon-60x60.png" %}">
+<link rel="apple-touch-icon" sizes="72x72" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/apple-icon-72x72.png" %}">
+<link rel="apple-touch-icon" sizes="76x76" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/apple-icon-76x76.png" %}">
+<link rel="apple-touch-icon" sizes="114x114" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/apple-icon-114x114.png" %}">
+<link rel="apple-touch-icon" sizes="120x120" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/apple-icon-120x120.png" %}">
+<link rel="apple-touch-icon" sizes="144x144" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/apple-icon-144x144.png" %}">
+<link rel="apple-touch-icon" sizes="152x152" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/apple-icon-152x152.png" %}">
+<link rel="apple-touch-icon" sizes="180x180" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/apple-icon-180x180.png" %}">
+<link rel="icon" type="image/png" sizes="192x192" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/android-icon-192x192.png" %}">
+<link rel="icon" type="image/png" sizes="32x32" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/favicon-32x32.png" %}">
+<link rel="icon" type="image/png" sizes="96x96" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/favicon-96x96.png" %}">
+<link rel="icon" type="image/png" sizes="16x16" media="(prefers-color-scheme:no-preference)"
+      href="{% static "favicons/black/favicon-16x16.png" %}">
 
-<link rel="apple-touch-icon" sizes="57x57" media="(prefers-color-scheme:light)" href="{% static "favicons/black/apple-icon-57x57.png" %}">
-<link rel="apple-touch-icon" sizes="60x60" media="(prefers-color-scheme:light)" href="{% static "favicons/black/apple-icon-60x60.png" %}">
-<link rel="apple-touch-icon" sizes="72x72" media="(prefers-color-scheme:light)" href="{% static "favicons/black/apple-icon-72x72.png" %}">
-<link rel="apple-touch-icon" sizes="76x76" media="(prefers-color-scheme:light)" href="{% static "favicons/black/apple-icon-76x76.png" %}">
-<link rel="apple-touch-icon" sizes="114x114" media="(prefers-color-scheme:light)" href="{% static "favicons/black/apple-icon-114x114.png" %}">
-<link rel="apple-touch-icon" sizes="120x120" media="(prefers-color-scheme:light)" href="{% static "favicons/black/apple-icon-120x120.png" %}">
-<link rel="apple-touch-icon" sizes="144x144" media="(prefers-color-scheme:light)" href="{% static "favicons/black/apple-icon-144x144.png" %}">
-<link rel="apple-touch-icon" sizes="152x152" media="(prefers-color-scheme:light)" href="{% static "favicons/black/apple-icon-152x152.png" %}">
-<link rel="apple-touch-icon" sizes="180x180" media="(prefers-color-scheme:light)" href="{% static "favicons/black/apple-icon-180x180.png" %}">
-<link rel="icon" type="image/png" sizes="192x192" media="(prefers-color-scheme:light)"  href="{% static "favicons/black/android-icon-192x192.png" %}">
-<link rel="icon" type="image/png" sizes="32x32" media="(prefers-color-scheme:light)" href="{% static "favicons/black/favicon-32x32.png" %}">
-<link rel="icon" type="image/png" sizes="96x96" media="(prefers-color-scheme:light)" href="{% static "favicons/black/favicon-96x96.png" %}">
-<link rel="icon" type="image/png" sizes="16x16" media="(prefers-color-scheme:light)" href="{% static "favicons/black/favicon-16x16.png" %}">
+<link rel="apple-touch-icon" sizes="57x57" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/apple-icon-57x57.png" %}">
+<link rel="apple-touch-icon" sizes="60x60" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/apple-icon-60x60.png" %}">
+<link rel="apple-touch-icon" sizes="72x72" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/apple-icon-72x72.png" %}">
+<link rel="apple-touch-icon" sizes="76x76" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/apple-icon-76x76.png" %}">
+<link rel="apple-touch-icon" sizes="114x114" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/apple-icon-114x114.png" %}">
+<link rel="apple-touch-icon" sizes="120x120" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/apple-icon-120x120.png" %}">
+<link rel="apple-touch-icon" sizes="144x144" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/apple-icon-144x144.png" %}">
+<link rel="apple-touch-icon" sizes="152x152" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/apple-icon-152x152.png" %}">
+<link rel="apple-touch-icon" sizes="180x180" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/apple-icon-180x180.png" %}">
+<link rel="icon" type="image/png" sizes="192x192" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/android-icon-192x192.png" %}">
+<link rel="icon" type="image/png" sizes="32x32" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/favicon-32x32.png" %}">
+<link rel="icon" type="image/png" sizes="96x96" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/favicon-96x96.png" %}">
+<link rel="icon" type="image/png" sizes="16x16" media="(prefers-color-scheme:light)"
+      href="{% static "favicons/black/favicon-16x16.png" %}">
 
-<link rel="apple-touch-icon" sizes="57x57" media="(prefers-color-scheme:dark)" href="{% static "favicons/white/apple-icon-57x57.png" %}">
-<link rel="apple-touch-icon" sizes="60x60" media="(prefers-color-scheme:dark)" href="{% static "favicons/white/apple-icon-60x60.png" %}">
-<link rel="apple-touch-icon" sizes="72x72" media="(prefers-color-scheme:dark)" href="{% static "favicons/white/apple-icon-72x72.png" %}">
-<link rel="apple-touch-icon" sizes="76x76" media="(prefers-color-scheme:dark)" href="{% static "favicons/white/apple-icon-76x76.png" %}">
-<link rel="apple-touch-icon" sizes="114x114" media="(prefers-color-scheme:dark)" href="{% static "favicons/white/apple-icon-114x114.png" %}">
-<link rel="apple-touch-icon" sizes="120x120" media="(prefers-color-scheme:dark)" href="{% static "favicons/white/apple-icon-120x120.png" %}">
-<link rel="apple-touch-icon" sizes="144x144" media="(prefers-color-scheme:dark)" href="{% static "favicons/white/apple-icon-144x144.png" %}">
-<link rel="apple-touch-icon" sizes="152x152" media="(prefers-color-scheme:dark)" href="{% static "favicons/white/apple-icon-152x152.png" %}">
-<link rel="apple-touch-icon" sizes="180x180" media="(prefers-color-scheme:dark)" href="{% static "favicons/white/apple-icon-180x180.png" %}">
-<link rel="icon" type="image/png" sizes="192x192" media="(prefers-color-scheme:dark)"  href="{% static "favicons/white/android-icon-192x192.png" %}">
-<link rel="icon" type="image/png" sizes="32x32" media="(prefers-color-scheme:dark)" href="{% static "favicons/white/favicon-32x32.png" %}">
-<link rel="icon" type="image/png" sizes="96x96" media="(prefers-color-scheme:dark)" href="{% static "favicons/white/favicon-96x96.png" %}">
-<link rel="icon" type="image/png" sizes="16x16" media="(prefers-color-scheme:dark)" href="{% static "favicons/white/favicon-16x16.png" %}">
+<link rel="apple-touch-icon" sizes="57x57" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/apple-icon-57x57.png" %}">
+<link rel="apple-touch-icon" sizes="60x60" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/apple-icon-60x60.png" %}">
+<link rel="apple-touch-icon" sizes="72x72" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/apple-icon-72x72.png" %}">
+<link rel="apple-touch-icon" sizes="76x76" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/apple-icon-76x76.png" %}">
+<link rel="apple-touch-icon" sizes="114x114" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/apple-icon-114x114.png" %}">
+<link rel="apple-touch-icon" sizes="120x120" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/apple-icon-120x120.png" %}">
+<link rel="apple-touch-icon" sizes="144x144" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/apple-icon-144x144.png" %}">
+<link rel="apple-touch-icon" sizes="152x152" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/apple-icon-152x152.png" %}">
+<link rel="apple-touch-icon" sizes="180x180" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/apple-icon-180x180.png" %}">
+<link rel="icon" type="image/png" sizes="192x192" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/android-icon-192x192.png" %}">
+<link rel="icon" type="image/png" sizes="32x32" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/favicon-32x32.png" %}">
+<link rel="icon" type="image/png" sizes="96x96" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/favicon-96x96.png" %}">
+<link rel="icon" type="image/png" sizes="16x16" media="(prefers-color-scheme:dark)"
+      href="{% static "favicons/white/favicon-16x16.png" %}">
 
 <link rel="manifest" media="(prefers-color-scheme:no-preference)" href="{% static "favicons/black/manifest.json" %}">
 <link rel="manifest" media="(prefers-color-scheme:light)" href="{% static "favicons/black/manifest.json" %}">
