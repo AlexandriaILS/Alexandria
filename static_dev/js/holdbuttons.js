@@ -89,7 +89,6 @@ function processHold() {
                 itemTypeId = window.holdContext['subitemId']
             )
         }
-
     }).finally(function () {
         document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
 

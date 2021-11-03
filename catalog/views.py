@@ -116,8 +116,8 @@ def import_marc_record_from_loc(request):
 
 
 def item_detail(request, item_id):
-    item = get_object_or_404(Record, id=item_id, host=request.host)
-    return render(request, "catalog/item_detail.html", build_context({"item": item}, request))
+    record = get_object_or_404(Record, id=item_id, host=request.host)
+    return render(request, "catalog/item_detail.html", build_context({"record": record}, request))
 
 
 class ItemEdit(LibraryStaffRequiredMixin, View):

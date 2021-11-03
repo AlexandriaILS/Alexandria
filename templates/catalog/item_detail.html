@@ -4,55 +4,55 @@
 {% block content %}
     <div class="row">
         <div class="col-lg-12 col-xl-8">
-            <p><h4>{{ item.title }}</h4></p>
+            <p><h4>{{ record.title }}</h4></p>
 
-            {% if item.subtitle %}
-                <p>{{ item.subtitle }}</p>
+            {% if record.subtitle %}
+                <p>{{ record.subtitle }}</p>
             {% endif %}
 
-            {% if item.edition %}
-                {{ item.edition }}
+            {% if record.edition %}
+                {{ record.edition }}
             {% endif %}
 
-            {% if item.authors %}
-                <p>{% translate "Author(s)" %}: {{ item.authors }}</p>
+            {% if record.authors %}
+                <p>{% translate "Author(s)" %}: {{ record.authors }}</p>
             {% endif %}
 
-            {% if item.publisher %}
-                {% translate "Publisher" %}: {{ item.publisher }}
+            {% if record.publisher %}
+                {% translate "Publisher" %}: {{ record.publisher }}
             {% endif %}
 
-            {% if item.pubyear %}
-                {% translate "Release year" %}: {{ item.pubyear }}
+            {% if record.pubyear %}
+                {% translate "Release year" %}: {{ record.pubyear }}
             {% endif %}
 
-            {% if item.summary %}
-                <p>{% translate "Summary" %}: {{ item.summary }}</p>
+            {% if record.summary %}
+                <p>{% translate "Summary" %}: {{ record.summary }}</p>
             {% endif %}
 
-            {% if item.type %}
-                <p>{% translate "Media type" %}: {{ item.type.name }}</p>
+            {% if record.type %}
+                <p>{% translate "Media type" %}: {{ record.type.name }}</p>
             {% endif %}
 
-            {% if item.physical_description %}
-                <p>{% translate "Physical description" %}: {{ item.physical_description }}</p>
+            {% if record.physical_description %}
+                <p>{% translate "Physical description" %}: {{ record.physical_description }}</p>
             {% endif %}
-            {% if item.subjects.count > 0 %}
+            {% if record.subjects.count > 0 %}
                 <p>{% translate "Subjects" %}:</p>
                 <ul>
-                    {% for subj in item.subjects.all %}
+                    {% for subj in record.subjects.all %}
                         <li>{{ subj }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
-            {% if item.series %}
-                <p>{% translate "Series info" %}: {{ item.series }}</p>
+            {% if record.series %}
+                <p>{% translate "Series info" %}: {{ record.series }}</p>
             {% endif %}
 
-            {% if item.tags.count > 0 %}
+            {% if record.tags.count > 0 %}
                 <p>{% translate "Tags" %}:</p>
                 <div class="row">
-                    {% for tag in item.tags.all %}
+                    {% for tag in record.tags.all %}
                         <div class="col">
                             <h5><span class="badge bg-secondary">{{ tag }}</span></h5>
                         </div>
@@ -61,85 +61,57 @@
             {% endif %}
         </div>
         <div class="col-xl-4 d-none d-xl-block">
-            {% include 'partials/cover_image.partial' with item=item %}
+            {% include 'partials/cover_image.partial' with item=record %}
             <div class="text-center">
-                <div data-subitem-id="{{ item.type.id }}" data-item-id="{{ item.id }}"
-                     data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
+                <div data-subitem-id="{{ record.type.id }}" data-item-id="{{ record.id }}"
+                     data-title="{{ record.title }}" data-subtitle="{{ record.subtitle }}"
                      data-bs-target="#holdModal" data-bs-toggle="modal"
                      class="btn btn-block btn-primary mt-3 holdButtonInitial">
                     {% translate "Reserve next available copy" %}
                 </div>
             </div>
         </div>
+    <p>{% translate "Total copies" %}: {{ record.get_valid_items.count }}</p>
     </div>
     <div class="container">
-        <p>{% translate "Total copies" %}: {{ item.get_valid_items.count }}</p>
-        {% for el in item.get_valid_items %}
-            <hr>
-            <div class="row mt-3">
-                <div class="col-md-2">
-                    <div class="row">
-                        <div class="col">{% include 'partials/cover_image.partial' with item=el img_height=120 %}</div>
-                    </div>
-                </div>
-                <div class="col-md-1 text-center">
-                    <div class="col mt-3">
-                        {% if el.type %}
-                            {% if el.type.icon_name %}
-                                <span class="material-icons" style="font-size: 36px;">{{ el.type.icon_name }}</span>
-                            {% elif el.type.icon_svg %}
-                                {{ el.type.icon_svg|safe }}
-                            {% endif %}
-                            <br>{{ el.type.name }}
+    {% with record.get_number_available_by_type as type_counts %}
+        {% regroup record.get_valid_items by type as item_list %}
+        <ul class="nav nav-pills nav-justified flex-column flex-sm-row" id="myTab" role="tablist">
+            {% for type in item_list %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link flex-sm-fill justify-content-center{% if type.grouper == record.type %} active{% endif %}"
+                            id="tab-{{ type.grouper.id }}" data-bs-toggle="tab"
+                            data-bs-target="#content-{{ type.grouper.id }}" type="button"
+                            role="tab" aria-controls="{{ type.grouper.name }}" aria-selected="true">
+                        {% if type.grouper.icon_name %}
+                            <span class="material-icons"
+                                  style="font-size: 36px;">{{ type.grouper.icon_name }}</span>
+                        {% elif type.grouper.icon_svg %}
+                            <div style="height:2.65em;">{{ type.grouper.icon_svg|safe }}</div>
                         {% endif %}
-                    </div>
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+        <hr>
+        <div class="tab-content" id="myTabContent">
+            {% for type in item_list %}
+                <div class="tab-pane fade{% if type.grouper == record.type %} show active{% endif %}"
+                     id="content-{{ type.grouper.id }}" role="tabpanel"
+                     aria-labelledby="tab-{{ type.grouper.id }}">
+                {% for type_option, counts in type_counts.items %}
+                    {% if type_option == type.grouper %}
+                        <div class="mt-2 fs-5">{% translate "Total copies available: " %}{{ counts }}</div>
+                    {% endif %}
+                {% endfor %}
+                    {% for obj in type.list %}
+                        {% item_detail record=item item=obj %}
+                        <hr>
+                    {% endfor %}
                 </div>
-                <div class="col-md-6 mt-4">
-                    <div class="row">
-                        <div class="col d-flex align-items-center">
-                            <span class="material-icons me-1">book</span>
-                            {{ el.pubyear }}, {{ el.publisher }}
-                        </div>
-                        <div class="col d-flex align-items-center">
-                            <span class="material-icons me-1">place</span>
-                            {% if el.is_checked_out_to_system %}
-                                {% translate "Unavailable" %}
-                            {% elif el.is_checked_out %}
-                                {% translate "Checked Out" %}
-                            {% else %}
-                                {{ el.home_location.name }}
-                            {% endif %}</div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col d-flex align-items-center">
-                            <span class="material-icons me-1"
-                                  style="font-size: 24px;transform: scale(-1,1);">local_offer</span>
-                            {{ el.call_number }}</div>
-                        <div class="col d-flex align-items-center">
-                            <svg class="me-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                 version="1.1" width="24" height="24" viewBox="0 0 24 24">
-                                <path d="M2,6H4V18H2V6M5,6H6V18H5V6M7,6H10V18H7V6M11,6H12V18H11V6M14,6H16V18H14V6M17,6H20V18H17V6M21,6H22V18H21V6Z"/>
-                            </svg>
-                            {{ el.barcode }}</div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="row">
-                        <div class="col-2 col-md-0 col-lg-2"></div>
-                        <div class="col-8 col-md-12 col-lg-8 text-center mt-2" style="height:100%">
-                            <div class="d-grid gap-2">
-                                <div data-subitem-id="{{ el.type.id }}" data-item-id="{{ el.id }}"
-                                     data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
-                                     data-is-item="1" data-bs-target="#holdModal" data-bs-toggle="modal"
-                                     class="btn btn-block btn-primary holdButtonInitial">
-                                    {% translate "Place hold" %}</div>
-                            </div>
-                        </div>
-                        <div class="col-2 col-md-0 col-lg-2"></div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+    {% endwith %}
     </div>
     {% include 'partials/catalog/hold_location.partial' %}
 {% endblock %}

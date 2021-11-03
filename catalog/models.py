@@ -151,7 +151,7 @@ class ItemType(models.Model):
         # Because we're storing raw HTML, we should have some basic checks to make sure
         # that we're actually storing an SVG element.
         # https://stackoverflow.com/a/63419911
-        SVG_R = r'(?:<\?xml\b[^>]*>[^<]*)?(?:<!--.*?-->[^<]*)*(?:<svg|<!DOCTYPE svg)\b'
+        SVG_R = r"(?:<\?xml\b[^>]*>[^<]*)?(?:<!--.*?-->[^<]*)*(?:<svg|<!DOCTYPE svg)\b"
         SVG_RE = re.compile(SVG_R, re.DOTALL)
 
         return SVG_RE.match(self.icon_svg) is not None
@@ -162,6 +162,7 @@ class ItemType(models.Model):
                 self.icon_svg = None
 
         super(ItemType, self).save(*args, **kwargs)
+
 
 class Record(models.Model):
     """
@@ -240,12 +241,20 @@ class Record(models.Model):
             return self.bibliographic_level.name == BibliographicLevel.MONOGRAPH_ITEM
 
     def get_valid_items(self):
-        return self.item_set.filter(is_active=True).order_by("-pubyear")
-        # .order_by("-pubyear")
+        return self.item_set.filter(is_active=True).order_by("type__name", "-pubyear")
 
     def get_number_available(self):
         items = self.get_valid_items()
         return len([i for i in items if not i.is_checked_out()])
+
+    def get_number_available_by_type(self):
+        items = self.get_valid_items()
+        return {
+            i.type: len(
+                [a for a in items if not a.is_checked_out() and a.type == i.type]
+            )
+            for i in items
+        }
 
 
 class Item(models.Model):
