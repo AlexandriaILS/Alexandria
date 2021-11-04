@@ -35,7 +35,7 @@ DEBUG = True
 # actual validation handled in middleware
 ALLOWED_HOSTS = ["*"]
 # used for handling configs on the request
-DEFAULT_HOSTS = ["localhost:8000", "alexandrialibrary.dev"]
+DEFAULT_HOSTS = ["localhost:8000", "staging.alexandrialibrary.dev"]
 DEFAULT_HOST_KEY = "default"
 DEFAULT_SYSTEM_HOST_KEY = "system"
 SITE_DATA = None  # this will get populated at runtime
