@@ -21,7 +21,7 @@ class HostValidationMiddleware(MiddlewareMixin):
                 else settings.DEFAULT_HOST_KEY
             )
         else:
-            raise DisallowedHost
+            raise DisallowedHost(f"Detected host: {host}")
 
 
 # For debug purposes only. Link to local_settings by adding
