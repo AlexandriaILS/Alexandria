@@ -42,6 +42,7 @@ SITE_DATA = None  # this will get populated at runtime
 
 AUTH_USER_MODEL = "users.AlexandriaUser"
 LOGIN_URL = "/login/"
+CSRF_TRUSTED_ORIGINS = DEFAULT_HOSTS
 
 # Application definition
 
