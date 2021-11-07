@@ -1,3 +1,6 @@
+{% if block %}
+<div class="d-grid gap-2">
+{% endif %}
 <{{ element }}
     class="btn btn-{{ variant }} {{ extra_classes }}"
     {% attrs id href value type onclick data-target=modal_target %}
@@ -11,4 +14,7 @@
 >{{ children }}</{{ element }}>
 {% else %}
 >
+{% endif %}
+{% if block %}
+    </div>
 {% endif %}

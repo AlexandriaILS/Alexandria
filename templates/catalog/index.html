@@ -1,44 +1,28 @@
 {% extends 'partials/base.partial' %}
 {% load i18n %}
-{% load slippers %}
 
 {% block content %}
-    <table style="width: 100%; height: 80%" class="mx-auto">
+    {% #vertically_centered_card %}
+    <table style="height: 100%; width: 100%">
         <tbody>
         <tr>
             <td class="align-middle">
-                <div class="card bg-light" style="height:50%">
-                    <div class="card-body">
-                        <table style="height: 100%; width: 100%">
-                            <tbody>
-                            <tr>
-                                <td class="align-middle">
-                                    <form method="post" id="searchForm">
-                                        <h1 class="text-center mb-5">{% translate "What are you looking for today?" %}</h1>
-                                        <div class="input-group input-group-lg">
-                                            <input type="text" name="search_text"
-                                                   class="form-control border-2 border-primary text-center shadow-sm"
-                                                   id="mainSearchBar" aria-label="{% translate 'Search for an item!' %}"
-                                                   placeholder="{% translate 'Type here!' %}">
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-0 col-lg-4"></div>
-                                            <div class="col-12 col-lg-4 d-grid mt-5">
-                                                {% translate "Search!" as search_text %}
-                                                {% button element="input" type="submit" id="mainSearchButton" variant="success" extra_classes="btn-block" value=search_text %}
-                                            </div>
-                                            <div class="col-0 col-lg-4"></div>
-                                        </div>
-                                    </form>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                <form method="post" id="searchForm">
+                    <h1 class="text-center mb-5">{% translate "What are you looking for today?" %}</h1>
+                    <div class="input-group input-group-lg">
+                        <input type="text" name="search_text"
+                               class="form-control border-2 border-primary text-center shadow-sm"
+                               id="mainSearchBar" aria-label="{% translate 'Search for an item!' %}"
+                               placeholder="{% translate 'Type here!' %}">
                     </div>
-                </div>
+                    {% #centered_column center_width=4 extra_classes="mt-5 mb-2" %}
+                            {% translate "Search!" as search_text %}
+                            {% button element="input" type="submit" id="mainSearchButton" variant="success" value=search_text block %}
+                    {% /centered_column %}
+                </form>
             </td>
         </tr>
         </tbody>
     </table>
-
+    {% /vertically_centered_card %}
 {% endblock %}

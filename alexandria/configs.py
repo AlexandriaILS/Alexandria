@@ -28,20 +28,15 @@ def init_site_data():
     return sites
 
 def load_site_config(domain: str) -> Dict:
-    if settings.SITE_DATA is None:
-        # this will only run the first time that it's called and will persist for the
-        # life of the server
-        settings.SITE_DATA = init_site_data()
-
     if domain in settings.DEFAULT_HOSTS or domain == settings.DEFAULT_HOST_KEY:
-        return settings.SITE_DATA['DEFAULT']
+        return settings.SITE_DATA[settings.DEFAULT_HOST_KEY]
 
     if domain in settings.SITE_DATA:
         config = settings.SITE_DATA[domain]
-        for key in settings.SITE_DATA["DEFAULT"].keys():
+        for key in settings.SITE_DATA[settings.DEFAULT_HOST_KEY].keys():
             # make sure that any missing fields are populated with the defaults
             if not config.get(key):
-                config[key] = settings.SITE_DATA["DEFAULT"][key]
+                config[key] = settings.SITE_DATA[settings.DEFAULT_HOST_KEY][key]
         return config
 
     return {}

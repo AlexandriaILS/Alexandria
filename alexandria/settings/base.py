@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+from collections.abc import Mapping
 import os
 import subprocess
 
@@ -30,7 +31,7 @@ SECRET_KEY = os.environ.get(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # actual validation handled in middleware
 ALLOWED_HOSTS = ["*"]
@@ -38,7 +39,34 @@ ALLOWED_HOSTS = ["*"]
 DEFAULT_HOSTS = ["localhost:8000", "staging.alexandrialibrary.dev"]
 DEFAULT_HOST_KEY = "default"
 DEFAULT_SYSTEM_HOST_KEY = "system"
-SITE_DATA = None  # this will get populated at runtime
+
+
+class LazySiteData(Mapping):
+    # from https://stackoverflow.com/a/47212782 with minor tweaks
+    def __init__(self, *args, **kw):
+        self._raw_dict = dict(*args, **kw)
+
+    def __getitem__(self, key):
+        if not self._raw_dict:
+            self.init_data()
+        return self._raw_dict.__getitem__(key)
+
+    def __iter__(self):
+        if not self._raw_dict:
+            self.init_data()
+        return iter(self._raw_dict)
+
+    def __len__(self):
+        if not self._raw_dict:
+            self.init_data()
+        return len(self._raw_dict)
+
+    def init_data(self):
+        from alexandria.configs import init_site_data
+        self._raw_dict = init_site_data()
+
+
+SITE_DATA = LazySiteData()  # this will get populated at runtime
 
 AUTH_USER_MODEL = "users.AlexandriaUser"
 LOGIN_URL = "/login/"
@@ -54,6 +82,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
+    "mathfilters",
     "widget_tweaks",
     "slippers",
     "taggit",

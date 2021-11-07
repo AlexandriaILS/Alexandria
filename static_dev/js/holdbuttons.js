@@ -1,13 +1,3 @@
-function createToastHTML(message, colorClass, id, itemTypeId, globalError) {
-    return `<div class="toast d-flex align-items-center ${colorClass} text-white ${globalError ? 'globalError' : ''}" id="toast${id}-${itemTypeId}" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-body">
-                    ${message}
-                </div>
-                <button type="button" class="btn-close ms-auto me-2" data-bs-dismiss="toast"
-                        aria-label="Close"></button>
-            </div>`
-}
-
 function updateHoldContext(el) {
     window.holdContext = {
         'itemId': el.dataset.itemId,
@@ -25,20 +15,19 @@ function processHold() {
     let locationId = document.getElementById('holdBranchSelector').value;
     let url = `/placehold/THING/${window.holdContext['itemId']}/${window.holdContext['subitemId']}/${locationId}/`;
     if (window.holdContext['isItem']) {
-        console.log("ITEM!")
         url = url.replace("THING", "item")
     } else {
-        console.log("RECORD!")
         url = url.replace("THING", "record")
     }
 
+    const toastId = `toast${window.holdContext['itemId']}-${window.holdContext['subitemId']}`;
 
-    if (document.getElementById(`toast${window.holdContext['itemId']}-${window.holdContext['subitemId']}`)) {
+    if (toastAlreadyExists(toastId)) {
         // The toast is already on screen and active, so don't fire the request again
         return
     }
 
-    if (document.getElementsByClassName("globalError").length > 0) {
+    if (toastGlobalErrorExists()) {
         // There is already a toast on screen showing the error, so don't add another toast
         // with the same error.
         return
@@ -72,6 +61,14 @@ function processHold() {
                 itemTypeId = window.holdContext['subitemId'],
                 globalError = true,
             )
+        } else if (err.status === 406) {
+            newtoast = createToastHTML(
+                DATA['already_checked_out'],
+                colorClass = "bg-danger",
+                id = window.holdContext['itemId'],
+                itemTypeId = window.holdContext['subitemId'],
+                globalError = true,
+            )
         } else if (parseInt(err.status.toString()[0]) === 5) {
             newtoast = createToastHTML(
                 `Something went wrong -- please contact ${LIBRARY_DATA['name']} IT support.`,
@@ -83,7 +80,7 @@ function processHold() {
             console.log(err)
         } else {
             newtoast = createToastHTML(
-                DATA['hold_error_message'],
+                DATA['general_error_message'],
                 colorClass = "bg-danger",
                 id = window.holdContext['itemId'],
                 itemTypeId = window.holdContext['subitemId']
@@ -92,7 +89,7 @@ function processHold() {
     }).finally(function () {
         document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
 
-        let toastEl = document.getElementById(`toast${window.holdContext['itemId']}-${window.holdContext['subitemId']}`);
+        let toastEl = document.getElementById(toastId);
         let toast = new bootstrap.Toast(toastEl, {'delay': 8000});
         toast.show();
 
@@ -102,7 +99,7 @@ function processHold() {
     })
 }
 
-function main() {
+function holdbuttonmain() {
     Array.from(document.getElementsByClassName('holdButtonInitial')).forEach(function (el) {
         el.onclick = function () {
             updateHoldContext(el);
@@ -111,7 +108,7 @@ function main() {
 }
 
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', main);
+    document.addEventListener('DOMContentLoaded', holdbuttonmain);
 } else {
-    main();
+    holdbuttonmain();
 }

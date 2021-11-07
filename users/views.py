@@ -60,7 +60,7 @@ def my_checkouts(request: HttpRequest) -> HttpResponse:
     # todo: finish next
     # https://stackoverflow.com/a/36166644
     # Item.objects.filter(Q(user_checked_out_to__isnull=False) | Q(branch_checked_out_to__isnull=False))
-    my_materials = Item.objects.filter(user_checked_out_to=request.user)
+    my_materials = Item.objects.filter(user_checked_out_to=request.user).order_by("due_date")
     return render(
         request, "user/my_checked_out.html", build_context({"checkouts": my_materials})
     )

@@ -1,5 +1,5 @@
 {
-  "DEFAULT": {
+  "default": {
     "name": "Neverland Library",
     "url": "https://alexandrialibrary.dev",
     "logo_url": null,
@@ -23,6 +23,7 @@
     "default_max_renews": 5,
     "default_checkout_duration_days": 21,
     "default_location_id": 1,
+    "default_renewal_delay_days": 7,
     "navbar": {
       "link_1_title": "Example!",
       "link_1_url": "https://example.com",

@@ -12,4 +12,9 @@ urlpatterns = [
         views.place_hold_on_item,
         name="place_hold_on_item",
     ),
+    path(
+        "renewhold/<int:item_id>/",
+        views.renew_hold_on_item,
+        name="renew_hold_on_item",
+    ),
 ]

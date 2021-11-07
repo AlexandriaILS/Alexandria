@@ -42,7 +42,11 @@ def search(request: WSGIRequest) -> HttpResponse:
         return render(request, "catalog/search.html", context)
 
     search_term = " ".join(
-        [i for i in search_term.split() if i not in request.context['ignored_search_terms']]
+        [
+            i
+            for i in search_term.split()
+            if i not in request.context["ignored_search_terms"]
+        ]
     )
 
     if settings.DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
@@ -51,7 +55,14 @@ def search(request: WSGIRequest) -> HttpResponse:
         results = ...
     else:
         results = (
-            filter_db(request, Record, Q(title__icontains=search_term) | Q(authors__icontains=search_term))
+            filter_db(
+                request,
+                Record,
+                Q(title__icontains=search_term)
+                | Q(authors__icontains=search_term)
+                | Q(item__barcode=search_term)
+                | Q(item__call_number=search_term),
+            )
             .exclude(
                 id__in=(
                     Record.objects.annotate(total_count=Count("item", distinct=True))
@@ -117,7 +128,9 @@ def import_marc_record_from_loc(request):
 
 def item_detail(request, item_id):
     record = get_object_or_404(Record, id=item_id, host=request.host)
-    return render(request, "catalog/item_detail.html", build_context({"record": record}, request))
+    return render(
+        request, "catalog/item_detail.html", build_context({"record": record}, request)
+    )
 
 
 class ItemEdit(LibraryStaffRequiredMixin, View):

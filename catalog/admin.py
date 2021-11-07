@@ -5,7 +5,7 @@ from catalog.models import Subject, Record, Item, Collection, ItemType, ItemType
 
 class ItemAdmin(admin.ModelAdmin):
     ordering = ("record__title",)
-    search_fields = ["record__title", "record__authors"]
+    search_fields = ["record__title", "record__authors", "barcode", "call_number"]
     exclude = (
         "marc_leader",
         "content_type",

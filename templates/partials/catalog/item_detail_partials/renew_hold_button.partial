@@ -1,0 +1,33 @@
+{% load i18n %}
+{% load mathfilters %}
+
+{% with item.can_renew as can_renew %}
+    {% if not can_renew %}
+        <span class="d-grid" tabindex="0" data-bs-toggle="tooltip"
+
+                {% if not item.has_available_renewals %}
+              title="{% translate 'No renewals remaining' %}"
+                {% elif item.is_on_hold %}
+                    title="{% translate 'Item has been requested' %}"
+                {% else %}
+                    {% with item.get_renewal_availability_date as renewal_allow_date %}
+                        title="
+                        {% blocktranslate %}Eligible for renewal on {{ renewal_allow_date }}{% endblocktranslate %}"
+                    {% endwith %}
+                {% endif %}>
+    {% endif %}
+<div data-subitem-id="{{ item.type.id }}" data-item-id="{{ item.id }}"
+     data-title="{{ item.record.title }}" data-subtitle="{{ item.record.subtitle }}"
+     data-is-item="1" {% if can_renew %}onclick="processRenew(this)"{% endif %}
+     class="btn renewButton {% if can_renew %}btn-primary{% else %}btn-secondary disabled{% endif %}">
+        {% translate "Renew Hold" %}</div>
+{% if not can_renew %}
+    </span>
+{% endif %}
+    {% if not item.is_on_hold %}
+    {# Translators: this is a heading that shows how many renewals the person has left. #}
+    <p>{{ item.get_max_renewal_count|sub:item.renewal_count }} {% translate "renewals left" %}</p>
+    {% else %}
+        <p>{% translate "This item is on hold for someone else." %}</p>
+    {% endif %}
+{% endwith %}

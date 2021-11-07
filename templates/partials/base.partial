@@ -33,7 +33,9 @@
 </main>
 
 {% include 'partials/footer.partial' %}
+<script src="{% static 'js/toastutils.js' %}" async defer></script>
 <script src="{% static 'js/holdbuttons.js' %}" async defer></script>
+<script src="{% static 'js/renewbuttons.js' %}" async defer></script>
 {% endblock %}
 
 {{ alerts|json_script:"alert-data" }}

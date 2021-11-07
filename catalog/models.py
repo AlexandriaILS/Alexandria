@@ -1,18 +1,19 @@
-from datetime import timedelta
 import re
+from datetime import date, timedelta
 
 import pymarc
+import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType as DjangoContentType
 from django.db import models
-from django.utils.translation import ugettext as _
 from django.utils import timezone
+from django.utils.translation import ugettext as _
 from taggit.managers import TaggableManager
-import requests
 
 from catalog import openlibrary
+from holds.models import Hold
 from users.models import BranchLocation
 
 
@@ -122,6 +123,7 @@ class ItemType(models.Model):
     number_of_days_per_checkout = models.IntegerField(null=True, blank=True)
     # Movies might only have one renew, but books might have five.
     number_of_allowed_renews = models.IntegerField(null=True, blank=True)
+    number_of_concurrent_checkouts = models.IntegerField(null=True, blank=True)
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
     icon_name = models.CharField(
         _("icon name"),
@@ -140,7 +142,9 @@ class ItemType(models.Model):
         help_text=(
             "Don't have a matching option in the Material Design icons? Copy the full"
             " SVG html here to display that instead. WARNING: must be fully formed SVG"
-            " element; it will not be saved otherwise."
+            " element; it will not be saved otherwise. Make sure that your `path`"
+            ' tag has `fill="currentColor"` in it so that colors work correctly and'
+            " ensure that it displays well as 36px by 36px."
         ),
     )
 
@@ -349,7 +353,7 @@ class Item(models.Model):
     sudoc = models.CharField(_("sudoc"), max_length=30, blank=True, null=True)
     # date updated when material is checked in
     last_checked_out = models.DateTimeField(
-        _("last_checked_out"), blank=None, null=True
+        _("last_checked_out"), default=timezone.datetime(year=1970, month=1, day=1)
     )
     # Is this specific item actually allowed to be checked out?
     can_circulate = models.BooleanField(_("can_circulate"), default=True)
@@ -379,7 +383,7 @@ class Item(models.Model):
     renewal_count = models.IntegerField(default=0)
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         if self.type:
             if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
                 try:
@@ -426,12 +430,61 @@ class Item(models.Model):
         # TODO
         ...
 
-    def is_checked_out(self):
+    def is_checked_out(self) -> bool:
         return isinstance(self.checked_out_to, get_user_model())
 
-    def is_checked_out_to_system(self):
+    def is_checked_out_to_system(self) -> bool:
         if hasattr(self.checked_out_to, "host"):
             return self.checked_out_to.host == settings.DEFAULT_SYSTEM_HOST_KEY
+
+    def calculate_due_date(self, start_date: date=None) -> date:
+        # This function does not set the due date because it's used to show
+        # hypotheticals on the frontend. Save the output of this function to
+        # self.due_date to actually set the due date.
+        if not start_date:
+            start_date = timezone.now().date()
+        checkout_renew_days = self.type.number_of_days_per_checkout or settings.SITE_DATA[self.host].get('default_checkout_duration_days')
+        return start_date + timedelta(days=checkout_renew_days)
+
+    def calculate_renewal_due_date(self) -> date:
+        return self.calculate_due_date(start_date=self.due_date)
+
+    def get_due_date_color_class(self) -> str:
+        # Return a bootstrap theme color based on how much time is left until the
+        # item is due.
+        now = timezone.now().date()
+        if self.due_date < now:
+            # that sucker's overdue
+            return "danger text-light"  # red
+        if self.due_date < now + timedelta(days=3):
+            return "warning text-dark"  # orange
+        return "secondary"  # grey
+
+    def can_renew(self):
+        # easy to access general "hey is this possible" function.
+        return all([self.within_renewal_period(), self.has_available_renewals(), not self.is_on_hold()])
+
+    def within_renewal_period(self):
+        day_delay = settings.SITE_DATA[self.host].get('default_renewal_delay_days')
+        now = timezone.now().date()
+        return self.due_date < now + timedelta(days=day_delay)
+
+    def has_available_renewals(self):
+        if not self.renewal_count:
+            self.renewal_count = 0
+        return self.renewal_count < self.get_max_renewal_count()
+
+    def get_renewal_availability_date(self):
+        # For when the renewal button turns on. Controlled by the delay
+        # in the configs for the library.
+        day_delay = settings.SITE_DATA[self.host].get('default_renewal_delay_days')
+        return self.due_date - timedelta(days=day_delay)
+
+    def get_max_renewal_count(self):
+        return self.type.number_of_allowed_renews or settings.SITE_DATA[self.host].get('default_max_renews')
+
+    def is_on_hold(self):
+        return Hold.objects.filter(item=self).count() > 0
 
     def __str__(self):
         string = f"{self.record.title} | {self.record.authors}"

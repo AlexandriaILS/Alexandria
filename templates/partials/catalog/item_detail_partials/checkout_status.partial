@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<span class="material-icons me-1">place</span>
+{% if item.is_checked_out_to_system %}
+    {% translate "Unavailable" %}
+{% elif item.is_checked_out %}
+    {% translate "Checked Out" %}
+{% else %}
+    {{ item.home_location.name }}
+{% endif %}

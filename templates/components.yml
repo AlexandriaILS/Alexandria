@@ -2,4 +2,4 @@ components:
   button: 'components/button.component'
   centered_column: 'components/centered_column.component'
   modal: 'components/modal.component'
-  item_detail: 'components/item_detail_list.component'
+  vertically_centered_card: 'components/vertically_centered_card.component'

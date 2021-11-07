@@ -105,7 +105,7 @@
                     {% endif %}
                 {% endfor %}
                     {% for obj in type.list %}
-                        {% item_detail record=item item=obj %}
+                        {% include 'partials/catalog/item_detail_list.partial' with record=item item=obj %}
                         <hr>
                     {% endfor %}
                 </div>

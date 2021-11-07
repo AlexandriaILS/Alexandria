@@ -1,0 +1,2 @@
+<span class="material-icons me-1">access_alarms</span>
+<div class="badge bg-{{ item.get_due_date_color_class }} fs-5">{{ item.due_date }}</div>

@@ -1,0 +1,2 @@
+<span class="material-icons me-1">book</span>
+{{ item.pubyear }}, {{ item.publisher }}

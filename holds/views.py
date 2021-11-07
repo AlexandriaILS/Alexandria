@@ -13,6 +13,7 @@ from utils.db import filter_db
 
 SUCCESS = 200
 HOLD_ALREADY_EXISTS = 409
+YOU_ALREADY_HAVE_THIS_CHECKED_OUT = 406
 
 
 def get_hold_queue_number(new_hold: Hold) -> int:
@@ -33,6 +34,10 @@ def create_hold(request, item, location, specific_copy=False) -> Union[HttpRespo
         "destination": location,
         "item": item,
     }
+
+    # sanity check: can't put something on hold that you already have checked out.
+    if item.checked_out_to == request.user:
+        return HttpResponse(status=YOU_ALREADY_HAVE_THIS_CHECKED_OUT)
 
     existing = filter_db(request, Hold, **filters).first()
     if existing:
@@ -63,6 +68,7 @@ def place_hold_on_record(
     item_type = get_object_or_404(ItemType, id=item_type_id)
     target = get_object_or_404(Record, id=item_id)
     location = get_object_or_404(BranchLocation, id=location_id)
+
     # First, check to see if there's a copy in the location that's the hold will
     # be picked up at.
     item = (
@@ -93,7 +99,7 @@ def place_hold_on_record(
 
 
 def place_hold_on_item(
-    request: WSGIRequest, item_id: int, obj_type: int, location_id: int
+    request: WSGIRequest, item_id: int, item_type_id: int, location_id: int
 ) -> Union[JsonResponse, HttpResponse]:
     # TODO: We don't actually need obj_type here because it's only used for Records,
     #  so it should be adjusted in holdbuttons.js, the route, and here.
@@ -102,3 +108,17 @@ def place_hold_on_item(
     target = get_object_or_404(Item, id=item_id)
     location = get_object_or_404(BranchLocation, id=location_id)
     return create_hold(request, target, location, specific_copy=True)
+
+
+def renew_hold_on_item(request: WSGIRequest, item_id: int):
+    if not request.user.is_authenticated:
+        return HttpResponse(status=401)
+
+    target = get_object_or_404(Item, id=item_id, host=request.host)
+
+    if target.can_renew():
+        target.renewal_count += 1
+        target.due_date = target.calculate_renewal_due_date()
+        target.save()
+        return JsonResponse(status=200, data={'new_due_date': target.due_date.strftime('%b. %d, %Y')})
+    return HttpResponse(status=403)

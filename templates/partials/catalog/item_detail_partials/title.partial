@@ -1,0 +1,3 @@
+<span class="material-icons me-1">
+info</span>
+{{ item.record.title }}, {{ item.record.authors }} ({{ item.pubyear }})

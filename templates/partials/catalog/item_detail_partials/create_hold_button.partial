@@ -1,0 +1,7 @@
+{% load i18n %}
+
+<div data-subitem-id="{{ item.type.id }}" data-item-id="{{ item.id }}"
+     data-title="{{ item.record.title }}" data-subtitle="{{ item.record.subtitle }}"
+     data-is-item="1" data-bs-target="#holdModal" data-bs-toggle="modal"
+     class="btn btn-block btn-outline-primary holdButtonInitial">
+    {% translate "Place hold" %}</div>

@@ -43,7 +43,7 @@ class AlexandriaUserCreationForm(UserCreationForm):
 class AlexandriaUserAdmin(UserAdmin):
     fieldsets = (
         (None, {"fields": ("card_number", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "last_name", "email")}),
+        (_("Personal info"), {"fields": ("first_name", "last_name", "email", "default_branch")}),
         (
             _("Permissions"),
             {
