@@ -71,47 +71,49 @@
                 </div>
             </div>
         </div>
-    <p>{% translate "Total copies" %}: {{ record.get_valid_items.count }}</p>
+        <p>{% translate "Total copies" %}: {{ record.get_valid_items.count }}</p>
     </div>
     <div class="container">
-    {% with record.get_number_available_by_type as type_counts %}
-        {% regroup record.get_valid_items by type as item_list %}
-        <ul class="nav nav-pills nav-justified flex-sm-row" id="myTab" role="tablist">
-            {% for type in item_list %}
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link flex-sm-fill justify-content-center{% if type.grouper == record.type %} active{% endif %}"
-                            id="tab-{{ type.grouper.id }}" data-bs-toggle="tab"
-                            data-bs-target="#content-{{ type.grouper.id }}" type="button"
-                            role="tab" aria-controls="{{ type.grouper.name }}" aria-selected="true">
-                        {% if type.grouper.icon_name %}
-                            <span class="material-icons"
-                                  style="font-size: 36px;">{{ type.grouper.icon_name }}</span>
-                        {% elif type.grouper.icon_svg %}
-                            <div style="height:2.65em;">{{ type.grouper.icon_svg|safe }}</div>
-                        {% endif %}
-                    </button>
-                </li>
-            {% endfor %}
-        </ul>
-        <hr>
-        <div class="tab-content" id="myTabContent">
-            {% for type in item_list %}
-                <div class="tab-pane fade{% if type.grouper == record.type %} show active{% endif %}"
-                     id="content-{{ type.grouper.id }}" role="tabpanel"
-                     aria-labelledby="tab-{{ type.grouper.id }}">
-                {% for type_option, counts in type_counts.items %}
-                    {% if type_option == type.grouper %}
-                        <div class="mt-2 fs-5">{% translate "Total copies available: " %}{{ counts }}</div>
-                    {% endif %}
+        {% with record.get_number_available_by_type as type_counts %}
+            {% regroup record.get_valid_items by type as item_list %}
+            <ul class="nav nav-pills nav-justified flex-sm-row" id="myTab" role="tablist"
+                {% if type_counts|length_is:1 %}style="display: none"{% endif %}>
+                {% for type in item_list %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link flex-sm-fill justify-content-center{% if type.grouper == record.type %} active{% endif %}"
+                                id="tab-{{ type.grouper.id }}" data-bs-toggle="tab"
+                                data-bs-target="#content-{{ type.grouper.id }}" type="button"
+                                role="tab" aria-controls="{{ type.grouper.name }}" aria-selected="true">
+                            {% if type.grouper.icon_name %}
+                                <span class="material-icons"
+                                      style="font-size: 36px;">{{ type.grouper.icon_name }}</span>
+                            {% elif type.grouper.icon_svg %}
+                                <div style="height:2.65em;">{{ type.grouper.icon_svg|safe }}</div>
+                            {% endif %}
+                        </button>
+                    </li>
                 {% endfor %}
-                    {% for obj in type.list %}
-                        {% include 'partials/catalog/item_detail_list.partial' with record=item item=obj %}
-                        <hr>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-        </div>
-    {% endwith %}
+            </ul>
+
+            <hr>
+            <div class="tab-content" id="myTabContent">
+                {% for type in item_list %}
+                    <div class="tab-pane fade{% if type.grouper == record.type %} show active{% endif %}"
+                         id="content-{{ type.grouper.id }}" role="tabpanel"
+                         aria-labelledby="tab-{{ type.grouper.id }}">
+                        {% for type_option, counts in type_counts.items %}
+                            {% if type_option == type.grouper %}
+                                <div class="mt-2 fs-5">{% translate "Total copies available: " %}{{ counts }}</div>
+                            {% endif %}
+                        {% endfor %}
+                        {% for obj in type.list %}
+                            {% include 'partials/catalog/item_detail_list.partial' with record=item item=obj %}
+                            <hr>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endwith %}
     </div>
     {% include 'partials/catalog/hold_location.partial' %}
 {% endblock %}
