@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('catalog', '0022_itemtype_icon_svg'),
+        ("catalog", "0022_itemtype_icon_svg"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='item',
-            name='status',
+            model_name="item",
+            name="status",
         ),
     ]

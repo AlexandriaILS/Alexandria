@@ -6,43 +6,43 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('catalog', '0018_auto_20210703_0404'),
+        ("catalog", "0018_auto_20210703_0404"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bibliographiclevel',
-            name='host',
-            field=models.CharField(default='default', max_length=100),
+            model_name="bibliographiclevel",
+            name="host",
+            field=models.CharField(default="default", max_length=100),
         ),
         migrations.AddField(
-            model_name='collection',
-            name='host',
-            field=models.CharField(default='default', max_length=100),
+            model_name="collection",
+            name="host",
+            field=models.CharField(default="default", max_length=100),
         ),
         migrations.AddField(
-            model_name='item',
-            name='host',
-            field=models.CharField(default='default', max_length=100),
+            model_name="item",
+            name="host",
+            field=models.CharField(default="default", max_length=100),
         ),
         migrations.AddField(
-            model_name='itemtype',
-            name='host',
-            field=models.CharField(default='default', max_length=100),
+            model_name="itemtype",
+            name="host",
+            field=models.CharField(default="default", max_length=100),
         ),
         migrations.AddField(
-            model_name='itemtypebase',
-            name='host',
-            field=models.CharField(default='default', max_length=100),
+            model_name="itemtypebase",
+            name="host",
+            field=models.CharField(default="default", max_length=100),
         ),
         migrations.AddField(
-            model_name='record',
-            name='host',
-            field=models.CharField(default='default', max_length=100),
+            model_name="record",
+            name="host",
+            field=models.CharField(default="default", max_length=100),
         ),
         migrations.AddField(
-            model_name='subject',
-            name='host',
-            field=models.CharField(default='default', max_length=100),
+            model_name="subject",
+            name="host",
+            field=models.CharField(default="default", max_length=100),
         ),
     ]

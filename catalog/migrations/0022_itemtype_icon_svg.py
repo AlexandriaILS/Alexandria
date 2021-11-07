@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('catalog', '0021_itemtype_icon_name'),
+        ("catalog", "0021_itemtype_icon_name"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='itemtype',
-            name='icon_svg',
+            model_name="itemtype",
+            name="icon_svg",
             field=models.TextField(blank=True, null=True),
         ),
     ]

@@ -6,13 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('catalog', '0019_auto_20210703_0503'),
+        ("catalog", "0019_auto_20210703_0503"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='item',
-            name='status',
-            field=models.CharField(choices=[('onhd', 'On Hold'), ('trst', 'In Transit'), ('rdfp', 'Ready for Pickup'), ('shel', 'Shelving Cart'), ('mend', 'Mending'), ('disc', 'Discarded'), ('chin', 'Checked In')], default='chin', max_length=4, verbose_name='status'),
+            model_name="item",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("onhd", "On Hold"),
+                    ("trst", "In Transit"),
+                    ("rdfp", "Ready for Pickup"),
+                    ("shel", "Shelving Cart"),
+                    ("mend", "Mending"),
+                    ("disc", "Discarded"),
+                    ("chin", "Checked In"),
+                ],
+                default="chin",
+                max_length=4,
+                verbose_name="status",
+            ),
         ),
     ]

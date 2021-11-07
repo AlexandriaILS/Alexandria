@@ -7,24 +7,29 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0007_auto_20210703_0404'),
-        ('catalog', '0017_auto_20210629_0407'),
+        ("users", "0007_auto_20210703_0404"),
+        ("catalog", "0017_auto_20210629_0407"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='item',
-            name='home_location',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='users.branchlocation'),
+            model_name="item",
+            name="home_location",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="users.branchlocation",
+            ),
         ),
         migrations.AlterField(
-            model_name='itemtype',
-            name='number_of_allowed_renews',
+            model_name="itemtype",
+            name="number_of_allowed_renews",
             field=models.IntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='itemtype',
-            name='number_of_days_per_checkout',
+            model_name="itemtype",
+            name="number_of_days_per_checkout",
             field=models.IntegerField(blank=True, null=True),
         ),
     ]

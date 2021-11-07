@@ -437,13 +437,16 @@ class Item(models.Model):
         if hasattr(self.checked_out_to, "host"):
             return self.checked_out_to.host == settings.DEFAULT_SYSTEM_HOST_KEY
 
-    def calculate_due_date(self, start_date: date=None) -> date:
+    def calculate_due_date(self, start_date: date = None) -> date:
         # This function does not set the due date because it's used to show
         # hypotheticals on the frontend. Save the output of this function to
         # self.due_date to actually set the due date.
         if not start_date:
             start_date = timezone.now().date()
-        checkout_renew_days = self.type.number_of_days_per_checkout or settings.SITE_DATA[self.host].get('default_checkout_duration_days')
+        checkout_renew_days = (
+            self.type.number_of_days_per_checkout
+            or settings.SITE_DATA[self.host].get("default_checkout_duration_days")
+        )
         return start_date + timedelta(days=checkout_renew_days)
 
     def calculate_renewal_due_date(self) -> date:
@@ -462,10 +465,16 @@ class Item(models.Model):
 
     def can_renew(self):
         # easy to access general "hey is this possible" function.
-        return all([self.within_renewal_period(), self.has_available_renewals(), not self.is_on_hold()])
+        return all(
+            [
+                self.within_renewal_period(),
+                self.has_available_renewals(),
+                not self.is_on_hold(),
+            ]
+        )
 
     def within_renewal_period(self):
-        day_delay = settings.SITE_DATA[self.host].get('default_renewal_delay_days')
+        day_delay = settings.SITE_DATA[self.host].get("default_renewal_delay_days")
         now = timezone.now().date()
         return self.due_date < now + timedelta(days=day_delay)
 
@@ -477,11 +486,13 @@ class Item(models.Model):
     def get_renewal_availability_date(self):
         # For when the renewal button turns on. Controlled by the delay
         # in the configs for the library.
-        day_delay = settings.SITE_DATA[self.host].get('default_renewal_delay_days')
+        day_delay = settings.SITE_DATA[self.host].get("default_renewal_delay_days")
         return self.due_date - timedelta(days=day_delay)
 
     def get_max_renewal_count(self):
-        return self.type.number_of_allowed_renews or settings.SITE_DATA[self.host].get('default_max_renews')
+        return self.type.number_of_allowed_renews or settings.SITE_DATA[self.host].get(
+            "default_max_renews"
+        )
 
     def is_on_hold(self):
         return Hold.objects.filter(item=self).count() > 0

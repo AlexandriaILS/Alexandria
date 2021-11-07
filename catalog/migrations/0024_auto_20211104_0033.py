@@ -6,18 +6,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('catalog', '0023_remove_item_status'),
+        ("catalog", "0023_remove_item_status"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='itemtype',
-            name='icon_name',
-            field=models.CharField(blank=True, help_text="The name of the Material Design icon that you'd like to display in the catalog for this type. https://fonts.google.com/icons?selected=Material+Icons", max_length=30, null=True, verbose_name='icon name'),
+            model_name="itemtype",
+            name="icon_name",
+            field=models.CharField(
+                blank=True,
+                help_text="The name of the Material Design icon that you'd like to display in the catalog for this type. https://fonts.google.com/icons?selected=Material+Icons",
+                max_length=30,
+                null=True,
+                verbose_name="icon name",
+            ),
         ),
         migrations.AlterField(
-            model_name='itemtype',
-            name='icon_svg',
-            field=models.TextField(blank=True, help_text="Don't have a matching option in the Material Design icons? Copy the full SVG html here to display that instead. WARNING: must be fully formed SVG element; it will not be saved otherwise.", null=True, verbose_name='icon svg'),
+            model_name="itemtype",
+            name="icon_svg",
+            field=models.TextField(
+                blank=True,
+                help_text="Don't have a matching option in the Material Design icons? Copy the full SVG html here to display that instead. WARNING: must be fully formed SVG element; it will not be saved otherwise.",
+                null=True,
+                verbose_name="icon svg",
+            ),
         ),
     ]
