@@ -72,7 +72,8 @@ def search(request: WSGIRequest) -> HttpResponse:
                 )
             )
             .exclude(id__in=Record.objects.filter(item__isnull=True))
-            .order_by(Lower("title")).distinct()
+            .order_by(Lower("title"))
+            .distinct()
         )
     results_per_page = get_results_per_page(request)
 
