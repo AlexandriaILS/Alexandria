@@ -8,10 +8,10 @@
                 {% if not item.has_available_renewals %}
               title="{% translate 'No renewals remaining' %}"
                 {% elif item.is_on_hold %}
-                    title="{% translate 'Item has been requested' %}"
+              title="{% translate 'Item has been requested' %}"
                 {% else %}
                     {% with item.get_renewal_availability_date as renewal_allow_date %}
-                        title="
+              title="
                         {% blocktranslate %}Eligible for renewal on {{ renewal_allow_date }}{% endblocktranslate %}"
                     {% endwith %}
                 {% endif %}>
@@ -25,8 +25,12 @@
     </span>
 {% endif %}
     {% if not item.is_on_hold %}
-    {# Translators: this is a heading that shows how many renewals the person has left. #}
-    <p>{{ item.get_max_renewal_count|sub:item.renewal_count }} {% translate "renewals left" %}</p>
+        {# Translators: this is a heading that shows how many renewals the person has left. #}
+        <p>{% blocktranslate count count=item.get_max_renewal_count|sub:item.renewal_count %}
+            {{ count }} renewal left
+            {% plural %}
+            {{ count }} renewals left
+        {% endblocktranslate %}</p>
     {% else %}
         <p>{% translate "This item is on hold for someone else." %}</p>
     {% endif %}
