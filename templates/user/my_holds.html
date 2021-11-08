@@ -1,1 +1,23 @@
 {% extends 'partials/base.partial' %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{% translate "My Holds" %}</h1>
+    {% if not holds %}
+        {% #centered_column %}
+        <div class="card shadow mt-5">
+            <div class="card-body">
+                <h5 class="card-title">{% translate "You don't have anything on hold!" %}</h5>
+                    {% url "homepage" as homepage %}
+                    {% #button element='a' extra_classes="mt-3" href=homepage variant="primary" block %}{% translate "Home" %}{% /button %}
+            </div>
+        </div>
+        {% /centered_column %}
+    {% else %}
+        {% for hold in holds %}
+            {% include 'partials/catalog/item_detail_list.partial' with item=hold.item checkout_view=True %}
+            <hr>
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}
