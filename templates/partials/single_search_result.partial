@@ -2,16 +2,28 @@
 {% load i18n %}
 
 <div class="container mt-3">
+    <script>
+        window.onresize = displayWindowSize;
+        window.onload = displayWindowSize;
+
+        function displayWindowSize() {
+            myWidth = window.innerWidth;
+            myHeight = window.innerHeight;
+            // your size calculation code here
+            document.getElementById("dimensions").innerHTML = myWidth + "x" + myHeight;
+        };
+    </script>
+    <div id="dimensions"></div>
     <div class="row">
-        <div class="col-xl-6 col-xxl-8">
+        <div class="col-xl-8 col-xxl-8">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-sm-5 col-lg-3 col-xl-3">
+                        <div class="col-sm-5 col-md-4 col-lg-4 col-xl-4">
                             {% include 'partials/cover_image.partial' with item=item %}
                         </div>
-                        <div class="col-sm-5 col-lg-7 col-xl-7">
-                            <h5 class="card-title">
+                        <div class="col-sm-4 col-md-6 col-lg-6 col-xl-6">
+                            <h5 class="card-title mt-3">
                                 {{ item.title }}{% if item.subtitle %}: {{ item.subtitle }}{% endif %}</h5>
                             {% if item.authors %}<h6 class="card-subtitle mb-2">{{ item.authors }}</h6>{% endif %}
                             <br>{{ item.call_number }}
@@ -25,7 +37,7 @@
                                 <div class="col-sm-4 col-md-6 col-lg-8"></div>
                             </div>
                         </div>
-                        <div class="col-sm-2 col-lg-2 col-xl-2">
+                        <div class="col-sm-3 col-md-2 col-lg-2 col-xl-2">
                             <h2 class="text-center"><span class="badge bg-secondary">{{ item.type.name }}</span></h2>
                         </div>
                     </div>
@@ -53,14 +65,17 @@
                                         <div class="col-7">
                                             <div class="d-grid">
                                                 {% if request.user.is_authenticated %}
-                                                <div data-subitem-id="{{ subitem.1 }}" data-item-id="{{ item.id }}"
-                                                     data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
-                                                     data-bs-target="#holdModal" data-bs-toggle="modal"
-                                                     class="btn btn-block btn-primary holdButtonInitial">
-                                                    {% translate "Put this on hold" %}
-                                                </div>
+                                                    <div data-subitem-id="{{ subitem.1 }}" data-item-id="{{ item.id }}"
+                                                         data-title="{{ item.title }}"
+                                                         data-subtitle="{{ item.subtitle }}"
+                                                         data-bs-target="#holdModal" data-bs-toggle="modal"
+                                                         class="btn btn-block btn-primary holdButtonInitial">
+                                                        {% translate "Put this on hold" %}
+                                                    </div>
                                                 {% else %}
-                                                    <a href="{% url 'login' %}?next={{ request.path }}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}" class="btn btn-block btn-primary">{% translate "Put this on hold" %}</a>
+                                                    <a href="{% url 'login' %}?next=
+                                                            {{ request.path }}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}"
+                                                       class="btn btn-block btn-primary">{% translate "Put this on hold" %}</a>
                                                 {% endif %}
                                             </div>
                                         </div>
