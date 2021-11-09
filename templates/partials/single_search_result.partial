@@ -2,18 +2,6 @@
 {% load i18n %}
 
 <div class="container mt-3">
-    <script>
-        window.onresize = displayWindowSize;
-        window.onload = displayWindowSize;
-
-        function displayWindowSize() {
-            myWidth = window.innerWidth;
-            myHeight = window.innerHeight;
-            // your size calculation code here
-            document.getElementById("dimensions").innerHTML = myWidth + "x" + myHeight;
-        };
-    </script>
-    <div id="dimensions"></div>
     <div class="row">
         <div class="col-xl-8 col-xxl-8">
             <div class="card shadow-sm">
