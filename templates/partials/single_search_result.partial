@@ -52,12 +52,16 @@
                                         </div>
                                         <div class="col-7">
                                             <div class="d-grid">
+                                                {% if request.user.is_authenticated %}
                                                 <div data-subitem-id="{{ subitem.1 }}" data-item-id="{{ item.id }}"
                                                      data-title="{{ item.title }}" data-subtitle="{{ item.subtitle }}"
                                                      data-bs-target="#holdModal" data-bs-toggle="modal"
                                                      class="btn btn-block btn-primary holdButtonInitial">
                                                     {% translate "Put this on hold" %}
                                                 </div>
+                                                {% else %}
+                                                    <a href="{% url 'login' %}?next={{ request.path }}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}" class="btn btn-block btn-primary">{% translate "Put this on hold" %}</a>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
