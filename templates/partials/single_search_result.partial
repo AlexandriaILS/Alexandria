@@ -61,9 +61,10 @@
                                                         {% translate "Put this on hold" %}
                                                     </div>
                                                 {% else %}
-                                                    <a href="{% url 'login' %}?next=
-                                                            {{ request.path }}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}"
+                                                    {# @formatter:off #}
+                                                    <a href="{% url 'login' %}?next={{ request.path }}{% if request.GET.q %}?q={{ request.GET.q }}{% endif %}"
                                                        class="btn btn-block btn-primary">{% translate "Put this on hold" %}</a>
+                                                    {# @formatter:on #}
                                                 {% endif %}
                                             </div>
                                         </div>
