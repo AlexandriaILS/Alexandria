@@ -6,7 +6,7 @@ import os
 
 logger = logging.getLogger("alexandria")
 env = os.environ.get("ENVIRONMENT", None)
-logger.info("testing")
+
 if env == "local":
     from alexandria.settings.local import *
 elif env == "testing":

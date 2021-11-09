@@ -14,7 +14,7 @@
     <div class="col-md-6 mt-4">
         <div class="row">
             <div class="col d-flex align-items-center">
-                {% if checkout_view %}
+                {% if checkout_view or hold_view %}
                     {% include 'partials/catalog/item_detail_partials/title.partial' %}
                 {% else %}
                     {% include 'partials/catalog/item_detail_partials/publisher_info.partial' %}
@@ -23,6 +23,8 @@
             <div class="col d-flex align-items-center">
                 {% if checkout_view %}
                     {% include 'partials/catalog/item_detail_partials/due_date.partial' %}
+                {% elif hold_view %}
+                    {% include 'partials/catalog/item_detail_partials/hold_status.partial' %}
                 {% else %}
                     {% include 'partials/catalog/item_detail_partials/checkout_status.partial' %}
                 {% endif %}
@@ -44,6 +46,8 @@
                 <div class="d-grid gap-2">
                     {% if checkout_view %}
                         {% include 'partials/catalog/item_detail_partials/renew_hold_button.partial' %}
+                    {% elif hold_view %}
+                        {% include 'partials/catalog/item_detail_partials/cancel_hold_button.partial' %}
                     {% else %}
                         {% include 'partials/catalog/item_detail_partials/create_hold_button.partial' %}
                     {% endif %}

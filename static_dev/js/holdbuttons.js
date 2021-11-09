@@ -8,6 +8,75 @@ function updateHoldContext(el) {
     }
 }
 
+function cancelHold(el) {
+    const DATA = JSON.parse(document.getElementById('alert-data').textContent);
+    const LIBRARY_DATA = JSON.parse(document.getElementById('library-data').textContent);
+
+    const url = `/deletehold/${el.dataset.holdId}/`;
+
+    if (toastGlobalErrorExists()) {
+        return
+    }
+
+    const toastId = `toast${el.dataset.holdId}-0`;
+
+    let newtoast;
+    fetch(url).then(function (response) {
+        return response.ok ? response : Promise.reject(response);
+    }).then(function () {
+        // The response was successful, so reload the page to refresh the info.
+        // If folks are going to be cancelling a ton of holds at once, then there
+        // should be a better way to do this, but for now this is clean and will
+        // work nicely.
+        window.location.reload();
+    }).catch(function (err) {
+         if (err.status === 401) {
+            newtoast = createToastHTML(
+                DATA['not_logged_in'],
+                colorClass = "bg-danger",
+                id = el.dataset.holdId,
+                itemTypeId = 0,
+                globalError = true,
+            )
+        } else if (err.status === 403) {
+            newtoast = createToastHTML(
+                DATA['hold_insufficient_permissions'],
+                colorClass = "bg-danger",
+                id = el.dataset.holdId,
+                itemTypeId = 0,
+                globalError = true,
+            )
+        } else if (parseInt(err.status.toString()[0]) === 5) {
+             console.log('hi');
+            newtoast = createToastHTML(
+                `Something went wrong -- please contact ${LIBRARY_DATA['name']} IT support.`,
+                colorClass = "bg-danger",
+                id = el.dataset.holdId,
+                itemTypeId = 0,
+                globalError = true,
+            )
+            console.log(err)
+        } else {
+            newtoast = createToastHTML(
+                DATA['general_error_message'],
+                colorClass = "bg-danger",
+                id = el.dataset.holdId,
+                itemTypeId = 0,
+            )
+        }
+    }).finally(function () {
+        document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
+
+        let toastEl = document.getElementById(toastId);
+        let toast = new bootstrap.Toast(toastEl, {'delay': 8000});
+        toast.show();
+
+        toastEl.addEventListener('hidden.bs.toast', function (event) {
+            toastEl.remove();
+        });
+    })
+}
+
 function processHold() {
     const DATA = JSON.parse(document.getElementById('alert-data').textContent);
     const LIBRARY_DATA = JSON.parse(document.getElementById('library-data').textContent);

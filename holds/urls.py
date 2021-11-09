@@ -17,4 +17,5 @@ urlpatterns = [
         views.renew_hold_on_item,
         name="renew_hold_on_item",
     ),
+    path("deletehold/<int:hold_id>/", views.delete_hold, name="delete_hold"),
 ]

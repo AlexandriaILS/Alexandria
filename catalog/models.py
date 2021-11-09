@@ -11,11 +11,14 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from taggit.managers import TaggableManager
+import pytz
 
 from catalog import openlibrary
 from holds.models import Hold
 from users.models import BranchLocation
 
+
+UTC = pytz.timezone('utc')
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
@@ -353,7 +356,7 @@ class Item(models.Model):
     sudoc = models.CharField(_("sudoc"), max_length=30, blank=True, null=True)
     # date updated when material is checked in
     last_checked_out = models.DateTimeField(
-        _("last_checked_out"), default=timezone.datetime(year=1970, month=1, day=1)
+        _("last_checked_out"), default=UTC.localize(timezone.datetime(year=1970, month=1, day=1))
     )
     # Is this specific item actually allowed to be checked out?
     can_circulate = models.BooleanField(_("can_circulate"), default=True)

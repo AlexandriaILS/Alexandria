@@ -21,6 +21,7 @@ def build_context(data: Dict = None, request=None) -> Dict:
                 "hold_success_message": _(
                     "Hold placed for (itemType) — (itemTitle)! You're number (holdNum) in queue!"
                 ),
+                "hold_insufficient_permissions": _("Sorry, but you can't change this hold."),
                 "already_checked_out": _(
                     "You can't put a hold on something you already have checked out."
                 ),

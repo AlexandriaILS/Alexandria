@@ -1,1 +1,19 @@
 {% extends 'partials/base.partial' %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{% translate "My Fees" %}</h1>
+    {% if not fees %}
+        {% #centered_column %}
+        <div class="card shadow mt-5">
+            <div class="card-body">
+                <h5 class="card-title">{% translate "You don't have any fees!" %}</h5>
+                    {% url "homepage" as homepage %}
+                    {% #button element='a' extra_classes="mt-3" href=homepage variant="primary" block %}{% translate "Home" %}{% /button %}
+            </div>
+        </div>
+        {% /centered_column %}
+    {% else %}
+        <p>stuff goes here</p>
+    {% endif %}
+{% endblock %}

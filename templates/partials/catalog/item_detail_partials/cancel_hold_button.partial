@@ -1,0 +1,51 @@
+{% load i18n %}
+
+{% if hold.is_ready_for_pickup %}
+    {% with hold.destination as location %}
+        {% blocktranslate %}
+            <div class="card shadow" style="width: 100%;">
+                <div class="card-body">
+                    <p class="card-text">Ready for pickup at {{ location }}!</p>
+                </div>
+            </div>
+        {% endblocktranslate %}
+    {% endwith %}
+{% else %}
+    <button class="btn btn-outline-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#cancelHold-{{ hold.id }}"
+            >
+        {% translate "Cancel Hold" %}
+    </button>
+    <p>{% translate "Pickup at:" %} {{ hold.destination }}</p>
+
+    <div class="modal fade"
+         id="cancelHold-{{ hold.id }}"
+         tabindex="-1"
+         aria-labelledby="cancelHoldModalLabel-{{ hold.id }}"
+         aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelHoldModalLabel-{{ hold.id }}">{% translate "Cancel Hold?" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% with hold.item.record.title as title %}
+                    {% blocktranslate %}
+                        <p>
+                            Are you sure you want to cancel this hold on <em>{{ title }}</em>? You will lose your place in the
+                            queue if you decide to put it on hold again.
+                        </p>
+                    {% endblocktranslate %}
+                {% endwith %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" data-hold-id="{{ hold.id }}" onclick="cancelHold(this)" class="btn btn-danger">Cancel Hold</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

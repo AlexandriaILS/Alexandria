@@ -16,18 +16,6 @@ HOLD_ALREADY_EXISTS = 409
 YOU_ALREADY_HAVE_THIS_CHECKED_OUT = 406
 
 
-def get_hold_queue_number(new_hold: Hold) -> int:
-    # TODO: this is super simplistic and is only accurate if called right when
-    #  the hold is created.
-    return (
-        Hold.objects.filter(
-            item=new_hold.item,
-        )
-            .order_by("-date_created")
-            .count()
-    )
-
-
 def create_hold(request, item, location, specific_copy=False) -> Union[HttpResponse, JsonResponse]:
     filters = {
         "placed_by": request.user,
@@ -49,11 +37,23 @@ def create_hold(request, item, location, specific_copy=False) -> Union[HttpRespo
     return JsonResponse(
         {
             "name": item.type.name,
-            "hold_number": get_hold_queue_number(new_hold),
+            "hold_number": new_hold.get_hold_queue_number(),
         },
         status=SUCCESS,
     )
 
+
+def delete_hold(request: WSGIRequest, hold_id: int) -> HttpResponse:
+    if not request.user.is_authenticated:
+        return HttpResponse(status=401)
+
+    hold = get_object_or_404(Hold, id=hold_id)
+    if not hold.placed_by == request.user or not request.user.is_staff:
+        # Only staff or the person who placed the hold should be able to remove it.
+        return HttpResponse(status=403)
+
+    hold.delete()
+    return HttpResponse(status=200)
 
 def place_hold_on_record(
     request: WSGIRequest, item_id: int, item_type_id: int, location_id: int
