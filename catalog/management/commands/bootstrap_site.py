@@ -12,7 +12,7 @@ class Command(BaseCommand):
         bootstrap_types.Command().handle()
         bootstrap_system_branches.Command().handle()
 
-        location = USLocation.objects.get_or_create(
+        location, created = USLocation.objects.get_or_create(
             address_1="123 Sesame St.",
             city="Kaufman Astoria Studios",
             state="NY",
