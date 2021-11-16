@@ -41,7 +41,7 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#">{% translate "Settings" %}</a></li>
+                        <li><a class="dropdown-item" href="{% url "my_settings" %}">{% translate "Settings" %}</a></li>
                         {% if request.user.is_staff %}
                             <li><a class="dropdown-item" href="{% url 'staff_index' %}">{% translate "Staff" %}</a></li>
                         {% endif %}

@@ -44,7 +44,7 @@ class Hold(models.Model):
                 item=self.item,
             ).order_by("-date_created")
         )
-        return (*open_holds,).index(self)
+        return (*open_holds,).index(self) + 1
 
     def is_ready_for_pickup(self):
         return self.item.checked_out_to == BranchLocation.objects.get(name="ready_for_pickup")

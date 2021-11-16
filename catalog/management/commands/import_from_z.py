@@ -234,7 +234,7 @@ class Command(BaseCommand):
             name="Audiobook (CD)", base=base, icon_name="album"
         )
         ItemType.objects.get_or_create(
-            name="Ebook", base=base, icon_name="tablet_android"
+            name="eBook", base=base, icon_name="tablet_android"
         )
         ItemType.objects.get_or_create(name="Book", base=base, icon_name="auto_stories")
         ItemType.objects.get_or_create(

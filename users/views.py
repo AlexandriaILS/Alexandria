@@ -1,14 +1,15 @@
-from django.shortcuts import render, HttpResponseRedirect, reverse
+from django.shortcuts import render, HttpResponseRedirect, reverse, redirect
 from django.views.generic import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
 from django.db.models import Q
 
 from utils import build_context
-from users.forms import LoginForm
+from users.forms import LoginForm, PatronSettingsForm, StaffSettingsForm
 
 from catalog.models import Item
 from holds.models import Hold
@@ -57,10 +58,9 @@ def profile_settings_edit(request: HttpRequest) -> HttpResponse:
 
 @login_required()
 def my_checkouts(request: HttpRequest) -> HttpResponse:
-    # todo: finish next
-    # https://stackoverflow.com/a/36166644
-    # Item.objects.filter(Q(user_checked_out_to__isnull=False) | Q(branch_checked_out_to__isnull=False))
-    my_materials = Item.objects.filter(user_checked_out_to=request.user).order_by("due_date")
+    my_materials = Item.objects.filter(user_checked_out_to=request.user).order_by(
+        "due_date"
+    )
     return render(
         request, "user/my_checked_out.html", build_context({"checkouts": my_materials})
     )
@@ -74,8 +74,27 @@ def my_holds(request: HttpRequest) -> HttpResponse:
 
 @login_required()
 def my_fees(request: HttpRequest) -> HttpResponse:
-    # todo: finish next
-    my_materials = Item.objects.filter(user_checked_out_to=request.user)
-    return render(
-        request, "user/my_fees.html", build_context({"checkouts": my_materials})
-    )
+    # TODO: Finish after building staff side
+    my_fees = ...
+    return render(request, "user/my_fees.html", build_context({"fees": my_fees}))
+
+
+class SettingsView(LoginRequiredMixin, View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        context = build_context(
+            {
+                "slim_form": True,
+                "form": PatronSettingsForm(instance=request.user),
+            }
+        )
+        context.update({"header": _("My Settings")})
+        return render(request, "generic_form.html", context)
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        form = PatronSettingsForm(request.POST, instance=request.user)
+        fields = form.fields
+        form.fields = {i: fields[i] for i in fields if i != "formatted_address"}
+        if form.is_valid():
+            form.save()
+            messages.success(request, _("Your settings were updated!"))
+            return redirect("my_settings")

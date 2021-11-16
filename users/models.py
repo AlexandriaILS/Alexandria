@@ -49,8 +49,8 @@ class USLocation(models.Model):
     address_2 = models.CharField(_("Address cont'd"), max_length=128, blank=True)
 
     city = models.CharField(_("City"), max_length=64, null=True, blank=True)
-    state = USStateField(null=True, blank=True)
-    zip_code = USZipCodeField(null=True, blank=True)
+    state = USStateField(_("State"), null=True, blank=True)
+    zip_code = USZipCodeField(_("Zip Code"), null=True, blank=True)
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     class Meta:
@@ -92,7 +92,7 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
     # where it might not be, so we'll store it as a string with the expectation
     # that it's a very large number.
     card_number = models.CharField(primary_key=True, max_length=50)
-    # We only need one address, no need to keep their history.
+    # We only need one address; no need to keep their history.
     address = models.ForeignKey(
         USLocation, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -180,7 +180,7 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
         if not self.default_branch:
             # this shouldn't really happen, but we can at least correct for it if it does
             self.default_branch = BranchLocation.objects.get(
-                id=load_site_config(self.host)['default_location_id']
+                id=load_site_config(self.host)["default_location_id"]
             )
             self.save()
         return self.default_branch
@@ -192,6 +192,6 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
         branches = self.get_branches().exclude(pk__in=default_branch)
         data = {
             "default": default_branch.values(*self.SERIALIZER_SHORT_FIELDS)[0],
-            "others": branches.values(*self.SERIALIZER_SHORT_FIELDS)
+            "others": branches.values(*self.SERIALIZER_SHORT_FIELDS),
         }
         return data

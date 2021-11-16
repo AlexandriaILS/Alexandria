@@ -55,6 +55,7 @@ def delete_hold(request: WSGIRequest, hold_id: int) -> HttpResponse:
     hold.delete()
     return HttpResponse(status=200)
 
+
 def place_hold_on_record(
     request: WSGIRequest, item_id: int, item_type_id: int, location_id: int
 ) -> Union[JsonResponse, HttpResponse]:
