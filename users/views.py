@@ -1,18 +1,16 @@
-from django.shortcuts import render, HttpResponseRedirect, reverse, redirect
-from django.views.generic import View
-from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.utils.translation import ugettext as _
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
-from django.db.models import Q
-
-from utils import build_context
-from users.forms import LoginForm, PatronSettingsForm, StaffSettingsForm
+from django.shortcuts import render, HttpResponseRedirect, redirect
+from django.utils.translation import ugettext as _
+from django.views.generic import View
 
 from catalog.models import Item
 from holds.models import Hold
+from users.forms import LoginForm, PatronSettingsForm
+from utils import build_context
 from utils.views import next_or_reverse
 
 
