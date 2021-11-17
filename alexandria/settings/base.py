@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
+    "anymail",
     "mathfilters",
     "widget_tweaks",
     "slippers",
@@ -178,3 +179,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static_dev")]
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+ANYMAIL = {
+    "MAILGUN_API_KEY": "EXAMPLE",
+    "MAILGUN_SENDER_DOMAIN": "EXAMPLE",
+}
+
+# EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
+
+# for testing by writing files
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+DEFAULT_FROM_EMAIL = "no-reply@alexandrialibraries.dev"
+SERVER_EMAIL = "thefabled@alexandrialibraries.dev"
