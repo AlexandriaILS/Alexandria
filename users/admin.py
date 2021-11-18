@@ -7,6 +7,17 @@ from django.contrib.admin.forms import AdminAuthenticationForm
 from django.utils.translation import ugettext as _
 
 from users.models import AlexandriaUser, BranchLocation, USLocation
+from users.views import LoginView
+
+admin.autodiscover()
+admin.site.login = LoginView.as_view()
+
+def has_superuser_permission(request):
+    # https://stackoverflow.com/a/65955373
+    return request.user.is_active and request.user.is_superuser
+
+# Only active superuser can access root admin site (default)
+admin.site.has_permission = has_superuser_permission
 
 
 class AdminSiteLoginForm(AdminAuthenticationForm):
@@ -52,6 +63,7 @@ class AlexandriaUserAdmin(UserAdmin):
                     "email",
                     "default_branch",
                     "address",
+                    "notes",
                 )
             },
         ),
@@ -61,7 +73,6 @@ class AlexandriaUserAdmin(UserAdmin):
                 "fields": (
                     "is_active",
                     "is_staff",
-                    "is_manager",
                     "is_superuser",
                     "groups",
                     "user_permissions",

@@ -20,7 +20,6 @@ class PatronSettingsForm(forms.ModelForm):
 
             self.fields["card_number"].required = False
 
-
             self.fields["formatted_address"].help_text = _(
                 "If you need to change this, please bring updated proof of address"
                 " to any branch."
@@ -33,9 +32,7 @@ class PatronSettingsForm(forms.ModelForm):
             addr_string = instance.address.address_1
             if instance.address.address_2:
                 addr_string += f", {instance.address.address_2}"
-            addr_string += (
-                f", {instance.address.city} {instance.address.zip_code}"
-            )
+            addr_string += f", {instance.address.city} {instance.address.zip_code}"
             self.fields["formatted_address"].initial = addr_string
 
             self.fields["default_branch"].queryset = instance.get_branches()
@@ -64,7 +61,6 @@ class PatronSettingsForm(forms.ModelForm):
     def clean_formatted_address(self):
         breakpoint()
         pass
-
 
     def clean_card_number(self):
         return self._get_readonly_value("card_number")

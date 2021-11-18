@@ -116,19 +116,12 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
         ),
     )
 
+    notes = models.TextField(_("notes"), blank=True, null=True)
+
     is_staff = models.BooleanField(
         _("staff status"),
         default=False,
         help_text=_("Designates whether the user is a library staff member."),
-    )
-
-    is_manager = models.BooleanField(
-        _("manager status"),
-        default=False,
-        help_text=_(
-            "Designates whether the user is a library manager with additional"
-            " permissions."
-        ),
     )
 
     is_active = models.BooleanField(
@@ -163,6 +156,25 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
+        permissions = [
+            ("create_patron_account", _("Can create a patron account")),
+            ("read_patron_account", _("Can see patron account data")),
+            ("update_patron_account", _("Can update patron account information")),
+            ("delete_patron_account", _("Can delete patron accounts")),
+            ("edit_user_notes", _("Can edit user notes field")),
+            ("create_staff_account", _("Can create a staff account")),
+            ("read_staff_account", _("Can see staff account data")),
+            ("update_staff_account", _("Can update staff account information")),
+            ("delete_staff_account", _("Can delete staff accounts")),
+            (
+                "generate_financial_reports",
+                _("Can generate reports with financial data"),
+            ),
+            (
+                "generate_general_reports",
+                _("Can generate reports on anything non-financial"),
+            ),
+        ]
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""

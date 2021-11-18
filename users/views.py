@@ -16,7 +16,9 @@ from utils.views import next_or_reverse
 
 class LoginView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
-        context = build_context({"slim_form": True, "form": LoginForm, "show_password_reset": True})
+        context = build_context(
+            {"slim_form": True, "form": LoginForm, "show_password_reset": True}
+        )
         return render(request, "generic_form.html", context)
 
     def post(self, request: HttpRequest) -> HttpResponse:
@@ -83,7 +85,7 @@ class SettingsView(LoginRequiredMixin, View):
             {
                 "slim_form": True,
                 "form": PatronSettingsForm(instance=request.user),
-                "show_password_reset": True
+                "show_password_reset": True,
             }
         )
         context.update({"header": _("My Settings")})

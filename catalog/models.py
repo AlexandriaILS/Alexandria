@@ -281,6 +281,12 @@ class Item(models.Model):
         (POOR, "Poor"),
     ]
 
+    class Meta:
+        permissions = [
+            ("check_in", _("Can check in materials")),
+            ("check_out", _("Can check out materials"))
+        ]
+
     def get_due_date(self):
         return timezone.now() + timedelta(days=self.type.number_of_days_per_checkout)
 
