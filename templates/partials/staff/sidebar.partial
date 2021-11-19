@@ -68,9 +68,15 @@
                 </button>
                 <div class="collapse" id="circ-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        <li><a href="#" class="link-dark rounded">Overview</a></li>
-                        <li><a href="#" class="link-dark rounded">Updates</a></li>
-                        <li><a href="#" class="link-dark rounded">Reports</a></li>
+                        {% if 'catalog.check_in' in perms %}
+                            <li><a href="#" class="link-dark rounded">Check In</a></li>
+                        {% endif %}
+                        {% if 'catalog.check_out' in perms %}
+                            <li><a href="#" class="link-dark rounded">Check Out</a></li>
+                        {% endif %}
+                        {% if 'users.create_patron_account' in perms %}
+                            <li><a href="#" class="link-dark rounded">Create Patron Account</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </li>
@@ -97,6 +103,9 @@
                 </button>
                 <div class="collapse" id="admin-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        {% if 'users.change_staff_account' in perms %}
+                            <li><a href="{% url 'user_management' %}" class="link-dark rounded">{% translate "Staff Management" %}</a></li>
+                        {% endif %}
                         <li><a href="#" class="link-dark rounded">Overview</a></li>
                         <li><a href="#" class="link-dark rounded">Weekly</a></li>
                         <li><a href="#" class="link-dark rounded">Monthly</a></li>

@@ -38,9 +38,9 @@
 <script src="{% static 'js/renewbuttons.js' %}" async defer></script>
 {% endblock %}
 
-{{ alerts|json_script:"alert-data" }}
+{{ request.context.alerts|json_script:"alert-data" }}
 {{ request.context|json_script:"library-data" }}
-{{ branches|json_script:"branch-data" }}
+{{ request.context.branches|json_script:"branch-data" }}
 
 </body>
 </html>

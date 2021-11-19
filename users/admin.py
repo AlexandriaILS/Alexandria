@@ -1,9 +1,7 @@
-from django.contrib import admin
 from django import forms
-from django.core.exceptions import ValidationError
+from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.contrib.admin.forms import AdminAuthenticationForm
+from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import ugettext as _
 
 from users.models import AlexandriaUser, BranchLocation, USLocation
@@ -18,30 +16,6 @@ def has_superuser_permission(request):
 
 # Only active superuser can access root admin site (default)
 admin.site.has_permission = has_superuser_permission
-
-
-class AdminSiteLoginForm(AdminAuthenticationForm):
-    error_messages = {
-        **AuthenticationForm.error_messages,
-        "invalid_login": _(
-            "Please enter the correct %(username)s and password for a superuser "
-            "account. Note that both fields may be case-sensitive."
-        ),
-    }
-
-    def confirm_login_allowed(self, user):
-        super().confirm_login_allowed(user)
-        if not user.is_superuser:
-            raise ValidationError(
-                self.error_messages["invalid_login"],
-                code="invalid_login",
-                params={"username": self.username_field.verbose_name},
-            )
-
-
-admin.autodiscover()
-# make it so that only superusers can log in instead of the normal `is_staff` flag
-admin.site.login_form = AdminSiteLoginForm
 
 
 class AlexandriaUserCreationForm(UserCreationForm):
@@ -60,6 +34,7 @@ class AlexandriaUserAdmin(UserAdmin):
                 "fields": (
                     "first_name",
                     "last_name",
+                    "title",
                     "email",
                     "default_branch",
                     "address",

@@ -16,9 +16,7 @@ from utils.views import next_or_reverse
 
 class LoginView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
-        context = build_context(
-            {"slim_form": True, "form": LoginForm, "show_password_reset": True}
-        )
+        context = {"slim_form": True, "form": LoginForm, "show_password_reset": True}
         return render(request, "generic_form.html", context)
 
     def post(self, request: HttpRequest) -> HttpResponse:
@@ -62,32 +60,31 @@ def my_checkouts(request: HttpRequest) -> HttpResponse:
         "due_date"
     )
     return render(
-        request, "user/my_checked_out.html", build_context({"checkouts": my_materials})
+        request, "user/my_checked_out.html", {"checkouts": my_materials}
     )
 
 
 @login_required()
 def my_holds(request: HttpRequest) -> HttpResponse:
     my_holds = Hold.objects.filter(placed_by=request.user, host=request.host)
-    return render(request, "user/my_holds.html", build_context({"holds": my_holds}))
+    return render(request, "user/my_holds.html", {"holds": my_holds})
 
 
 @login_required()
 def my_fees(request: HttpRequest) -> HttpResponse:
     # TODO: Finish after building staff side
     my_fees = ...
-    return render(request, "user/my_fees.html", build_context({"fees": my_fees}))
+    return render(request, "user/my_fees.html", {"fees": my_fees})
 
 
 class SettingsView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
-        context = build_context(
-            {
+        context = {
                 "slim_form": True,
                 "form": PatronSettingsForm(instance=request.user),
                 "show_password_reset": True,
             }
-        )
+
         context.update({"header": _("My Settings")})
         return render(request, "generic_form.html", context)
 

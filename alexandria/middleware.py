@@ -5,6 +5,7 @@ from django.utils.deprecation import MiddlewareMixin
 from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from alexandria.configs import load_site_config
+from utils.context import build_context
 
 
 class HostValidationMiddleware(MiddlewareMixin):
@@ -23,6 +24,15 @@ class HostValidationMiddleware(MiddlewareMixin):
         else:
             raise DisallowedHost(f"Detected host: {host}")
 
+
+class ContextUpdateMiddleware(MiddlewareMixin):
+    # this has to take place later in the request cycle, so it's separated into
+    # its own middleware.
+    def process_request(self, request):
+        if not hasattr(request, "context"):
+            return
+        else:
+            request.context.update(build_context(request=request))
 
 # For debug purposes only. Link to local_settings by adding
 # `blossom.middleware.BetterExceptionsMiddleware`

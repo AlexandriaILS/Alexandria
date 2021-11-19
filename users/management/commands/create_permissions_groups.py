@@ -71,8 +71,8 @@ class Command(BaseCommand):
                     "generate_general_reports",
                     "read_patron_account",
                     "read_staff_account",
-                    "update_patron_account",
-                    "update_staff_account",
+                    "change_patron_account",
+                    "change_staff_account",
                     "add_branchlocation",
                     "change_branchlocation",
                     "delete_branchlocation",
@@ -129,7 +129,7 @@ class Command(BaseCommand):
                     "generate_general_reports",
                     "read_patron_account",
                     "read_staff_account",
-                    "update_patron_account",
+                    "change_patron_account",
                     "view_branchlocation",
                     "add_uslocation",
                     "change_uslocation",
@@ -182,7 +182,7 @@ class Command(BaseCommand):
                     "edit_user_notes",
                     "read_patron_account",
                     "read_staff_account",
-                    "update_patron_account",
+                    "change_patron_account",
                     "view_branchlocation",
                     "add_uslocation",
                     "change_uslocation",
@@ -239,8 +239,8 @@ class Command(BaseCommand):
                     "generate_financial_reports",
                     "read_patron_account",
                     "read_staff_account",
-                    "update_patron_account",
-                    "update_staff_account",
+                    "change_patron_account",
+                    "change_staff_account",
                     "view_branchlocation",
                     "add_uslocation",
                     "change_uslocation",
@@ -294,8 +294,8 @@ class Command(BaseCommand):
                     "edit_user_notes",
                     "read_patron_account",
                     "read_staff_account",
-                    "update_patron_account",
-                    "update_staff_account",
+                    "change_patron_account",
+                    "change_staff_account",
                     "view_branchlocation",
                     "add_uslocation",
                     "change_uslocation",
@@ -321,5 +321,9 @@ class Command(BaseCommand):
                 ]
             )
         )
+
+        # remove the automatically-generated permissions that we don't need -- some
+        # things should only be changed by the superuser who can do it automatically.
+        # Permission.objects.exclude(id__in=manager.permissions.all()).delete()
 
         self.stdout.write(self.style.SUCCESS("Updated default permissions groups!"))

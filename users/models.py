@@ -96,6 +96,7 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
     address = models.ForeignKey(
         USLocation, on_delete=models.CASCADE, null=True, blank=True
     )
+    title = models.CharField(_("title"), max_length=50, null=True, blank=True)
 
     first_name = models.CharField(_("first name"), max_length=150, blank=True)
     last_name = models.CharField(_("last name"), max_length=150, blank=True)
@@ -157,14 +158,15 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
         verbose_name = _("user")
         verbose_name_plural = _("users")
         permissions = [
+            # changed keyword from update -> change to keep with django convention
             ("create_patron_account", _("Can create a patron account")),
             ("read_patron_account", _("Can see patron account data")),
-            ("update_patron_account", _("Can update patron account information")),
+            ("change_patron_account", _("Can change patron account information")),
             ("delete_patron_account", _("Can delete patron accounts")),
             ("edit_user_notes", _("Can edit user notes field")),
             ("create_staff_account", _("Can create a staff account")),
             ("read_staff_account", _("Can see staff account data")),
-            ("update_staff_account", _("Can update staff account information")),
+            ("change_staff_account", _("Can change staff account information")),
             ("delete_staff_account", _("Can delete staff accounts")),
             (
                 "generate_financial_reports",
@@ -207,3 +209,16 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
             "others": branches.values(*self.SERIALIZER_SHORT_FIELDS),
         }
         return data
+
+    def get_modifiable_users(self):
+        # used to populate user management page
+        if self.has_perm('users.change_staff_account'):
+            if self.is_superuser:
+                # can modify any staff user
+                qs = AlexandriaUser.objects.filter(is_staff=True)
+            else:
+                # can only modify staff users attached to own host and not themselves
+                qs = AlexandriaUser.objects.filter(is_staff=True, host=self.host).exclude(card_number=self)
+            return qs.order_by('last_name', 'first_name')
+
+        return []

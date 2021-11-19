@@ -14,17 +14,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.admin.views.decorators import staff_member_required
+from decorator_include import decorator_include
 
 from catalog.urls import urlpatterns as catalog_urls
 from holds.urls import urlpatterns as hold_urls
 from users.urls import urlpatterns as user_urls
 
+# handler400 = 'alexandria.errors.bad_request'
+# handler403 = 'alexandria.errors.permission_denied'
+# handler404 = 'alexandria.errors.not_found'
+handler500 = 'alexandria.errors.server_error'
+
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("staff/", include("staff.urls"))
+    path('staff/', decorator_include(staff_member_required, "staff.urls")),
 ]
 
 urlpatterns += catalog_urls

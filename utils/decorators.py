@@ -9,7 +9,7 @@ def library_staff_required(
     to the log-in page if necessary.
     """
     actual_decorator = user_passes_test(
-        lambda u: u.is_authenticated and (u.is_staff or u.is_manager),
+        lambda u: u.is_authenticated and u.is_staff,
         login_url=login_url,
         redirect_field_name=redirect_field_name,
     )
