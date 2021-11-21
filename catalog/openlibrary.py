@@ -31,7 +31,10 @@ def download_cover(item: Union["Item", "Record"], size: str = "M") -> None:
         # steal the ISBN from that. There's also the possibility that any
         # given item won't actually have an ISBN but another might, so let's
         # grab all the ISBNs that we have available and nab one at random.
-        isbn = choice([el.isbn for el in item.item_set.all() if el.isbn is not None])
+        try:
+            isbn = choice([el.isbn for el in item.item_set.all() if el.isbn is not None])
+        except IndexError:
+            return
     else:
         isbn = item.isbn
 

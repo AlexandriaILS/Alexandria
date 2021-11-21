@@ -6,18 +6,7 @@
 {% endblock %}
 
 {% block content %}
-    <script>
-        window.onresize = displayWindowSize;
-        window.onload = displayWindowSize;
-
-        function displayWindowSize() {
-            myWidth = window.innerWidth;
-            myHeight = window.innerHeight;
-            // your size calculation code here
-            document.getElementById("dimensions").innerHTML = myWidth + "x" + myHeight;
-        };
-    </script>
-    <div id="dimensions"></div>
+    {% include 'partials/dev/print_window_size.partial' %}
     {% for u in request.user.get_modifiable_users %}
         <hr>
         <div class="row">

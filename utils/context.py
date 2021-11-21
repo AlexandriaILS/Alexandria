@@ -21,15 +21,15 @@ def build_context(data: Dict = None, request=None) -> Dict:
                 "hold_success_message": _(
                     "Hold placed for (itemType) — (itemTitle)! You're number (holdNum) in queue!"
                 ),
-                "hold_insufficient_permissions": _("Sorry, but you can't change this hold."),
+                "hold_insufficient_permissions": _(
+                    "Sorry, but you can't change this hold."
+                ),
                 "already_checked_out": _(
                     "You can't put a hold on something you already have checked out."
                 ),
                 "general_error_message": _("Something went wrong — please try again."),
                 "hold_duplicate": _("You already have a hold on this item."),
-                "renew_success_message": _(
-                    'Item successfully renewed!'
-                ),
+                "renew_success_message": _("Item successfully renewed!"),
                 "not_logged_in": _(
                     "You're not logged in! You'll need to log in before you can put items on hold."
                 ),

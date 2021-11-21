@@ -1,3 +1,5 @@
+import sys
+import inspect
 import re
 from datetime import date, timedelta
 
@@ -16,7 +18,7 @@ import pytz
 from catalog import openlibrary
 from holds.models import Hold
 from users.models import BranchLocation
-
+from utils.db import SearchableHelpers
 
 UTC = pytz.timezone('utc')
 
@@ -168,14 +170,16 @@ class ItemType(models.Model):
             if not self.check_icon_svg():
                 self.icon_svg = None
 
-        super(ItemType, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
-class Record(models.Model):
+class Record(models.Model, SearchableHelpers):
     """
     Information that should not change between different types of the same media.
     For example, an audiobook vs the original text.
     """
+
+    SEARCHABLE_FIELDS = ["title", "authors", "subtitle", "uniform_title"]
 
     # tag 245a
     title = models.CharField(max_length=26021)  # thanks, Yethindra
@@ -224,6 +228,8 @@ class Record(models.Model):
         return val
 
     def save(self, *args, **kwargs):
+        self.update_searchable_fields()
+
         if self.type:
             if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
                 try:

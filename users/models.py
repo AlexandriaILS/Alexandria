@@ -8,6 +8,7 @@ from django.utils.translation import ugettext as _
 from localflavor.us.models import USStateField, USZipCodeField
 
 from alexandria.configs import load_site_config
+from utils.db import SearchableHelpers
 
 
 class AlexandriaUserManager(UserManager):
@@ -86,11 +87,14 @@ class BranchLocation(models.Model):
         return f"{self.name}"
 
 
-class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
+class AlexandriaUser(AbstractBaseUser, PermissionsMixin, SearchableHelpers):
     # http://www.ala.org/advocacy/privacy/checklists/library-management-systems
     # Even though this should be an integer, there are too many edge cases
     # where it might not be, so we'll store it as a string with the expectation
     # that it's a very large number.
+
+    SEARCHABLE_FIELDS = ['first_name', 'last_name']
+
     card_number = models.CharField(primary_key=True, max_length=50)
     # We only need one address; no need to keep their history.
     address = models.ForeignKey(
@@ -154,6 +158,10 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return str(self.card_number)
 
+    def save(self, *args, **kwargs):
+        self.update_searchable_fields()
+        super().save(*args, **kwargs)
+
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
@@ -203,7 +211,7 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin):
         # Return a dict where the user default is directly available.
         # wrap default in queryset
         default_branch = BranchLocation.objects.filter(id=self.get_default_branch().id)
-        branches = self.get_branches().exclude(pk__in=default_branch)
+        branches = self.get_branches().exclude(pk__in=default_branch).order_by("name")
         data = {
             "default": default_branch.values(*self.SERIALIZER_SHORT_FIELDS)[0],
             "others": branches.values(*self.SERIALIZER_SHORT_FIELDS),

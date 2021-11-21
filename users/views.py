@@ -3,15 +3,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, HttpResponseRedirect, redirect
+from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
 from django.views.generic import View
 
 from catalog.models import Item
 from holds.models import Hold
 from users.forms import LoginForm, PatronSettingsForm
-from utils import build_context
-from utils.views import next_or_reverse
+from utils.views import next_or_reverse, redirect_with_qsps
 
 
 class LoginView(View):
@@ -23,35 +22,20 @@ class LoginView(View):
         form = LoginForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            try:
-                int(data["card_number"])
-            except ValueError:
-                messages.error(
-                    request, _("Card number needs to be the number on your card.")
-                )
-                return HttpResponseRedirect(next_or_reverse(request, "login"))
 
             user = authenticate(
                 request, username=data["card_number"], password=data["password"]
             )
             if user and user.host == request.host:
                 login(request, user)
-                return HttpResponseRedirect(next_or_reverse(request, "homepage"))
+                return redirect(next_or_reverse(request, "homepage"))
             messages.error(request, _("Invalid login information. Try again?"))
-            return HttpResponseRedirect(next_or_reverse(request, "login"))
+            return redirect_with_qsps(request, "login")
 
 
 def logout_view(request: HttpRequest) -> HttpResponse:
     logout(request)
-    return HttpResponseRedirect(next_or_reverse(request, "homepage"))
-
-
-def profile_settings(request: HttpRequest) -> HttpResponse:
-    ...
-
-
-def profile_settings_edit(request: HttpRequest) -> HttpResponse:
-    ...
+    return redirect(next_or_reverse(request, "homepage"))
 
 
 @login_required()

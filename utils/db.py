@@ -1,3 +1,6 @@
+import unicodedata
+import string
+
 from django.db import connection, reset_queries
 import time
 import functools
@@ -29,3 +32,23 @@ def query_debugger(func):
         return result
 
     return inner_func
+
+
+class SearchableHelpers:
+
+    def get_searchable_field_names(self):
+        return ["searchable_"+name for name in self.SEARCHABLE_FIELDS]
+
+    def get_searchable_field_map(self):
+        return {name: "searchable_"+name for name in self.SEARCHABLE_FIELDS}
+
+    def convert_to_searchable(self, text):
+        if not text:
+            return None
+        text = text.translate(str.maketrans('', '', string.punctuation))
+        return unicodedata.normalize("NFKD", text).encode('ascii', 'ignore').decode()
+
+    def update_searchable_fields(self):
+        field_map = self.get_searchable_field_map()
+        for original, searchable in field_map.items():
+            setattr(self, searchable, self.convert_to_searchable(getattr(self, original)))

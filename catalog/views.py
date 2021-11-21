@@ -49,8 +49,10 @@ def search(request: WSGIRequest) -> HttpResponse:
             filter_db(
                 request,
                 Record,
-                Q(title__icontains=search_term)
-                | Q(authors__icontains=search_term)
+                Q(searchable_title__icontains=search_term)
+                | Q(searchable_authors__icontains=search_term)
+                | Q(searchable_subtitle__icontains=search_term)
+                | Q(searchable_uniform_title__icontains=search_term)
                 | Q(item__barcode=search_term)
                 | Q(item__call_number=search_term),
             )

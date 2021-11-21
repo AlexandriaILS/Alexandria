@@ -69,6 +69,7 @@ class AlexandriaUserAdmin(UserAdmin):
     search_fields = ("card_number", "first_name", "last_name", "email")
     ordering = ("card_number",)
     add_form = AlexandriaUserCreationForm
+    exclude = AlexandriaUser().get_searchable_field_names()
 
 
 admin.site.register(AlexandriaUser, AlexandriaUserAdmin)

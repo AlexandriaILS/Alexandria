@@ -58,10 +58,6 @@ class PatronSettingsForm(forms.ModelForm):
         # done by staff
         return self._get_readonly_value("last_name")
 
-    def clean_formatted_address(self):
-        breakpoint()
-        pass
-
     def clean_card_number(self):
         return self._get_readonly_value("card_number")
 
@@ -74,17 +70,4 @@ class PatronSettingsForm(forms.ModelForm):
             "email",
             "formatted_address",
             "default_branch",
-            # todo: fix and replace with the actual fields
-            # "address__address_1",
-            # "address__address_2",
-            # "address__zip_code"
         ]
-
-
-class StaffSettingsForm(forms.ModelForm):
-    # TODO: set this up so that regular staff can interact with regular patron
-    #  accounts and only managers can interact with staff accounts / create staff
-    #  members.
-    class Meta:
-        model = AlexandriaUser
-        fields = []

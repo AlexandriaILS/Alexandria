@@ -1,5 +1,6 @@
 from urllib.parse import quote_plus
 
+from django.core.paginator import Paginator
 from django.db.models.aggregates import Count
 from django.db.models.expressions import F, Q
 from django.db.models.functions import Lower
@@ -7,6 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse
 from django.views.decorators.csrf import csrf_exempt
 
+from catalog.helpers import get_results_per_page
 from catalog.models import Item, Record
 from users.models import AlexandriaUser
 from utils.db import filter_db
@@ -42,9 +44,9 @@ def staff_search(request):
     def record_search(term, title=False, author=False):
         filters = Q()
         if title:
-            filters = filters | Q(title__icontains=term)
+            filters = filters | Q(searchable_title__icontains=term)
         if author:
-            filters = filters | Q(authors__icontains=term)
+            filters = filters | Q(searchable_authors__icontains=term)
         return (
             filter_db(request, Record, filters)
             .exclude(
@@ -66,8 +68,8 @@ def staff_search(request):
         return filter_db(
             request,
             AlexandriaUser,
-            Q(first_name__icontains=term)
-            | Q(last_name__icontains=term)
+            Q(searchable_first_name__icontains=term)
+            | Q(searchable_last_name__icontains=term)
             | Q(card_number=term),
             is_active=True,
         )
@@ -104,7 +106,16 @@ def staff_search(request):
 
 
 def user_management(request):
-    return render(request, "staff/user_management.html")
+    results = request.user.get_modifiable_users()
+
+    results_per_page = get_results_per_page(request)
+
+    paginator = Paginator(results, results_per_page)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    context = {"result_count": paginator.count, "results_per_page": results_per_page, "results": results, "page": page_obj}
+
+    return render(request, "staff/user_management.html", context)
 
 
 class UserEditView():
