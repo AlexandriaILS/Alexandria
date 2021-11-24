@@ -1,18 +1,13 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.views.generic import View
-import pymarc
-import requests
 from django.utils.translation import ugettext as _
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.handlers.wsgi import WSGIRequest
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import get_object_or_404, render, reverse
+from django.http import HttpResponse, Http404
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import View
-from django.http import HttpResponseNotFound
-from django.core.exceptions import PermissionDenied
 
 from users.models import AlexandriaUser
+
 
 class PermissionsView(PermissionRequiredMixin, View):
     permission_required = ("users.change_staff_account")

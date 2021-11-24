@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 
 <style>
     {# https://getbootstrap.com/docs/5.0/examples/sidebars/# #}
@@ -52,8 +53,25 @@
     }
 </style>
 
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse shadow-sm vh-100">
-    <div class="position-sticky pt-3">
+<nav id="sidebarMenu" class="sticky-md-top col-md-3 col-lg-3 col-xl-2 d-md-block bg-light sidebar collapse vh-100">
+    <div class="mt-md-3 row d-none d-md-flex">
+        <div class="col-2 col-md-3 col-lg-2 pe-2 pt-1">
+            <table style="height: 100%; width: 100%">
+                <tbody>
+                <tr>
+                    <td class="align-middle text-center">
+                        <img src="{% static 'favicons/black/android-icon-36x36.png' %}" alt="" width="24" height="24">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-10 col-md-9 col-lg-10 ps-1 fs-5 fs-md-3">
+            {{ request.context.name }}
+        </div>
+    </div>
+    <hr class="d-sm-none d-md-block">
+    <div class="position-sticky pt-3 pt-md-1">
         <ul class="list-unstyled ps-0">
             <li class="mb-1">
                 <a class="btn btn-toggle btn-chevron-padding align-items-center rounded" href="{% url 'staff_index' %}">
@@ -84,7 +102,7 @@
                 <button class="btn btn-toggle btn-toggle-chevron align-items-center rounded collapsed"
                         data-bs-toggle="collapse"
                         data-bs-target="#search-collapse" aria-expanded="false">
-                    Search / Reference
+                    Reference
                 </button>
                 <div class="collapse" id="search-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -104,7 +122,8 @@
                 <div class="collapse" id="admin-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         {% if 'users.change_staff_account' in perms %}
-                            <li><a href="{% url 'user_management' %}" class="link-dark rounded">{% translate "Staff Management" %}</a></li>
+                            <li><a href="{% url 'user_management' %}"
+                                   class="link-dark rounded">{% translate "Staff Management" %}</a></li>
                         {% endif %}
                         <li><a href="#" class="link-dark rounded">Overview</a></li>
                         <li><a href="#" class="link-dark rounded">Weekly</a></li>
@@ -150,5 +169,4 @@
             }
         }
     </script>
-
 </nav>
