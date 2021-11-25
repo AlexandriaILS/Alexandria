@@ -5,13 +5,16 @@ from django.db.models.aggregates import Count
 from django.db.models.expressions import F, Q
 from django.db.models.functions import Lower
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, get_object_or_404
+from django.views.generic import View
 from django.views.decorators.csrf import csrf_exempt
 
 from catalog.helpers import get_results_per_page
 from catalog.models import Item, Record
+from staff.forms import StaffSettingsForm
 from users.models import AlexandriaUser
 from utils.db import filter_db
+from utils.strings import clean_text
 
 
 # Create your views here.
@@ -109,12 +112,14 @@ def staff_search(request):
 def user_management(request):
     results = request.user.get_modifiable_users()
     if search_text := request.POST.get("search_text"):
-        results = results.filter(
-            Q(first_name__icontains=search_text)
-            | Q(last_name__icontains=search_text)
-            | Q(title__icontains=search_text)
-            | Q(card_number__icontains=search_text)
-        )
+        search_text = clean_text(search_text)
+        for word in search_text.split():
+            results = results.filter(
+                Q(searchable_first_name__icontains=word)
+                | Q(searchable_last_name__icontains=word)
+                | Q(title__icontains=word)
+                | Q(card_number__icontains=word)
+            )
 
     results_per_page = get_results_per_page(request)
 
@@ -131,5 +136,28 @@ def user_management(request):
     return render(request, "staff/user_management.html", context)
 
 
-class UserEditView:
-    ...
+class EditStaffUser(View):
+
+    def get(self, request, user_id):
+        user = get_object_or_404(AlexandriaUser, card_number=user_id)
+        form = StaffSettingsForm(initial={
+            'card_number': user.card_number,
+            'title': user.title,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'email': user.email,
+            'is_minor': user.is_minor,
+            'birth_year': user.birth_year,
+            'notes': user.notes,
+            'default_branch': user.default_branch,
+            'address_1': user.address.address_1,
+            'address_2': user.address.address_2,
+            'is_staff': user.is_staff,
+            'is_active': user.is_active
+        })
+        # https://stackoverflow.com/questions/19947538/django-form-with-unknown-number-of-checkbox-fields-and-multiple-actions
+        # for handling permissions
+
+
+    def post(self, request, user_id):
+        ...

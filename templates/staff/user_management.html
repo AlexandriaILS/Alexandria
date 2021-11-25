@@ -10,7 +10,8 @@
         <form method="post" id="staffSearchForm">
             <div class="mb-3">
                 <label for="staffSearch" class="form-label">{% translate "Search" %}</label>
-                <input type="text" value="{{ search_text }}" class="form-control" name="search_text" id="staffSearch">
+                <input type="text" value="{% if search_text %}{{ search_text }}{% endif %}"
+                       class="form-control" name="search_text" id="staffSearch">
             </div>
             <button type="submit" class="btn btn-primary">{% translate "Submit" %}</button>
             <button onclick="clearSearch()" class="btn btn-outline-primary">{% translate "Clear Search" %}</button>
@@ -18,10 +19,8 @@
 
         <script type="application/javascript">
             function clearSearch() {
-                const form = document.getElementById("staffSearchForm");
-                const searchField = document.getElementById("staffSearch");
-                searchField.value = '';
-                form.submit();
+                document.getElementById("staffSearch").value = '';
+                document.getElementById("staffSearchForm").submit();
             }
         </script>
 
@@ -34,7 +33,7 @@
                     <strong>{{ u.last_name }}, {{ u.first_name }}</strong>
                 </div>
                 <div class="col-sm-6 col-md-4 col-lg-3 text-center text-lg-start">
-                    {{ u.title|default_if_none:"No title." }}
+                    {{ u.title|default_if_none:"No title" }}
                 </div>
                 <div class="col-sm-12 col-md-4 col-lg-3 text-center text-lg-start">
                     {{ u.card_number }}
@@ -43,7 +42,7 @@
                     <div class="row">
                         <div class="col-1 col-md-2 col-lg-0"></div>
                         <div class="col-10 col-md-8 col-lg-12 text-center">
-                            {% url 'edit_staff_user' as edit_staff_url %}
+                            {% url 'edit_staff_user' user_id=u.card_number as edit_staff_url %}
                             {% #button element='a' href=edit_staff_url variant="primary" block %}{% translate "Edit" %}{% /button %}
                         </div>
                         <div class="col-1 col-md-2 col-lg-0"></div>
