@@ -19,6 +19,5 @@ class StaffSettingsForm(forms.Form):
     address_1 = forms.CharField()
     address_2 = forms.CharField()
 
-
     is_staff = forms.BooleanField()
     is_active = forms.BooleanField()

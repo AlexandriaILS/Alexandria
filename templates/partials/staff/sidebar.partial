@@ -75,25 +75,25 @@
         <ul class="list-unstyled ps-0">
             <li class="mb-1">
                 <a class="btn btn-toggle btn-chevron-padding align-items-center rounded" href="{% url 'staff_index' %}">
-                    Home
+                    {% translate "Home" %}
                 </a>
             </li>
             <li class="mb-1">
                 <button class="btn btn-toggle btn-toggle-chevron align-items-center rounded collapsed"
                         data-bs-toggle="collapse"
                         data-bs-target="#circ-collapse" aria-expanded="false">
-                    Circulation
+                    {% translate "Circulation" %}
                 </button>
                 <div class="collapse" id="circ-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         {% if 'catalog.check_in' in perms %}
-                            <li><a href="#" class="link-dark rounded">Check In</a></li>
+                            <li><a href="#" class="link-dark rounded">{% translate "Check In" %}</a></li>
                         {% endif %}
                         {% if 'catalog.check_out' in perms %}
-                            <li><a href="#" class="link-dark rounded">Check Out</a></li>
+                            <li><a href="#" class="link-dark rounded">{% translate "Check Out" %}</a></li>
                         {% endif %}
                         {% if 'users.create_patron_account' in perms %}
-                            <li><a href="#" class="link-dark rounded">Create Patron Account</a></li>
+                            <li><a href="#" class="link-dark rounded">{% translate "Create Patron Account" %}</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -101,10 +101,10 @@
             <li class="mb-1">
                 <button class="btn btn-toggle btn-toggle-chevron align-items-center rounded collapsed"
                         data-bs-toggle="collapse"
-                        data-bs-target="#search-collapse" aria-expanded="false">
-                    Reference
+                        data-bs-target="#reference-collapse" aria-expanded="false">
+                    {% translate "Reference" %}
                 </button>
-                <div class="collapse" id="search-collapse">
+                <div class="collapse" id="reference-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="#" class="link-dark rounded">Overview</a></li>
                         <li><a href="#" class="link-dark rounded">Weekly</a></li>
@@ -117,7 +117,7 @@
                 <button class="btn btn-toggle btn-toggle-chevron align-items-center rounded collapsed"
                         data-bs-toggle="collapse"
                         data-bs-target="#admin-collapse" aria-expanded="false">
-                    Administration
+                    {% translate "Administration" %}
                 </button>
                 <div class="collapse" id="admin-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">

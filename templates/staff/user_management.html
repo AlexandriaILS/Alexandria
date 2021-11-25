@@ -6,29 +6,56 @@
 {% endblock %}
 
 {% block content %}
-    {% include 'partials/dev/print_window_size.partial' %}
-    {% for u in request.user.get_modifiable_users %}
-        <hr>
-        <div class="row">
-            <div class="col-sm-6 col-md-4 col-lg-4 text-center text-lg-start">
-                <strong>{{ u.last_name }}, {{ u.first_name }}</strong>
+    {% if search_text or page %}
+        <form method="post" id="staffSearchForm">
+            <div class="mb-3">
+                <label for="staffSearch" class="form-label">{% translate "Search" %}</label>
+                <input type="text" value="{{ search_text }}" class="form-control" name="search_text" id="staffSearch">
             </div>
-            <div class="col-sm-6 col-md-4 col-lg-3 text-center text-lg-start">
-                {{ u.title|default_if_none:"No title." }}
-            </div>
-            <div class="col-sm-12 col-md-4 col-lg-3 text-center text-lg-start">
-                {{ u.card_number }}
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-2 mt-3 mt-lg-0 text-center">
-                <div class="row">
-                    <div class="col-1 col-md-2 col-lg-0"></div>
-                    <div class="col-10 col-md-8 col-lg-12 text-center">
-                        {% url 'edit_staff_user' as edit_staff_url %}
-                        {% #button element='a' href=edit_staff_url variant="primary" block %}{% translate "Edit" %}{% /button %}
+            <button type="submit" class="btn btn-primary">{% translate "Submit" %}</button>
+            <button onclick="clearSearch()" class="btn btn-outline-primary">{% translate "Clear Search" %}</button>
+        </form>
+
+        <script type="application/javascript">
+            function clearSearch() {
+                const form = document.getElementById("staffSearchForm");
+                const searchField = document.getElementById("staffSearch");
+                searchField.value = '';
+                form.submit();
+            }
+        </script>
+
+    {% endif %}
+    {% if page %}
+        {% for u in page %}
+            <hr>
+            <div class="row">
+                <div class="col-sm-6 col-md-4 col-lg-4 text-center text-lg-start">
+                    <strong>{{ u.last_name }}, {{ u.first_name }}</strong>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-3 text-center text-lg-start">
+                    {{ u.title|default_if_none:"No title." }}
+                </div>
+                <div class="col-sm-12 col-md-4 col-lg-3 text-center text-lg-start">
+                    {{ u.card_number }}
+                </div>
+                <div class="col-sm-12 col-md-12 col-lg-2 mt-3 mt-lg-0 text-center">
+                    <div class="row">
+                        <div class="col-1 col-md-2 col-lg-0"></div>
+                        <div class="col-10 col-md-8 col-lg-12 text-center">
+                            {% url 'edit_staff_user' as edit_staff_url %}
+                            {% #button element='a' href=edit_staff_url variant="primary" block %}{% translate "Edit" %}{% /button %}
+                        </div>
+                        <div class="col-1 col-md-2 col-lg-0"></div>
                     </div>
-                    <div class="col-1 col-md-2 col-lg-0"></div>
                 </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+        {% if page.paginator.num_pages > 1 %}
+            {# Only show the pagination buttons if we actually got results. #}
+            {% include 'partials/pagination.partial' %}
+        {% endif %}
+    {% else %}
+        <h1>no folks here, sorry</h1>
+    {% endif %}
 {% endblock %}

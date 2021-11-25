@@ -16,5 +16,9 @@ urlpatterns = [
         name="add_marc_from_loc",
     ),
     path("user_management/", general.user_management, name="user_management"),
-    path("permissions/", permissions.PermissionsView.as_view(), name="modify_staff_permissions"),
+    path(
+        "permissions/",
+        permissions.PermissionsView.as_view(),
+        name="modify_staff_permissions",
+    ),
 ]

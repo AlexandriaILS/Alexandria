@@ -105,18 +105,31 @@ def staff_search(request):
     return render(request, "staff/search.html", {"results": data})
 
 
+@csrf_exempt
 def user_management(request):
     results = request.user.get_modifiable_users()
+    if search_text := request.POST.get("search_text"):
+        results = results.filter(
+            Q(first_name__icontains=search_text)
+            | Q(last_name__icontains=search_text)
+            | Q(title__icontains=search_text)
+            | Q(card_number__icontains=search_text)
+        )
 
     results_per_page = get_results_per_page(request)
 
     paginator = Paginator(results, results_per_page)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
-    context = {"result_count": paginator.count, "results_per_page": results_per_page, "results": results, "page": page_obj}
+    context = {
+        "result_count": paginator.count,
+        "results_per_page": results_per_page,
+        "search_text": search_text,
+        "page": page_obj,
+    }
 
     return render(request, "staff/user_management.html", context)
 
 
-class UserEditView():
+class UserEditView:
     ...

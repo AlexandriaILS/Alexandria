@@ -27,11 +27,12 @@ A Family's Guide to Silly Putty and Hair
 You saved $4,000,000,405 by using your library!
 """
 
+
 def generate_receipt(request):
     # todo: make this take in data + format it
-    data = base64.urlsafe_b64encode(bytes(TEST_DATA, 'utf-8')).decode()
-    return JsonResponse({'data': data})
+    data = base64.urlsafe_b64encode(bytes(TEST_DATA, "utf-8")).decode()
+    return JsonResponse({"data": data})
 
 
 def index(request):
-    return render(request, 'staff/receipt_test_page.partial')
+    return render(request, "staff/receipt_test_page.partial")
