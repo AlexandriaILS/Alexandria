@@ -43,9 +43,7 @@ def my_checkouts(request: HttpRequest) -> HttpResponse:
     my_materials = Item.objects.filter(user_checked_out_to=request.user).order_by(
         "due_date"
     )
-    return render(
-        request, "user/my_checked_out.html", {"checkouts": my_materials}
-    )
+    return render(request, "user/my_checked_out.html", {"checkouts": my_materials})
 
 
 @login_required()
@@ -64,10 +62,10 @@ def my_fees(request: HttpRequest) -> HttpResponse:
 class SettingsView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
         context = {
-                "slim_form": True,
-                "form": PatronSettingsForm(instance=request.user),
-                "show_password_reset": True,
-            }
+            "slim_form": True,
+            "form": PatronSettingsForm(instance=request.user),
+            "show_password_reset": True,
+        }
 
         context.update({"header": _("My Settings")})
         return render(request, "generic_form.html", context)

@@ -7,15 +7,14 @@ from django.contrib.auth.models import Group
 from users.models import AlexandriaUser, USLocation, BranchLocation
 
 
-
 class Command(BaseCommand):
-    help = 'Creates X (int) number of staff members with varying permissions for tests.'
+    help = "Creates X (int) number of staff members with varying permissions for tests."
 
     def add_arguments(self, parser):
-        parser.add_argument('count', type=int)
+        parser.add_argument("count", type=int)
 
     def handle(self, *args, **options):
-        count = options['count']
+        count = options["count"]
         try:
             from mimesis import Person
             from mimesis import Address
@@ -26,21 +25,21 @@ class Command(BaseCommand):
         address = Address()
 
         # get a better distribution of options up in here
-        position = ['Manager', 'In Charge', 'Circ Supervisor']
-        position += ['Librarian'] * 5
-        position += ['Circ General', 'Page'] * 2
+        position = ["Manager", "In Charge", "Circ Supervisor"]
+        position += ["Librarian"] * 5
+        position += ["Circ General", "Page"] * 2
 
         for _ in range(count):
             location = USLocation.objects.create(
                 address_1=address.address(),
                 city=address.city(),
                 state=address.state(),
-                zip_code=address.zip_code()
+                zip_code=address.zip_code(),
             )
             title = random.choice(position)
             perms = Group.objects.get(name=title)
             newbie = AlexandriaUser.objects.create(
-                card_number=''.join([random.choice(string.digits) for i in range(14)]),
+                card_number="".join([random.choice(string.digits) for i in range(14)]),
                 address=location,
                 title=title,
                 first_name=person.first_name(),
@@ -49,9 +48,16 @@ class Command(BaseCommand):
                 birth_year=2021 - person.age(minimum=20),
                 is_staff=True,
                 default_branch=random.choice(
-                    list(BranchLocation.objects.filter(open_to_public=True, host=settings.DEFAULT_HOST_KEY)))
+                    list(
+                        BranchLocation.objects.filter(
+                            open_to_public=True, host=settings.DEFAULT_HOST_KEY
+                        )
+                    )
+                ),
             )
             newbie.groups.add(perms)
             newbie.save()
 
-        self.stdout.write(self.style.SUCCESS(f"Created {str(count)} new staff members!"))
+        self.stdout.write(
+            self.style.SUCCESS(f"Created {str(count)} new staff members!")
+        )

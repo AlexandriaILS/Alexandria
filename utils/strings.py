@@ -11,5 +11,7 @@ def clean_text(text: str) -> Union[str, None]:
     """
     if not text:
         return None
-    text = text.strip().translate(str.maketrans('', '', string.punctuation))
-    return unicodedata.normalize("NFKD", text).encode('ascii', 'ignore').decode().lower()
+    text = text.strip().translate(str.maketrans("", "", string.punctuation))
+    return (
+        unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode().lower()
+    )

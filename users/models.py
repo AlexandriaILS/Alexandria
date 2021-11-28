@@ -1,4 +1,9 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    PermissionsMixin,
+    UserManager,
+    Group,
+)
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.mail import send_mail
 from django.db import models
@@ -93,7 +98,7 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin, SearchableHelpers):
     # where it might not be, so we'll store it as a string with the expectation
     # that it's a very large number.
 
-    SEARCHABLE_FIELDS = ['first_name', 'last_name']
+    SEARCHABLE_FIELDS = ["first_name", "last_name"]
 
     card_number = models.CharField(primary_key=True, max_length=50)
     # We only need one address; no need to keep their history.
@@ -220,13 +225,54 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin, SearchableHelpers):
 
     def get_modifiable_users(self):
         # used to populate user management page
-        if self.has_perm('users.change_staff_account'):
+        if self.has_perm("users.change_staff_account"):
             if self.is_superuser:
                 # can modify any staff user
                 qs = AlexandriaUser.objects.filter(is_staff=True)
             else:
                 # can only modify staff users attached to own host and not themselves
-                qs = AlexandriaUser.objects.filter(is_staff=True, host=self.host).exclude(card_number=self)
-            return qs.order_by('last_name', 'first_name')
+                qs = AlexandriaUser.objects.filter(
+                    is_staff=True, host=self.host
+                ).exclude(card_number=self)
+            return qs.order_by("last_name", "first_name")
 
         return []
+
+    def get_viewable_permissions_groups(self):
+        if not self.is_staff:
+            return []
+
+        # these strings are the names of the groups in the db
+        superuser = "Superuser"
+        manager = "Manager"
+        in_charge = "In Charge"
+        librarian = "Librarian"
+        circ_sup = "Circ Supervisor"
+        circ_gen = "Circ General"
+        page = "Page"
+
+        # these are the order in which they should appear
+        options = [superuser, manager, in_charge, librarian, circ_sup, circ_gen, page]
+
+        tree = {
+            superuser: options,  # everything
+            manager: [o for o in options if o != superuser],
+            in_charge: [in_charge, librarian, page],
+            librarian: [librarian, page],
+            circ_sup: [in_charge, librarian, circ_gen, page],
+            circ_gen: [librarian, circ_gen, page],
+            page: [],
+        }
+
+        perm_groups = []
+        for group in [i.name for i in self.groups.all()]:
+            perm_groups += tree[group]
+
+        group_objects = Group.objects.filter(name__in=list(set(perm_groups)))
+        sorted_groups = []
+        # run through the options list and put everything into the right order
+        for group in options:
+            sorted_groups.append(group_objects.filter(name=group).first())
+
+        # clean the list
+        return [group for group in sorted_groups if group is not None]

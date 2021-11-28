@@ -1,7 +1,9 @@
 {% extends 'partials/staff/base.partial' %}
 
 {% block content %}
-    {% for p in request.user.get_all_permissions %}
-        {{ p }}
-    {% endfor %}
+    {% include 'partials/generic_form.partial' %}
+{#    <form>#}
+{#    {{ csrf_token }}#}
+{#    {{ form.as_p }}#}
+{#    </form>#}
 {% endblock %}

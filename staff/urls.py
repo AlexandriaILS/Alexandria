@@ -16,7 +16,11 @@ urlpatterns = [
         name="add_marc_from_loc",
     ),
     path("user_management/", general.user_management, name="user_management"),
-    path("staff_edit/<int:user_id>/", general.EditStaffUser.as_view(), name="edit_staff_user"),
+    path(
+        "staff_edit/<int:user_id>/",
+        general.EditStaffUser.as_view(),
+        name="edit_staff_user",
+    ),
     path(
         "permissions/",
         permissions.PermissionsView.as_view(),
