@@ -26,12 +26,37 @@ Originally retrieved from
 https://github.com/lambdalisue/django-permission/blob/master/src/permission/utils/permissions.py
 on 2021/11/28.
 
+Modifications by @itsthejoker.
+
 Permission utility module.
 
 In this module, term *perm* indicate the identifier string permission written
 in 'app_label.codename' format.
 """
 from __future__ import unicode_literals
+from functools import wraps
+
+
+def permission_or_none(perm):
+    """
+    Decorator for views that checks whether a user has a particular permission
+    enabled and returns None if they don't.
+    This is pretty much just the code for the `permission_required` decorator and
+    `user_passes_test` mashed together.
+    """
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            if isinstance(perm, str):
+                perms = (perm,)
+            else:
+                perms = perm
+            # First check if the user has the permission (even anon users)
+            if request.user.has_perms(perms):
+                return view_func(request, *args, **kwargs)
+            return None
+        return _wrapped_view
+    return decorator
 
 
 def get_perm_codename(perm, fail_silently=True):

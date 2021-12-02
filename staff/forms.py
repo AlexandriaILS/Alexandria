@@ -5,12 +5,8 @@ from django.utils.translation import ugettext as _
 from users.models import BranchLocation
 
 
-class StaffSettingsForm(forms.Form):
+class PatronSettingsForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        request = None
-        if kwargs.get("request"):
-            request = kwargs.pop("request")
-
         super().__init__(*args, **kwargs)
 
         if not self.is_bound:
@@ -18,20 +14,6 @@ class StaffSettingsForm(forms.Form):
             self.fields["default_branch"].queryset = self.initial[
                 "default_branch_queryset"
             ]
-
-        if request:
-            # make sure that you can only award permissions that you have yourself
-            # (backed with server-side check on submit)
-            self.fields["permissions"].queryset = Permission.objects.filter(
-                codename__in=[
-                    obj.split(".")[1] for obj in request.user.get_all_permissions()
-                ]
-            ).order_by("content_type__app_label")
-            self.fields["permissions"].initial = Permission.objects.filter(
-                codename__in=[
-                    obj.split(".")[1] for obj in self.initial["permissions_initial"]
-                ]
-            )
 
     card_number = forms.CharField()
 
@@ -59,7 +41,7 @@ class StaffSettingsForm(forms.Form):
 
     is_staff = forms.BooleanField(
         label="Person is employed here",
-        help_text=_("Uncheck this to make this account a Patron account."),
+        help_text=_("If checked, this is treated as a staff account. If unchecked, it is a Patron account."),
         required=False,
     )
     is_active = forms.BooleanField(
@@ -67,6 +49,28 @@ class StaffSettingsForm(forms.Form):
         help_text=_("Uncheck this to disable the account entirely."),
         required=False,
     )
+
+class StaffSettingsForm(PatronSettingsForm):
+    def __init__(self, *args, **kwargs):
+        request = None
+        if kwargs.get("request"):
+            request = kwargs.pop("request")
+
+        super().__init__(*args, **kwargs)
+
+        if request:
+            # make sure that you can only award permissions that you have yourself
+            # (backed with server-side check on submit)
+            self.fields["permissions"].queryset = Permission.objects.filter(
+                codename__in=[
+                    obj.split(".")[1] for obj in request.user.get_all_permissions()
+                ]
+            ).order_by("content_type__app_label")
+            self.fields["permissions"].initial = Permission.objects.filter(
+                codename__in=[
+                    obj.split(".")[1] for obj in self.initial["permissions_initial"]
+                ]
+            )
 
     permissions = forms.ModelMultipleChoiceField(
         queryset=Permission.objects.none(),

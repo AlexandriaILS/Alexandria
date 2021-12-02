@@ -43,7 +43,12 @@
                         <div class="col-1 col-md-2 col-lg-0"></div>
                         <div class="col-10 col-md-8 col-lg-12 text-center">
                             {% url 'edit_staff_user' user_id=u.card_number as edit_staff_url %}
-                            {% #button element='a' href=edit_staff_url variant="primary" block %}{% translate "Edit" %}{% /button %}
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'edit_staff_user' user_id=u.card_number %}"
+                                        {% if not perms.users.change_staff_account %}disabled{% endif %}
+                                   class="btn btn-primary">{% translate "Edit" %}</a>
+
+                            </div>
                         </div>
                         <div class="col-1 col-md-2 col-lg-0"></div>
                     </div>

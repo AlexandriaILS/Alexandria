@@ -3,7 +3,7 @@
 {% endif %}
 <{{ element }}
     class="btn btn-{{ variant }} {{ extra_classes }}"
-    {% attrs id href value type onclick data-target=modal_target %}
+    {% attrs id href disabled value type onclick data-target=modal_target %}
     {% if modal_target %}
         data-toggle="modal" data-target="#{{ target }}"
     {% endif %}

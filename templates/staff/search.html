@@ -5,10 +5,10 @@
 
     <h1>{% translate "Results:" %}</h1>
     {# TODO: show images for items and records #}
-    {% if results.records %}
+    {% if results.record_results %}
         <h2>{% translate "Records" %}</h2>
         <ul>
-            {% for obj in results.records %}
+            {% for obj in results.record_results %}
                 <li>
                     <em>{{ obj.title }}</em>, by {{ obj.authors }}
 
@@ -17,10 +17,11 @@
         </ul>
     {% endif %}
 
-    {% if results.items %}
+    {% if results.item_results %}
+        {{ results}}
         <h2>{% translate "Items" %}</h2>
         <ul>
-            {% for obj in results.items %}
+            {% for obj in results.item_results %}
                 {# TODO: Add service information. Is this served through Libby? Show that. #}
                 <li>
                     <em>{{ obj.record.title }}</em>, by {{ obj.record.authors }}.
@@ -38,10 +39,10 @@
 
     {% endif %}
 
-    {% if results.patrons %}
+    {% if results.patron_results %}
         <h2>{% translate "Patrons" %}</h2>
         <ul>
-            {% for obj in results.patrons %}
+            {% for obj in results.patron_results %}
                 <li>{{ obj }}</li>
             {% endfor %}
         </ul>

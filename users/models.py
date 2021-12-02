@@ -223,19 +223,25 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin, SearchableHelpers):
         }
         return data
 
-    def get_modifiable_users(self):
+    def _get_users(self, is_staff):
+        if self.is_superuser:
+            qs = AlexandriaUser.objects.filter(is_staff=is_staff)
+        else:
+            qs = AlexandriaUser.objects.filter(
+                is_staff=is_staff, host=self.host
+            ).exclude(card_number=self)
+        return qs.order_by("last_name", "first_name")
+
+    def get_modifiable_staff(self):
         # used to populate user management page
         if self.has_perm("users.change_staff_account"):
-            if self.is_superuser:
-                # can modify any staff user
-                qs = AlexandriaUser.objects.filter(is_staff=True)
-            else:
-                # can only modify staff users attached to own host and not themselves
-                qs = AlexandriaUser.objects.filter(
-                    is_staff=True, host=self.host
-                ).exclude(card_number=self)
-            return qs.order_by("last_name", "first_name")
+            return self._get_users(is_staff=True)
+        return []
 
+    def get_modifiable_patrons(self):
+        # Similar to self.get_modifiable_users, but for patrons only.
+        if self.has_perm("users.change_patron_account"):
+            return self._get_users(is_staff=False)
         return []
 
     def get_viewable_permissions_groups(self):

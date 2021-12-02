@@ -122,7 +122,7 @@
                 <div class="collapse" id="admin-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         {% if 'users.change_staff_account' in perms %}
-                            <li><a href="{% url 'user_management' %}"
+                            <li><a href="{% url 'staff_management' %}"
                                    class="link-dark rounded">{% translate "Staff Management" %}</a></li>
                         {% endif %}
                         <li><a href="#" class="link-dark rounded">Overview</a></li>
