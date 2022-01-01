@@ -11,7 +11,7 @@ if env == "local":
     from alexandria.settings.local import *
 elif env == "testing":
     from alexandria.settings.testing import *
-elif os.path.exists('local_settings.py'):
+elif os.path.exists("local_settings.py"):
     # Local override -- check for existence of local_settings.py and load it if possible
     logger.warning("Found local_settings.py -- loading and using!")
     from local_settings import *

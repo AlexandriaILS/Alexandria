@@ -2,7 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from users.models import AlexandriaUser, BranchLocation, USLocation
 from users.views import LoginView
