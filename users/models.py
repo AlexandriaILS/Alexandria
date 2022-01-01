@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from localflavor.us.models import USStateField, USZipCodeField
 
 from alexandria.configs import load_site_config

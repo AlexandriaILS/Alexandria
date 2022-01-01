@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.generic import View
 
 from catalog.models import Item

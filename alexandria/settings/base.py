@@ -21,9 +21,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 try:
-    CURRENT_HASH = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('utf-8').strip()
+    CURRENT_HASH = (
+        subprocess.check_output(["git", "rev-parse", "--short", "HEAD"])
+        .decode("utf-8")
+        .strip()
+    )
 except subprocess.CalledProcessError:
-    CURRENT_HASH = 'unknown version'
+    CURRENT_HASH = "unknown version"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
@@ -63,6 +67,7 @@ class LazySiteData(Mapping):
 
     def init_data(self):
         from alexandria.configs import init_site_data
+
         self._raw_dict = init_site_data()
 
 
@@ -70,7 +75,9 @@ SITE_DATA = LazySiteData()  # this will get populated at runtime
 
 AUTH_USER_MODEL = "users.AlexandriaUser"
 LOGIN_URL = "/login/"
-CSRF_TRUSTED_ORIGINS = DEFAULT_HOSTS
+CSRF_TRUSTED_ORIGINS = [
+    "https://" + entry for entry in DEFAULT_HOSTS if not "localhost" in entry
+]
 
 # Application definition
 
@@ -191,7 +198,7 @@ ANYMAIL = {
 
 # for testing by writing files
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
 DEFAULT_FROM_EMAIL = "no-reply@alexandrialibraries.dev"
 SERVER_EMAIL = "thefabled@alexandrialibraries.dev"
