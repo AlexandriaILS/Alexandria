@@ -1,4 +1,9 @@
 from django import apps
+from django.db import models as django_models
+
+
+class SearchableFieldsException(Exception):
+    pass
 
 
 class UtilConfig(apps.AppConfig):
@@ -39,8 +44,22 @@ class UtilConfig(apps.AppConfig):
                 continue
 
             for field in target_fields:
+                # First, verify that the field actually exists and that it's something
+                # that we can work on
+                if original_field := getattr(model, field, None):
+                    field_base = original_field.field
+                    if not isinstance(field_base, django_models.CharField):
+                        raise SearchableFieldsException(
+                            "Can only create searchable versions of CharFields."
+                        )
+                else:
+                    # Maybe a spelling error? Either way, we don't see the original
+                    # field.
+                    raise SearchableFieldsException(
+                        f"Cannot find requested field {field}"
+                    )
+
                 new_field_name = f"searchable_{field.lower()}"
-                field_base = getattr(model, field).field
                 if not hasattr(model, new_field_name):
                     options = {
                         name: getattr(field_base, name)

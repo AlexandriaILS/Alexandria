@@ -44,6 +44,7 @@ def permission_or_none(perm):
     This is pretty much just the code for the `permission_required` decorator and
     `user_passes_test` mashed together.
     """
+
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
@@ -55,7 +56,9 @@ def permission_or_none(perm):
             if request.user.has_perms(perms):
                 return view_func(request, *args, **kwargs)
             return None
+
         return _wrapped_view
+
     return decorator
 
 
