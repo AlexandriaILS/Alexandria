@@ -9,11 +9,13 @@ It should include:
 * 🟠 a locked-down web view for library staff
 * 🟢 ability to add new titles
 * 🟢 ability to import titles by MARC record
+* 🟠 printing receipts
 * 🟠 hold management
 * 🔴 email notification capabilities
 * 🔴 handle fines with Stripe
 * 🟢 support for multiple locations
 * 🟢 support for multiple systems
+* 🔴 support for federated systems
 * 🔴 support for books checked out by staff (no due date)
 * 🔴 support for books that need to be weeded
 * 🔴 support for replacing weeded books

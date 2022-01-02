@@ -1,14 +1,14 @@
 from urllib.parse import quote_plus
 
 from django.core.paginator import Paginator
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Permission
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib import messages
 from django.db.models.aggregates import Count
 from django.db.models.expressions import F, Q
 from django.db.models.functions import Lower
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views.generic import View
 from django.utils.translation import gettext as _
@@ -18,7 +18,6 @@ from catalog.helpers import get_results_per_page
 from catalog.models import Item, Record
 from staff.forms import StaffSettingsForm
 from users.models import AlexandriaUser
-from utils.db import filter_db
 from utils.strings import clean_text
 from utils.permissions import permission_to_perm, permission_or_none
 
@@ -181,7 +180,18 @@ class EditStaffUser(PermissionRequiredMixin, View):
     permission_required = "users.change_staff_account"
 
     def get(self, request, user_id):
-        user = get_object_or_404(AlexandriaUser, card_number=user_id)
+        if request.user.is_superuser:
+            user = get_object_or_404(AlexandriaUser, card_number=user_id)
+        else:
+            if user_id == request.user.card_number:
+                messages.error(request, _("Sorry, you can't edit your own account."))
+                raise Http404
+
+            # A non-superuser can only edit users belonging to their own host
+            user = get_object_or_404(
+                AlexandriaUser, card_number=user_id, host=request.host
+            )
+
         form = StaffSettingsForm(
             request=request,
             initial={
@@ -221,7 +231,20 @@ class EditStaffUser(PermissionRequiredMixin, View):
         )
 
     def post(self, request, user_id):
-        user = get_object_or_404(AlexandriaUser, card_number=user_id)
+        # this shouldn't matter but if they send a bogus request against this
+        # endpoint, this will protect us
+        if request.user.is_superuser:
+            user = get_object_or_404(AlexandriaUser, card_number=user_id)
+        else:
+            if user_id == request.user.card_number:
+                messages.error(request, _("Sorry, you can't edit your own account."))
+                raise Http404
+
+            # A non-superuser can only edit users belonging to their own host
+            user = get_object_or_404(
+                AlexandriaUser, card_number=user_id, host=request.host
+            )
+
         form = StaffSettingsForm(request.POST)
 
         if form.is_valid():

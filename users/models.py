@@ -14,6 +14,7 @@ from localflavor.us.models import USStateField, USZipCodeField
 
 from alexandria.configs import load_site_config
 from utils.db import SearchableHelpers
+from utils.permissions import perm_to_permission
 
 
 class AlexandriaUserManager(UserManager):
@@ -265,20 +266,31 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin, SearchableHelpers):
             manager: [o for o in options if o != superuser],
             in_charge: [in_charge, librarian, page],
             librarian: [librarian, page],
-            circ_sup: [in_charge, librarian, circ_gen, page],
-            circ_gen: [librarian, circ_gen, page],
+            circ_sup: [circ_sup, in_charge, librarian, circ_gen, page],
+            circ_gen: [circ_gen, librarian, page],
             page: [],
         }
 
         perm_groups = []
-        for group in [i.name for i in self.groups.all()]:
-            perm_groups += tree[group]
+        # Because all permissions are available on a singular level, we only use
+        # permissions groups to keep track of default lists of permissions, not as
+        # something that's assigned wholesale. Therefore, we need to approximate
+        # what kinds of groups a user has by comparing the permissions that they
+        # currently have assigned to the permissions available for each group.
+        # We'll use that list of groups to show the buttons on the Staff Edit page
+        # to set those permission group defaults.
+        user_permissions = [perm_to_permission(p) for p in self.get_all_permissions()]
+        groups = Group.objects.filter(name__in=options)
+        for group in groups:
+            group_permissions = group.permissions.all()
+            if all([el in user_permissions for el in group_permissions]):
+                perm_groups += tree[group.name]
 
-        group_objects = Group.objects.filter(name__in=list(set(perm_groups)))
+        groups = groups.filter(name__in=list(set(perm_groups)))
         sorted_groups = []
         # run through the options list and put everything into the right order
         for group in options:
-            sorted_groups.append(group_objects.filter(name=group).first())
+            sorted_groups.append(groups.filter(name=group).first())
 
         # clean the list
         return [group for group in sorted_groups if group is not None]

@@ -1,7 +1,6 @@
 from django.urls import path, include
 from staff.views import catalog
 from staff.views import general
-from staff.views import permissions
 from staff.printing.urls import urlpatterns as printing_urls
 
 urlpatterns = [
@@ -27,9 +26,4 @@ urlpatterns = [
     #     general.EditPatronUser.as_view(),
     #     name="edit_staff_user",
     # ),
-    path(
-        "permissions/",
-        permissions.PermissionsView.as_view(),
-        name="modify_staff_permissions",
-    ),
 ]
