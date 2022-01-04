@@ -39,7 +39,7 @@ class Command(BaseCommand):
             title = random.choice(position)
             perms = Group.objects.get(name=title)
             newbie = AlexandriaUser.objects.create(
-                card_number="".join([random.choice(string.digits) for i in range(14)]),
+                card_number="".join([random.choice(string.digits) for _ in range(14)]),
                 address=location,
                 title=title,
                 first_name=person.first_name(),
@@ -55,7 +55,7 @@ class Command(BaseCommand):
                     )
                 ),
             )
-            newbie.groups.add(perms)
+            newbie.user_permissions.set(perms.permissions.all())
             newbie.save()
 
         self.stdout.write(
