@@ -1,0 +1,5 @@
+<div class="card shadow-sm mb-2">
+    <div class="card-body">
+        {{ children }}
+    </div>
+</div>

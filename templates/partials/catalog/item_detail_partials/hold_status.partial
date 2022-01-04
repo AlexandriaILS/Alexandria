@@ -1,4 +1,4 @@
-<span class="material-icons">timer</span>
+{% icon name="timer" description="Hold status" %}
 <div class="badge bg-{{ hold.get_status_color_class }} fs-5 ms-1">
 {{ hold.get_status_for_patron }}
 </div>

@@ -8,6 +8,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.core.mail import send_mail
 from django.db import models
 from django.conf import settings
+from django.forms import Form
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from localflavor.us.models import USStateField, USZipCodeField
@@ -149,8 +150,21 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin, SearchableHelpers):
         "catalog.Item", related_query_name="user_checked_out_to"
     )
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    # for setting holds
     default_branch = models.ForeignKey(
-        BranchLocation, on_delete=models.SET_NULL, null=True, blank=True
+        BranchLocation,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="default_branch",
+    )
+    # employees need a default branch to be assigned to
+    work_branch = models.ForeignKey(
+        BranchLocation,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="work_location",
     )
 
     EMAIL_FIELD = "email"
@@ -213,6 +227,16 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin, SearchableHelpers):
             self.save()
         return self.default_branch
 
+    def get_work_branch(self):
+        # Return the default working branch for a staff user.
+        if not self.work_branch:
+            breakpoint()
+            self.work_branch = BranchLocation.objects.get(
+                id=load_site_config(self.host)["default_location_id"]
+            )
+            self.save()
+        return self.work_branch
+
     def get_branches_for_holds(self):
         # Return a dict where the user default is directly available.
         # wrap default in queryset
@@ -232,6 +256,35 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin, SearchableHelpers):
                 is_staff=is_staff, host=self.host
             ).exclude(card_number=self)
         return qs.order_by("last_name", "first_name")
+
+    def get_shortened_name(self):
+        """
+        Return first name and initial of last name.
+
+        Also accounts for last names with multiple words like "Von Person".
+        """
+
+        # https://english.stackexchange.com/a/413015
+        return (
+            f"{self.first_name} {''.join([name[0] for name in self.last_name.split()])}"
+        )
+
+    def update_from_form(self, form: Form) -> None:
+        """Grab all the form data, split out the address info, and save it all."""
+        for key in form.cleaned_data.keys():
+            if key == "permissions":
+                continue
+            if hasattr(self, key):
+                setattr(self, key, form.cleaned_data[key])
+
+        # the rest of these are related to the address FK
+        unhandled_keys = [i for i in form.cleaned_data.keys() if i not in dir(self)]
+        for key in unhandled_keys:
+            if hasattr(self.address, key):
+                setattr(self.address, key, form.cleaned_data[key])
+
+        self.address.save()
+        self.save()
 
     def get_modifiable_staff(self):
         # used to populate user management page
@@ -294,3 +347,6 @@ class AlexandriaUser(AbstractBaseUser, PermissionsMixin, SearchableHelpers):
 
         # clean the list
         return [group for group in sorted_groups if group is not None]
+
+    def get_checked_out_materials(self):
+        return self.checkouts.all()

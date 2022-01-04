@@ -5,7 +5,7 @@ from django.utils.translation import gettext as _
 from users.models import BranchLocation
 
 
-class PatronSettingsForm(forms.Form):
+class PatronForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -16,8 +16,6 @@ class PatronSettingsForm(forms.Form):
             ]
 
     card_number = forms.CharField()
-
-    title = forms.CharField()
 
     first_name = forms.CharField()
     last_name = forms.CharField()
@@ -41,16 +39,22 @@ class PatronSettingsForm(forms.Form):
 
     is_staff = forms.BooleanField(
         label="Person is employed here",
-        help_text=_("If checked, this is treated as a staff account. If unchecked, it is a Patron account."),
+        help_text=_(
+            "If checked, this is treated as a staff account. If unchecked, it is a Patron account."
+        ),
         required=False,
     )
+
+
+class PatronEditForm(PatronForm):
     is_active = forms.BooleanField(
         label="Account is active",
         help_text=_("Uncheck this to disable the account entirely."),
         required=False,
     )
 
-class StaffSettingsForm(PatronSettingsForm):
+
+class StaffSettingsForm(PatronForm):
     def __init__(self, *args, **kwargs):
         request = None
         if kwargs.get("request"):
@@ -71,6 +75,11 @@ class StaffSettingsForm(PatronSettingsForm):
                     obj.split(".")[1] for obj in self.initial["permissions_initial"]
                 ]
             )
+            self.fields["work_branch"].queryset = request.user.get_branches()
+            self.fields["work_branch"].initial = self.initial["work_branch"]
+
+    title = forms.CharField()
+    work_branch = forms.ModelChoiceField(queryset=BranchLocation.objects.all())
 
     permissions = forms.ModelMultipleChoiceField(
         queryset=Permission.objects.none(),

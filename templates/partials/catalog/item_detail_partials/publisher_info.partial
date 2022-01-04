@@ -1,2 +1,2 @@
-<span class="material-icons me-1">book</span>
+{% icon name="book" description="Publisher information" %}
 {{ item.pubyear }}, {{ item.publisher }}

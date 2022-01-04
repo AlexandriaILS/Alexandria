@@ -43,6 +43,8 @@ def permission_or_none(perm):
     enabled and returns None if they don't.
     This is pretty much just the code for the `permission_required` decorator and
     `user_passes_test` mashed together.
+
+    This is used for views that function as API endpoints.
     """
 
     def decorator(view_func):

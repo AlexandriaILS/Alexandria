@@ -1,0 +1,2 @@
+{% icon name="credit_card" description="Patron card number" %}
+{{ obj.card_number }}

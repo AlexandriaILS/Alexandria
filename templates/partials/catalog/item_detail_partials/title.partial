@@ -1,3 +1,2 @@
-<span class="material-icons me-1">
-info</span>
+{% icon name="info" description="Item information" %}
 {{ item.record.title }}, {{ item.record.authors }} ({{ item.pubyear }})

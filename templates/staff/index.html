@@ -6,10 +6,10 @@
         Throw in anything that you'd like to search for! Information about a book, a bar code,
         a patron name, a user ID, whatever!
     </p>
-    <form method="post">
+    <form method="post" action="{% url 'staff_index' %}">
         <div class="input-group mb-3">
             <span class="input-group-text" id="inputGroup-sizing-default">Search:</span>
-            <input type="text" class="form-control" name="search_text" aria-label="Text input with dropdown button">
+            <input type="text" class="form-control" name="search_text" aria-label="Text input with dropdown button" value="{{ search_term }}">
         </div>
         <div class="text-center">
             <div class="btn-group" id="quickSearchTypeGroup" role="group"
@@ -43,6 +43,11 @@
             </div>
         </div>
     </form>
+
+    {% if results %}
+        <hr>
+        {% include "staff/search.html" %}
+    {% endif %}
 
     <script>
         // run on first load

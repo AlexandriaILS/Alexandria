@@ -55,7 +55,7 @@
 
 <nav id="sidebarMenu" class="sticky-md-top col-md-3 col-lg-3 col-xl-2 d-md-block bg-light sidebar collapse vh-100">
     <div class="mt-md-3 row d-none d-md-flex">
-        <div class="col-2 col-md-3 col-lg-2 pe-2 pt-1">
+        <div class="col-2 col-md-3 col-lg-2 pe-0">
             <table style="height: 100%; width: 100%">
                 <tbody>
                 <tr>
@@ -67,11 +67,20 @@
             </table>
         </div>
         <div class="col-10 col-md-9 col-lg-10 ps-1 fs-5 fs-md-3">
-            {{ request.context.name }}
+            <a href="{% url 'homepage' %}" style="text-decoration: none; color: black;">{{ request.context.name }}</a>
         </div>
     </div>
-    <hr class="d-sm-none d-md-block">
+    <hr class="d-none d-md-block">
     <div class="position-sticky pt-3 pt-md-1">
+        <ul class="list-unstyled ps-0">
+            <li class="mb-1">
+                <div class="btn-chevron-padding ps-2">
+                    {% comment %}Translators: there will always be a name and punctuation at the end of this.{% endcomment %}
+                    {% translate "Hi there," %} {{ request.user.get_shortened_name }}!
+                </div>
+            </li>
+        </ul>
+        <hr>
         <ul class="list-unstyled ps-0">
             <li class="mb-1">
                 <a class="btn btn-toggle btn-chevron-padding align-items-center rounded" href="{% url 'staff_index' %}">
@@ -93,7 +102,8 @@
                             <li><a href="#" class="link-dark rounded">{% translate "Check Out" %}</a></li>
                         {% endif %}
                         {% if 'users.create_patron_account' in perms %}
-                            <li><a href="#" class="link-dark rounded">{% translate "Create Patron Account" %}</a></li>
+                            <li><a href="{% url 'create_patron' %}"
+                                   class="link-dark rounded">{% translate "Create Patron Account" %}</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -122,8 +132,18 @@
                 <div class="collapse" id="admin-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         {% if 'users.change_staff_account' in perms %}
-                            <li><a href="{% url 'staff_management' %}"
-                                   class="link-dark rounded">{% translate "Staff Management" %}</a></li>
+                            <li>
+                                <a href="{% url 'staff_management' %}" class="link-dark rounded">
+                                    {% translate "Staff Management" %}
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if 'users.change_patron_account' in perms %}
+                            <li>
+                                <a href="{% url 'patron_management' %}" class="link-dark rounded">
+                                    {% translate "Patron Management" %}
+                                </a>
+                            </li>
                         {% endif %}
                         <li><a href="#" class="link-dark rounded">Overview</a></li>
                         <li><a href="#" class="link-dark rounded">Weekly</a></li>

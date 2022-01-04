@@ -1,0 +1,18 @@
+<span
+        {% if not children %}
+            class="material-icons me-1"
+            style="font-size: 24px; {{ extrastyle }}"
+        {% endif %}
+        {% if description %}
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="{{ description }}"
+        {% endif %}
+>
+{% if children %}
+    {{ children }}
+{% else %}
+    {{ name }}
+{% endif %}
+
+</span>

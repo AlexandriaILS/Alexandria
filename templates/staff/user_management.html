@@ -2,16 +2,16 @@
 {% load i18n %}
 
 {% block title %}
-    <h1>{% translate "Staff Management" %}</h1>
+    <h1>{{ title }}</h1>
 {% endblock %}
 
 {% block content %}
     {% if search_text or page %}
-        <form method="post" id="staffSearchForm">
+        <form method="post" id="personSearchForm">
             <div class="mb-3">
-                <label for="staffSearch" class="form-label">{% translate "Search" %}</label>
+                <label for="personSearch" class="form-label">{% translate "Search" %}</label>
                 <input type="text" value="{% if search_text %}{{ search_text }}{% endif %}"
-                       class="form-control" name="search_text" id="staffSearch">
+                       class="form-control" name="search_text" id="personSearch">
             </div>
             <button type="submit" class="btn btn-primary">{% translate "Submit" %}</button>
             <button onclick="clearSearch()" class="btn btn-outline-primary">{% translate "Clear Search" %}</button>
@@ -33,7 +33,11 @@
                     <strong>{{ u.last_name }}, {{ u.first_name }}</strong>
                 </div>
                 <div class="col-sm-6 col-md-4 col-lg-3 text-center text-lg-start">
-                    {{ u.title|default_if_none:"No title" }}
+                    {% if patron_mode %}
+                        {{ u.birth_year|default_if_none:"Unknown" }}
+                    {% else %}
+                        {{ u.title|default_if_none:"No title" }}
+                    {% endif %}
                 </div>
                 <div class="col-sm-12 col-md-4 col-lg-3 text-center text-lg-start">
                     {{ u.card_number }}
@@ -44,10 +48,14 @@
                         <div class="col-10 col-md-8 col-lg-12 text-center">
                             {% url 'edit_staff_user' user_id=u.card_number as edit_staff_url %}
                             <div class="d-grid gap-2">
-                                <a href="{% url 'edit_staff_user' user_id=u.card_number %}"
-                                        {% if not perms.users.change_staff_account %}disabled{% endif %}
-                                   class="btn btn-primary">{% translate "Edit" %}</a>
-
+                                <a class="btn btn-primary"
+                                        {% if patron_mode %}
+                                   href="{% url 'edit_patron' user_id=u.card_number %}"
+                                        {% else %}
+                                   href="{% url 'edit_staff_user' user_id=u.card_number %}"
+                                   {% if not perms.users.change_staff_account %}disabled{% endif %}
+                                        {% endif %}
+                                >{% translate "Edit" %}</a>
                             </div>
                         </div>
                         <div class="col-1 col-md-2 col-lg-0"></div>

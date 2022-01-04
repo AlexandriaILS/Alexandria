@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<span class="material-icons me-1">place</span>
+{% icon name="place" description="Item location" %}
 {% if item.is_checked_out_to_system %}
     {% translate "Unavailable" %}
 {% elif item.is_checked_out %}

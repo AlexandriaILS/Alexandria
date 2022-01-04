@@ -3,3 +3,5 @@ components:
   centered_column: 'components/centered_column.component'
   modal: 'components/modal.component'
   vertically_centered_card: 'components/vertically_centered_card.component'
+  basic_card: 'components/basic_card.component'
+  icon: 'components/icon.component'
