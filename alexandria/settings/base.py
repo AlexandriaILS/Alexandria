@@ -66,14 +66,14 @@ class LazySiteData(Mapping):
         return len(self._raw_dict)
 
     def init_data(self):
-        from alexandria.configs import init_site_data
+        from alexandria.distributed.configs import init_site_data
 
         self._raw_dict = init_site_data()
 
 
 SITE_DATA = LazySiteData()  # this will get populated at runtime
 
-AUTH_USER_MODEL = "users.AlexandriaUser"
+AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "/login/"
 CSRF_TRUSTED_ORIGINS = [
     "https://" + entry for entry in DEFAULT_HOSTS if not "localhost" in entry
@@ -82,6 +82,7 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
+    # internal
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -89,24 +90,27 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
+    # third party
     "anymail",
+    "localflavor",
     "mathfilters",
     "widget_tweaks",
     "slippers",
     "taggit",
-    "utils",
-    "users",
-    "localflavor",
-    "catalog",
-    "holds",
-    "payments",
-    "selfcheckout",
-    "staff",
+    # first party
+    "alexandria.searchablefields",
+    "alexandria.distributed",
+    "alexandria.utils",
+    "alexandria.integrations",
+    "alexandria.users",
+    "alexandria.records",
+    "alexandria.catalog",
+    "alexandria.money",
 ]
 
 MIDDLEWARE = [
     "django.middleware.gzip.GZipMiddleware",
-    "alexandria.middleware.HostValidationMiddleware",
+    "alexandria.distributed.middleware.HostValidationMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -115,7 +119,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "alexandria.middleware.ContextUpdateMiddleware",
+    "alexandria.distributed.middleware.ContextUpdateMiddleware",
 ]
 
 ROOT_URLCONF = "alexandria.urls"

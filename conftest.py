@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from catalog.management.commands import bootstrap_site
+from alexandria.catalog.management.commands import bootstrap_site
 
 
 @pytest.fixture(autouse=True)

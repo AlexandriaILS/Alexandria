@@ -20,9 +20,9 @@ from django.conf.urls.static import static
 from django.contrib.admin.views.decorators import staff_member_required
 from decorator_include import decorator_include
 
-from catalog.urls import urlpatterns as catalog_urls
-from holds.urls import urlpatterns as hold_urls
-from users.urls import urlpatterns as user_urls
+from alexandria.catalog.urls import urlpatterns as catalog_urls
+from alexandria.records.urls import urlpatterns as records_urls
+from alexandria.users.urls import urlpatterns as user_urls
 
 # handler400 = 'alexandria.errors.bad_request'
 # handler403 = 'alexandria.errors.permission_denied'
@@ -31,11 +31,11 @@ handler500 = 'alexandria.errors.server_error'
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('staff/', decorator_include(staff_member_required, "staff.urls")),
+    # path('staff/', decorator_include(staff_member_required, "staff.urls")),
 ]
 
 urlpatterns += catalog_urls
-urlpatterns += hold_urls
+urlpatterns += records_urls
 urlpatterns += user_urls
 
 if settings.DEBUG:
