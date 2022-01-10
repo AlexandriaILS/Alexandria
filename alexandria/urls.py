@@ -31,12 +31,11 @@ handler500 = 'alexandria.errors.server_error'
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # path('staff/', decorator_include(staff_member_required, "staff.urls")),
+    path('staff/', decorator_include(staff_member_required, "alexandria.users.urls")),
 ]
 
 urlpatterns += catalog_urls
 urlpatterns += records_urls
-urlpatterns += user_urls
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

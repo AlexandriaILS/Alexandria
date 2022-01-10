@@ -1,7 +1,6 @@
 from django.urls import path, include
 from alexandria.records.views import catalog
-from alexandria.users.views import patron_management
-from alexandria.users.views import general, staff_management
+from alexandria.users.views import general, patron_management, staff_management
 from alexandria.catalog.printing.urls import urlpatterns as printing_urls
 
 urlpatterns = [
