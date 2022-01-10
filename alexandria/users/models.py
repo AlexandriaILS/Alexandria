@@ -1,3 +1,7 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+from django.apps import apps
 from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
@@ -16,6 +20,10 @@ from localflavor.us.models import USStateField, USZipCodeField
 from alexandria.distributed.configs import load_site_config
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 from alexandria.utils.permissions import perm_to_permission
+
+
+if TYPE_CHECKING:
+    from alexandria.records.models import ItemType
 
 
 class UserManager(DjangoUserManager):
@@ -84,7 +92,7 @@ class BranchLocation(models.Model):
     open_to_public = models.BooleanField(
         _("open to public"),
         default=True,
-        help_text="Set to false if this building is staff-only or a processing center.",
+        help_text=_("Set to false if this building is staff-only or a processing center."),
     )
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
@@ -92,6 +100,67 @@ class BranchLocation(models.Model):
         if self.address:
             return f"{self.name} - {self.address.address_1}"
         return f"{self.name}"
+
+
+class AccountType(models.Model):
+    name = models.CharField(max_length=150)
+    # stored in the format of {itemtype_id (int) : limit (int)}
+    _itemtype_checkout_limits = models.JSONField(_("itemtype checkout limits"), default=dict)
+    _itemtype_hold_limits = models.JSONField(_("itemtype hold limits"), default=dict)
+    checkout_limit = models.IntegerField(_("checkout limit"), null=True, blank=True, default=150, help_text=_("How many materials total is this account type allowed to have checked out?"))
+    hold_limit = models.IntegerField(_("hold limit"), null=True, blank=True, default=10, help_text=_("How many active holds is this account type allowed to have?"))
+    allowed_item_types = models.ManyToManyField("records.ItemType", help_text=_("This account type will only be allowed to check out the listed item types here. If this is empty, all item types will be allowed. Use the \"Can Checkout Materials\" toggle to disable all checkouts."))
+    can_checkout_materials = models.BooleanField(default=True, help_text=_("Allow this account type to check out materials at all."))
+
+    def get_all_itemtype_checkout_limits(self) -> dict:
+        """
+        Retrieve a formatted dict with all the checkout limits by itemtype.
+
+        Warning: this has the possibility to be fairly heavy, so use the other
+        helpers to request / set single objects at a time if you can.
+        """
+        item_type = apps.get_model(app_label='records', model_name='ItemType')
+        limits = {}
+        # grab all the objects we need in one call and load them into memory
+        type_objects = item_type.objects.get(id__in=self._itemtype_checkout_limits.keys())
+
+        for model_id, value in self._itemtype_checkout_limits.items():
+            limits[type_objects.get(id=model_id)] = value
+
+        return limits
+
+    def get_all_itemtype_hold_limits(self) -> dict:
+        """
+        Retrieve a formatted dict with all the hold limits by itemtype.
+
+        Same warning as above applies here.
+        """
+        item_type = apps.get_model(app_label='records', model_name='ItemType')
+        limits = {}
+        # grab all the objects we need in one call and load them into memory
+        type_objects = item_type.objects.get(id__in=self._itemtype_hold_limits.keys())
+
+        for model_id, value in self._itemtype_hold_limits.items():
+            limits[type_objects.get(id=model_id)] = value
+        return limits
+
+    def get_itemtype_checkout_limit(self, obj: ItemType) -> int:
+        return self._itemtype_checkout_limits.get(
+            obj.id, default=obj.number_of_days_per_checkout
+        )
+
+    def set_itemtype_checkout_limit(self, obj: ItemType, limit: int) -> None:
+        self._itemtype_checkout_limits.update({obj.id, limit})
+        self.save()
+
+    def get_itemtype_hold_limit(self, obj: ItemType) -> int:
+        return self._itemtype_hold_limits.get(
+            obj.id, default=obj.number_of_allowed_renews
+        )
+
+    def set_itemtype_hold_limit(self, obj: ItemType, limit: int) -> None:
+        self._itemtype_hold_limits.update({obj.id, limit})
+        self.save()
 
 
 class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin):
