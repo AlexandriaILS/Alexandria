@@ -1,4 +1,4 @@
-{% extends 'partials/base.partial' %}
+{% extends 'base.partial' %}
 
 {% block content %}
 

@@ -1,10 +1,10 @@
-{% extends 'partials/base.partial' %}
+{% extends 'base.partial' %}
 {% load i18n %}
 
 {% block content %}
     <h1>{% translate "My Fees" %}</h1>
     {% if not fees %}
-        {% #centered_column %}
+        {% #centered_column center_width=6%}
         <div class="card shadow mt-5">
             <div class="card-body">
                 <h5 class="card-title">{% translate "You don't have any fees!" %}</h5>

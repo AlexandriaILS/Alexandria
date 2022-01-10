@@ -1,14 +1,14 @@
 import random
 import string
+from datetime import datetime
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import Group
 from alexandria.users.models import User, USLocation, BranchLocation
 
 
 class Command(BaseCommand):
-    help = "Creates X (int) number of staff members with varying permissions for tests."
+    help = "Creates X (int) number of patrons for tests."
 
     def add_arguments(self, parser):
         parser.add_argument("count", type=int)
@@ -24,11 +24,6 @@ class Command(BaseCommand):
         person = Person()
         address = Address()
 
-        # get a better distribution of options up in here
-        position = ["Manager", "In Charge", "Circ Supervisor"]
-        position += ["Librarian"] * 5
-        position += ["Circ General", "Page"] * 2
-
         for _ in range(count):
             location = USLocation.objects.create(
                 address_1=address.address(),
@@ -36,17 +31,16 @@ class Command(BaseCommand):
                 state=address.state(),
                 zip_code=address.zip_code(),
             )
-            title = random.choice(position)
-            perms = Group.objects.get(name=title)
+            AGE = person.age(minimum=0)
             newbie = User.objects.create(
                 card_number="".join([random.choice(string.digits) for _ in range(14)]),
                 address=location,
-                title=title,
                 first_name=person.first_name(),
                 last_name=person.last_name(),
                 email=person.email(),
-                birth_year=2021 - person.age(minimum=20),
-                is_staff=True,
+                birth_year=datetime.now().year - AGE,
+                is_minor=True if AGE < 18 else False,
+                is_staff=False,
                 default_branch=random.choice(
                     list(
                         BranchLocation.objects.filter(
@@ -55,10 +49,9 @@ class Command(BaseCommand):
                     )
                 ),
             )
-            newbie.user_permissions.set(perms.permissions.all())
             newbie.set_password("asdf")
             newbie.save()
 
         self.stdout.write(
-            self.style.SUCCESS(f"Created {str(count)} new staff members!")
+            self.style.SUCCESS(f"Created {str(count)} new patrons!")
         )

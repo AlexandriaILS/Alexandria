@@ -229,8 +229,9 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin):
 
     def get_work_branch(self):
         # Return the default working branch for a staff user.
+        if not self.is_staff:
+            return None
         if not self.work_branch:
-            breakpoint()
             self.work_branch = BranchLocation.objects.get(
                 id=load_site_config(self.host)["default_location_id"]
             )

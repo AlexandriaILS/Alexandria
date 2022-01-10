@@ -1,10 +1,10 @@
-{% extends 'partials/base.partial' %}
+{% extends 'base.partial' %}
 {% load i18n %}
 
 {% block content %}
     <h1>{% translate "My Holds" %}</h1>
     {% if not holds %}
-        {% #centered_column %}
+        {% #centered_column center_width=6%}
         <div class="card shadow mt-5">
             <div class="card-body">
                 <h5 class="card-title">{% translate "You don't have anything on hold!" %}</h5>
@@ -15,7 +15,7 @@
         {% /centered_column %}
     {% else %}
         {% for hold in holds %}
-            {% include 'partials/catalog/item_detail_list.partial' with item=hold.item hold_view=True %}
+            {% include 'catalog/item_detail_list.partial' with item=hold.item hold_view=True %}
             <hr>
         {% endfor %}
         {% #centered_column center_width=6 %}

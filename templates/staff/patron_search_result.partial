@@ -3,13 +3,13 @@
 <hr class="mx-5">
 <div class="row">
     <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 d-flex align-items-center">
-        {% include 'partials/staff/patron_detail_partials/name.partial' with obj=patron %}
+        {% include 'partials/details/name.partial' with obj=patron %}
     </div>
     <div class="col-sm-12 col-md-6 col-lg-2 col-xl-3 d-flex align-items-center">
-        {% include 'partials/staff/patron_detail_partials/birthyear.partial' with obj=patron %}
+        {% include 'partials/details/birthyear.partial' with obj=patron %}
     </div>
     <div class="col-sm-12 col-md-6 col-lg-4 col-xl-3 d-flex align-items-center">
-        {% include 'partials/staff/patron_detail_partials/card_number.partial' with obj=patron %}
+        {% include 'partials/details/card_number.partial' with obj=patron %}
     </div>
     <div class="col-sm-12 col-md-6 col-lg-12 col-xl-3 align-items-center">
         <div class="d-xl-none mt-2"></div>
