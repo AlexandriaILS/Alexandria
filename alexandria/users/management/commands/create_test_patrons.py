@@ -13,11 +13,11 @@ try:
 except ImportError:
     raise CommandError("Cannot proceed; missing dev dependencies.")
 
-person = Person()
-address = Address()
-
 
 def create_user(*args):
+    person = Person()
+    address = Address()
+
     location = USLocation.objects.create(
         address_1=address.address(),
         city=address.city(),

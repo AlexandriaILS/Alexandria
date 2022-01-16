@@ -39,7 +39,7 @@
 {% if results.patron_results %}
     <h2>{% translate "Patrons" %}</h2>
     {% for obj in results.patron_results %}
-        {% include 'partials/staff/patron_search_result.partial' with patron=obj %}
+        {% include 'staff/patron_search_result.partial' with patron=obj %}
     {% endfor %}
 {% endif %}
 
