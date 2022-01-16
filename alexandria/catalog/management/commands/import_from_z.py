@@ -22,19 +22,6 @@ from alexandria.utils.images import get_and_save_image
 
 
 BOOK_OPTIONS = ["Audiobook (CD)", "Book", "Audiobook (Cassette)", "Ebook"]
-BRANCH_LOCATIONS = [
-    "Crickhollow",
-    "Frogmorton",
-    "Gamwitch",
-    "Hobbiton",
-    "Little Delving",
-    "Michel Delving",
-    "Overhill",
-    "Rushey",
-    "Tuckborough",
-    "Willowbottom",
-    "Woodhall",
-]
 PUBLISHERS = [
     "AntarcticBird Spork Building",
     "Hatchet",
@@ -44,22 +31,6 @@ PUBLISHERS = [
     "IDG Books (RIP)",
     "CowFjord University Press",
 ]
-SVG = (
-    '<svg xmlns="http://www.w3.org/2000/svg"'
-    ' xmlns:xlink="http://www.w3.org/1999/xlink"'
-    ' version="1.1"'
-    ' id="mdi-cassette"'
-    ' width="36"'
-    ' height="36"'
-    ' viewBox="2 2 20 20">'
-    "<path"
-    ' fill="currentColor"'
-    ' d="M4,5A2,2 0 0,0 2,7V17A2,2 0 0,0 4,19H6L7,17H17L18,19H20A2,2 0 0,0 22,17V7A2,'
-    "2 0 0,0 20,5H4M6.5,10A1.5,1.5 0 0,1 8,11.5A1.5,1.5 0 0,1 6.5,13A1.5,1.5 0 0,1 5,"
-    "11.5A1.5,1.5 0 0,1 6.5,10M9,10H15V13H9V10M17.5,10A1.5,1.5 0 0,1 19,11.5A1.5,"
-    '1.5 0 0,1 17.5,13A1.5,1.5 0 0,1 16,11.5A1.5,1.5 0 0,1 17.5,10Z" />'
-    "</svg>"
-)
 
 sites = init_site_data()
 
@@ -175,6 +146,8 @@ def generate_fake_item(record: Record, count: int) -> None:
     for opt in options:
         type_dict[opt] = generate_LOC_call_number()
 
+    locations = BranchLocation.objects.filter(open_to_public=True)
+
     for i in range(count):
         pubyear = random.randrange(1945, 2021)
         item_type = random.choice(list(type_dict.keys()))
@@ -183,9 +156,7 @@ def generate_fake_item(record: Record, count: int) -> None:
             barcode=random.getrandbits(50),
             record=record,
             price=random.randrange(12, 35) + (random.randrange(0, 100) / 100),
-            home_location=random.choice(
-                BranchLocation.objects.filter(name__in=BRANCH_LOCATIONS)
-            ),
+            home_location=random.choice(locations),
             is_active=True,
             call_number=call_number,
             publisher=random.choice(PUBLISHERS),
@@ -212,34 +183,6 @@ class Command(BaseCommand):
             if not answer.lower().startswith("y"):
                 self.stdout.write(self.style.ERROR("Exiting!"))
                 sys.exit(0)
-
-        for branch in [
-            "Crickhollow",
-            "Frogmorton",
-            "Gamwitch",
-            "Hobbiton",
-            "Little Delving",
-            "Michel Delving",
-            "Overhill",
-            "Rushey",
-            "Tuckborough",
-            "Willowbottom",
-            "Woodhall",
-        ]:
-            BranchLocation.objects.get_or_create(name=branch)
-
-        base = ItemTypeBase.objects.get(name=ItemTypeBase.LANGUAGE_MATERIAL)
-        # ["Audiobook (CD)", "Book", "Audiobook (Cassette)", "Ebook"]
-        ItemType.objects.get_or_create(
-            name="Audiobook (CD)", base=base, icon_name="album"
-        )
-        ItemType.objects.get_or_create(
-            name="eBook", base=base, icon_name="tablet_android"
-        )
-        ItemType.objects.get_or_create(name="Book", base=base, icon_name="auto_stories")
-        ItemType.objects.get_or_create(
-            name="Audiobook (Cassette)", base=base, icon_svg=SVG
-        )
 
         available_records = requests.get(
             slash_join(sites[settings.DEFAULT_HOST_KEY]["zenodotus_url"], "record")
