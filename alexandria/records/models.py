@@ -17,7 +17,8 @@ from alexandria.records import openlibrary
 from alexandria.users.models import BranchLocation, User
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 
-UTC = zoneinfo.ZoneInfo('UTC')
+UTC = zoneinfo.ZoneInfo("UTC")
+
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
@@ -287,7 +288,7 @@ class Item(models.Model):
     class Meta:
         permissions = [
             ("check_in", _("Can check in materials")),
-            ("check_out", _("Can check out materials"))
+            ("check_out", _("Can check out materials")),
         ]
 
     def get_due_date(self):
@@ -365,7 +366,8 @@ class Item(models.Model):
     sudoc = models.CharField(_("sudoc"), max_length=30, blank=True, null=True)
     # date updated when material is checked in
     last_checked_out = models.DateTimeField(
-        _("last_checked_out"), default=timezone.datetime(year=1970, month=1, day=1, tzinfo=UTC)
+        _("last_checked_out"),
+        default=timezone.datetime(year=1970, month=1, day=1, tzinfo=UTC),
     )
     # Is this specific item actually allowed to be checked out?
     can_circulate = models.BooleanField(_("can_circulate"), default=True)
@@ -526,9 +528,7 @@ class Hold(models.Model):
         BranchLocation, on_delete=models.SET_NULL, null=True
     )
 
-    item = models.ForeignKey(
-        Item, null=True, blank=True, on_delete=models.CASCADE
-    )
+    item = models.ForeignKey(Item, null=True, blank=True, on_delete=models.CASCADE)
 
     # used to see whether we can recalculate a hold in the event that a hold
     # is placed on an item but someone tries to check out the item
@@ -542,7 +542,7 @@ class Hold(models.Model):
             " this makes this hold be processed next, no matter where it is in the queue."
             " If there are multiple holds with this flag, then they will be processed in"
             " order of oldest first."
-        )
+        ),
     )
 
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
@@ -552,15 +552,15 @@ class Hold(models.Model):
 
     def get_hold_queue_number(self):
         # todo: add handling for a specific host
-        open_holds = (
-            Hold.objects.filter(
-                item=self.item,
-            ).order_by("-date_created")
-        )
+        open_holds = Hold.objects.filter(
+            item=self.item,
+        ).order_by("-date_created")
         return (*open_holds,).index(self) + 1
 
     def is_ready_for_pickup(self):
-        return self.item.checked_out_to == BranchLocation.objects.get(name="ready_for_pickup")
+        return self.item.checked_out_to == BranchLocation.objects.get(
+            name="ready_for_pickup"
+        )
 
     def get_status_for_patron(self):
         if self.is_ready_for_pickup():

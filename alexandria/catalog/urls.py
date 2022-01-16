@@ -14,13 +14,14 @@ urlpatterns = [
     path("myholds", user_views.my_holds, name="my_holds"),
     path("myfees", user_views.my_fees, name="my_fees"),
     path("mysettings", user_views.SettingsView.as_view(), name="my_settings"),
-
     # authentication
     path("login/", auth_views.LoginView.as_view(), name="login"),
     path("logout/", auth_views.logout_view, name="logout"),
     # many thanks to https://learndjango.com/tutorials/django-password-reset-tutorial
     path(
-        "password_reset/", django_auth_views.PasswordResetView.as_view(), name="password_reset"
+        "password_reset/",
+        django_auth_views.PasswordResetView.as_view(),
+        name="password_reset",
     ),
     path(
         "password_reset/done/",

@@ -12,7 +12,7 @@ class Command(BaseCommand):
         count = 0
         for option in items:
             item, created = BranchLocation.objects.get_or_create(
-                name=option, host=settings.DEFAULT_SYSTEM_HOST_KEY
+                name=option, open_to_public=False, host=settings.DEFAULT_SYSTEM_HOST_KEY
             )
             if created:
                 count += 1

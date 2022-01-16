@@ -2,6 +2,7 @@ from django.db import connection, reset_queries
 import time
 import functools
 
+
 def filter_db(request, klass, *args, **kwargs):
     """Filter the requested class and enforce the host check."""
     kwargs["host"] = request.host

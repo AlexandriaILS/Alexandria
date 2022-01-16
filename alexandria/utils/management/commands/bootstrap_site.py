@@ -1,6 +1,10 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
-from alexandria.utils.management.commands import bootstrap_system_branches, bootstrap_types, create_permissions_groups
+from alexandria.utils.management.commands import (
+    bootstrap_system_branches,
+    bootstrap_types,
+    create_permissions_groups,
+)
 
 from alexandria.users.models import USLocation
 
@@ -25,7 +29,7 @@ class Command(BaseCommand):
             is_superuser=True,
             first_name="Admin",
             last_name="von Admin",
-            address=location
+            address=location,
         )
         if created:
             user.set_password("asdf")

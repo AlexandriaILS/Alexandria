@@ -59,9 +59,7 @@ class EditStaffUser(PermissionRequiredMixin, View):
                 raise Http404
 
             # A non-superuser can only edit users belonging to their own host
-            user = get_object_or_404(
-                User, card_number=user_id, host=request.host
-            )
+            user = get_object_or_404(User, card_number=user_id, host=request.host)
 
         form = StaffSettingsForm(
             request=request,
@@ -113,9 +111,7 @@ class EditStaffUser(PermissionRequiredMixin, View):
                 raise Http404
 
             # A non-superuser can only edit users belonging to their own host
-            user = get_object_or_404(
-                User, card_number=user_id, host=request.host
-            )
+            user = get_object_or_404(User, card_number=user_id, host=request.host)
 
         form = StaffSettingsForm(request.POST)
 

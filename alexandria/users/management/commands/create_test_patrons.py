@@ -64,6 +64,4 @@ class Command(BaseCommand):
         pool = Pool(processes=cpu_count())
         pool.map(create_user, range(count))
 
-        self.stdout.write(
-            self.style.SUCCESS(f"Created {str(count)} new patrons!")
-        )
+        self.stdout.write(self.style.SUCCESS(f"Created {str(count)} new patrons!"))

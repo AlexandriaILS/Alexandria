@@ -14,7 +14,9 @@ HOLD_ALREADY_EXISTS = 409
 YOU_ALREADY_HAVE_THIS_CHECKED_OUT = 406
 
 
-def create_hold(request, item, location, specific_copy=False) -> Union[HttpResponse, JsonResponse]:
+def create_hold(
+    request, item, location, specific_copy=False
+) -> Union[HttpResponse, JsonResponse]:
     filters = {
         "placed_by": request.user,
         "destination": location,
@@ -29,7 +31,7 @@ def create_hold(request, item, location, specific_copy=False) -> Union[HttpRespo
     if existing:
         return HttpResponse(status=HOLD_ALREADY_EXISTS)
 
-    filters.update({'specific_copy': specific_copy})
+    filters.update({"specific_copy": specific_copy})
     new_hold = Hold.objects.create(**filters)
 
     return JsonResponse(
@@ -71,9 +73,11 @@ def place_hold_on_record(
     # First, check to see if there's a copy in the location that's the hold will
     # be picked up at.
     item = (
-        target.item_set.filter(home_location=location, type=item_type, host=request.host)
-            .order_by("-last_checked_out")
-            .first()
+        target.item_set.filter(
+            home_location=location, type=item_type, host=request.host
+        )
+        .order_by("-last_checked_out")
+        .first()
     )
     if not item:
         # If that doesn't work, get the most recently used copy from the system.
@@ -85,8 +89,8 @@ def place_hold_on_record(
                 type=item_type,
                 host=request.host,
             )
-                .order_by("-last_checked_out")
-                .first()
+            .order_by("-last_checked_out")
+            .first()
         )
     if not item:
         # We shouldn't get here. Ever. If we're placing a hold, there should always
@@ -119,5 +123,7 @@ def renew_hold_on_item(request: WSGIRequest, item_id: int):
         target.renewal_count += 1
         target.due_date = target.calculate_renewal_due_date()
         target.save()
-        return JsonResponse(status=200, data={'new_due_date': target.due_date.strftime('%b. %d, %Y')})
+        return JsonResponse(
+            status=200, data={"new_due_date": target.due_date.strftime("%b. %d, %Y")}
+        )
     return HttpResponse(status=403)

@@ -58,16 +58,10 @@ def create_test_locations_and_types():
 
     base = ItemTypeBase.objects.get(name=ItemTypeBase.LANGUAGE_MATERIAL)
     # ["Audiobook (CD)", "Book", "Audiobook (Cassette)", "Ebook"]
-    ItemType.objects.get_or_create(
-        name="Audiobook (CD)", base=base, icon_name="album"
-    )
-    ItemType.objects.get_or_create(
-        name="eBook", base=base, icon_name="tablet_android"
-    )
+    ItemType.objects.get_or_create(name="Audiobook (CD)", base=base, icon_name="album")
+    ItemType.objects.get_or_create(name="eBook", base=base, icon_name="tablet_android")
     ItemType.objects.get_or_create(name="Book", base=base, icon_name="auto_stories")
-    ItemType.objects.get_or_create(
-        name="Audiobook (Cassette)", base=base, icon_svg=SVG
-    )
+    ItemType.objects.get_or_create(name="Audiobook (Cassette)", base=base, icon_svg=SVG)
 
 
 class Command(BaseCommand):

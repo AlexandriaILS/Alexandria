@@ -1,6 +1,14 @@
 from django.contrib import admin
 
-from alexandria.records.models import Hold, Subject, Record, Item, Collection, ItemType, ItemTypeBase
+from alexandria.records.models import (
+    Hold,
+    Subject,
+    Record,
+    Item,
+    Collection,
+    ItemType,
+    ItemTypeBase,
+)
 
 
 class ItemAdmin(admin.ModelAdmin):
