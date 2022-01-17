@@ -56,15 +56,18 @@ def get_default_item_type(**kwargs):
     obj, _ = ItemType.objects.get_or_create(**DEFAULT_ITEM_TYPE, **kwargs)
     return obj
 
+
 def get_default_record(**kwargs):
-    if not kwargs.get("itemtype"):
-        kwargs["itemtype"] = get_default_item_type()
     obj, _ = Record.objects.get_or_create(**DEFAULT_RECORD, **kwargs)
     return obj
 
 
 def get_test_item(**kwargs):
-    return Item.objects.create(record=kwargs.get("record", get_default_record()))
+    if not kwargs.get("type"):
+        kwargs["type"] = get_default_item_type()
+    return Item.objects.create(
+        record=kwargs.get("record", get_default_record()), **kwargs
+    )
 
 
 def get_default_location(**kwargs):

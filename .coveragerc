@@ -7,7 +7,7 @@ omit =
   */static/*,
   */static_dev/*,
   */media/*,
-  alexandria/local_settings.py,
+  local_settings.py,
   */urls.py,
   */wsgi.py,
   alexandria/settings/*,
