@@ -1,5 +1,7 @@
 # Bespoke. Books. Battlestar Galactica.
 
+![Automated Tests Status](https://github.com/AlexandriaILS/Alexandria/actions/workflows/tests.yml/badge.svg)
+
 The plan here is to design and implement, mostly for the sake of practice, an integrated library system for a small library.
 
 It should include:
