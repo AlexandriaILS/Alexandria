@@ -1,7 +1,8 @@
 import random
 import string
 from datetime import datetime
-from multiprocessing import cpu_count, Pool
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -25,6 +26,9 @@ def create_user(*args):
         zip_code=address.zip_code(),
     )
     age = person.age(minimum=0)
+    valid_branches = BranchLocation.objects.filter(
+        open_to_public=True, host=settings.DEFAULT_HOST_KEY
+    )
     newbie = User.objects.create(
         card_number="".join([random.choice(string.digits) for _ in range(14)]),
         address=location,
@@ -34,13 +38,7 @@ def create_user(*args):
         birth_year=datetime.now().year - age,
         is_minor=True if age < 18 else False,
         is_staff=False,
-        default_branch=random.choice(
-            list(
-                BranchLocation.objects.filter(
-                    open_to_public=True, host=settings.DEFAULT_HOST_KEY
-                )
-            )
-        ),
+        default_branch=random.choice(valid_branches),
     )
     newbie.set_password("asdf")
     newbie.save()
@@ -57,11 +55,15 @@ class Command(BaseCommand):
 
         # it takes about 55 minutes on a single core on the pixelbook
         self.stdout.write(
-            f"Creating new patrons. This is a multicore process and is estimated"
-            f" to take {(0.01*count)/cpu_count()} minutes. Please plan accordingly."
+            f"Creating new patrons. This is a multicore process and will take"
+            f" some minutes. Please plan accordingly."
         )
 
-        pool = Pool(processes=cpu_count())
-        pool.map(create_user, range(count))
+        with ThreadPoolExecutor() as executor:
+            jobs = list()
+            for _ in range(count):
+                jobs.append(executor.submit(create_user, _))
+            for f in as_completed(jobs):
+                pass
 
         self.stdout.write(self.style.SUCCESS(f"Created {str(count)} new patrons!"))

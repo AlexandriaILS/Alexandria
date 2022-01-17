@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.admin.views.decorators import staff_member_required
@@ -32,6 +32,7 @@ handler500 = "alexandria.errors.server_error"
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("staff/", decorator_include(staff_member_required, "alexandria.users.urls")),
+    path('__debug__/', include('debug_toolbar.urls')),
 ]
 
 urlpatterns += catalog_urls

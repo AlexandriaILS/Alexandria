@@ -19,6 +19,7 @@ django-mathfilters = "^1.0.0"
 django-anymail = {extras = ["mailgun"], version = "^8.4"}
 django-decorator-include = "^3.0"
 django-taggit = {git = "https://github.com/jazzband/django-taggit.git"}
+django-debug-toolbar = "^3.2.4"
 
 [tool.poetry.dev-dependencies]
 better_exceptions = "^0.2.2"

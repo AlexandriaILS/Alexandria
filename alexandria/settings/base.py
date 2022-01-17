@@ -41,6 +41,10 @@ DEBUG = False
 ALLOWED_HOSTS = ["*"]
 # used for handling configs on the request
 DEFAULT_HOSTS = ["localhost:8000", "staging.alexandrialibrary.dev"]
+INTERNAL_IPS = [
+    "localhost",
+    "127.0.0.1",
+]
 DEFAULT_HOST_KEY = "default"
 DEFAULT_SYSTEM_HOST_KEY = "system"
 
@@ -91,6 +95,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     # third party
+    "debug_toolbar",
     "anymail",
     "localflavor",
     "mathfilters",
@@ -110,6 +115,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.gzip.GZipMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "alexandria.distributed.middleware.HostValidationMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
