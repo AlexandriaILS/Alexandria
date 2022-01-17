@@ -10,45 +10,73 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('users', '0001_initial'),
-        ('records', '0001_initial'),
+        ("users", "0001_initial"),
+        ("records", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='item',
-            name='home_location',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='users.branchlocation'),
+            model_name="item",
+            name="home_location",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="users.branchlocation",
+            ),
         ),
         migrations.AddField(
-            model_name='item',
-            name='record',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='records.record'),
+            model_name="item",
+            name="record",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="records.record"
+            ),
         ),
         migrations.AddField(
-            model_name='item',
-            name='type',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='records.itemtype'),
+            model_name="item",
+            name="type",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="records.itemtype",
+            ),
         ),
         migrations.AddField(
-            model_name='hold',
-            name='destination',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='users.branchlocation'),
+            model_name="hold",
+            name="destination",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="users.branchlocation",
+            ),
         ),
         migrations.AddField(
-            model_name='hold',
-            name='item',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='records.item'),
+            model_name="hold",
+            name="item",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="records.item",
+            ),
         ),
         migrations.AddField(
-            model_name='hold',
-            name='placed_by',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="hold",
+            name="placed_by",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='collection',
-            name='home',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='users.branchlocation'),
+            model_name="collection",
+            name="home",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="users.branchlocation",
+            ),
         ),
     ]

@@ -52,6 +52,4 @@ class Command(BaseCommand):
             newbie.set_password("asdf")
             newbie.save()
 
-        self.stdout.write(
-            self.style.SUCCESS(f"Created {str(count)} new patrons!")
-        )
+        self.stdout.write(self.style.SUCCESS(f"Created {str(count)} new patrons!"))

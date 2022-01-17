@@ -19,6 +19,7 @@ from localflavor.us.models import USStateField, USZipCodeField
 
 from alexandria.distributed.configs import load_site_config
 from alexandria.searchablefields.mixins import SearchableFieldMixin
+from alexandria.utils.models import TimeStampMixin
 from alexandria.utils.permissions import perm_to_permission
 
 
@@ -59,7 +60,7 @@ class UserManager(DjangoUserManager):
         return self._create_user(card_number, email, password, **extra_fields)
 
 
-class USLocation(models.Model):
+class USLocation(TimeStampMixin):
     # https://stackoverflow.com/a/7701297
     address_1 = models.CharField(_("Address"), max_length=128)
     address_2 = models.CharField(_("Address cont'd"), max_length=128, blank=True)
@@ -81,7 +82,7 @@ class USLocation(models.Model):
         return addy
 
 
-class BranchLocation(models.Model):
+class BranchLocation(TimeStampMixin):
     name = models.CharField(max_length=150)
     address = models.ForeignKey(
         USLocation, on_delete=models.CASCADE, null=True, blank=True
@@ -92,7 +93,9 @@ class BranchLocation(models.Model):
     open_to_public = models.BooleanField(
         _("open to public"),
         default=True,
-        help_text=_("Set to false if this building is staff-only or a processing center."),
+        help_text=_(
+            "Set to false if this building is staff-only or a processing center."
+        ),
     )
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
@@ -102,15 +105,39 @@ class BranchLocation(models.Model):
         return f"{self.name}"
 
 
-class AccountType(models.Model):
+class AccountType(TimeStampMixin):
     name = models.CharField(max_length=150)
     # stored in the format of {itemtype_id (int) : limit (int)}
-    _itemtype_checkout_limits = models.JSONField(_("itemtype checkout limits"), default=dict)
+    _itemtype_checkout_limits = models.JSONField(
+        _("itemtype checkout limits"), default=dict
+    )
     _itemtype_hold_limits = models.JSONField(_("itemtype hold limits"), default=dict)
-    checkout_limit = models.IntegerField(_("checkout limit"), null=True, blank=True, default=150, help_text=_("How many materials total is this account type allowed to have checked out?"))
-    hold_limit = models.IntegerField(_("hold limit"), null=True, blank=True, default=10, help_text=_("How many active holds is this account type allowed to have?"))
-    allowed_item_types = models.ManyToManyField("records.ItemType", help_text=_("This account type will only be allowed to check out the listed item types here. If this is empty, all item types will be allowed. Use the \"Can Checkout Materials\" toggle to disable all checkouts."))
-    can_checkout_materials = models.BooleanField(default=True, help_text=_("Allow this account type to check out materials at all."))
+    checkout_limit = models.IntegerField(
+        _("checkout limit"),
+        null=True,
+        blank=True,
+        default=150,
+        help_text=_(
+            "How many materials total is this account type allowed to have checked out?"
+        ),
+    )
+    hold_limit = models.IntegerField(
+        _("hold limit"),
+        null=True,
+        blank=True,
+        default=10,
+        help_text=_("How many active holds is this account type allowed to have?"),
+    )
+    allowed_item_types = models.ManyToManyField(
+        "records.ItemType",
+        help_text=_(
+            'This account type will only be allowed to check out the listed item types here. If this is empty, all item types will be allowed. Use the "Can Checkout Materials" toggle to disable all checkouts.'
+        ),
+    )
+    can_checkout_materials = models.BooleanField(
+        default=True,
+        help_text=_("Allow this account type to check out materials at all."),
+    )
 
     def get_all_itemtype_checkout_limits(self) -> dict:
         """
@@ -119,10 +146,12 @@ class AccountType(models.Model):
         Warning: this has the possibility to be fairly heavy, so use the other
         helpers to request / set single objects at a time if you can.
         """
-        item_type = apps.get_model(app_label='records', model_name='ItemType')
+        item_type = apps.get_model(app_label="records", model_name="ItemType")
         limits = {}
         # grab all the objects we need in one call and load them into memory
-        type_objects = item_type.objects.get(id__in=self._itemtype_checkout_limits.keys())
+        type_objects = item_type.objects.get(
+            id__in=self._itemtype_checkout_limits.keys()
+        )
 
         for model_id, value in self._itemtype_checkout_limits.items():
             limits[type_objects.get(id=model_id)] = value
@@ -135,7 +164,7 @@ class AccountType(models.Model):
 
         Same warning as above applies here.
         """
-        item_type = apps.get_model(app_label='records', model_name='ItemType')
+        item_type = apps.get_model(app_label="records", model_name="ItemType")
         limits = {}
         # grab all the objects we need in one call and load them into memory
         type_objects = item_type.objects.get(id__in=self._itemtype_hold_limits.keys())
@@ -163,7 +192,7 @@ class AccountType(models.Model):
         self.save()
 
 
-class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin):
+class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMixin):
     # http://www.ala.org/advocacy/privacy/checklists/library-management-systems
     # Even though this should be an integer, there are too many edge cases
     # where it might not be, so we'll store it as a string with the expectation
@@ -234,6 +263,10 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin):
         null=True,
         blank=True,
         related_name="work_location",
+    )
+
+    account_type = models.ForeignKey(
+        AccountType, on_delete=models.SET_NULL, null=True, blank=True
     )
 
     EMAIL_FIELD = "email"
@@ -322,9 +355,9 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin):
         if self.is_superuser:
             qs = User.objects.filter(is_staff=is_staff)
         else:
-            qs = User.objects.filter(
-                is_staff=is_staff, host=self.host
-            ).exclude(card_number=self)
+            qs = User.objects.filter(is_staff=is_staff, host=self.host).exclude(
+                card_number=self
+            )
         return qs.order_by("last_name", "first_name")
 
     def get_shortened_name(self):

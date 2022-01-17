@@ -10,7 +10,9 @@ logger = logging.getLogger("alexandria")
 
 
 def init_site_data():
-    with open(os.path.join("alexandria", "distributed", "default.json"), "r") as base_json:
+    with open(
+        os.path.join("alexandria", "distributed", "default.json"), "r"
+    ) as base_json:
         sites: Dict = json.load(base_json)
         logger.info("Loaded default site information!")
 
@@ -26,6 +28,7 @@ def init_site_data():
                 logger.debug(f"Loading {domain}...")
                 sites[domain] = data[domain]
     return sites
+
 
 def load_site_config(domain: str) -> Dict:
     if domain in settings.DEFAULT_HOSTS or domain == settings.DEFAULT_HOST_KEY:

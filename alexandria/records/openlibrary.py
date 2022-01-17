@@ -32,7 +32,9 @@ def download_cover(item: Union["Item", "Record"], size: str = "M") -> None:
         # given item won't actually have an ISBN but another might, so let's
         # grab all the ISBNs that we have available and nab one at random.
         try:
-            isbn = choice([el.isbn for el in item.item_set.all() if el.isbn is not None])
+            isbn = choice(
+                [el.isbn for el in item.item_set.all() if el.isbn is not None]
+            )
         except IndexError:
             return
     else:

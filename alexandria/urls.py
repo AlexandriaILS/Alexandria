@@ -27,11 +27,11 @@ from alexandria.users.urls import urlpatterns as user_urls
 # handler400 = 'alexandria.errors.bad_request'
 # handler403 = 'alexandria.errors.permission_denied'
 # handler404 = 'alexandria.errors.not_found'
-handler500 = 'alexandria.errors.server_error'
+handler500 = "alexandria.errors.server_error"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('staff/', decorator_include(staff_member_required, "alexandria.users.urls")),
+    path("staff/", decorator_include(staff_member_required, "alexandria.users.urls")),
 ]
 
 urlpatterns += catalog_urls

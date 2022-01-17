@@ -55,17 +55,17 @@ def search(request: WSGIRequest) -> HttpResponse:
                 | Q(item__barcode=search_term)
                 | Q(item__call_number=search_term),
             )
-                .exclude(
+            .exclude(
                 id__in=(
                     Record.objects.annotate(total_count=Count("item", distinct=True))
-                        .filter(item__is_active=False)
-                        .annotate(is_active=Count("item", distinct=True))
-                        .filter(Q(is_active=F("total_count")))
+                    .filter(item__is_active=False)
+                    .annotate(is_active=Count("item", distinct=True))
+                    .filter(Q(is_active=F("total_count")))
                 )
             )
-                .exclude(id__in=Record.objects.filter(item__isnull=True))
-                .order_by(Lower("title"))
-                .distinct()
+            .exclude(id__in=Record.objects.filter(item__isnull=True))
+            .order_by(Lower("title"))
+            .distinct()
         )
     results_per_page = get_results_per_page(request)
 
@@ -85,6 +85,4 @@ def search(request: WSGIRequest) -> HttpResponse:
 
 def item_detail(request, item_id):
     record = get_object_or_404(Record, id=item_id, host=request.host)
-    return render(
-        request, "catalog/item_detail.html", {"record": record}
-    )
+    return render(request, "catalog/item_detail.html", {"record": record})

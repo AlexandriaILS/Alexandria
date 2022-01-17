@@ -25,8 +25,8 @@ class LoginView(View):
             if user and user.host == request.host:
                 login(request, user)
                 return redirect(next_or_reverse(request, "homepage"))
-            messages.error(request, _("Invalid login information. Try again?"))
-            return redirect_with_qsps(request, "login")
+        messages.error(request, _("Invalid login information. Try again?"))
+        return redirect_with_qsps(request, "login")
 
 
 def logout_view(request: HttpRequest) -> HttpResponse:

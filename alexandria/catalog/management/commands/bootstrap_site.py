@@ -27,7 +27,7 @@ class Command(BaseCommand):
             is_superuser=True,
             first_name="Admin",
             last_name="von Admin",
-            address=location
+            address=location,
         )
         if created:
             user.set_password("asdf")

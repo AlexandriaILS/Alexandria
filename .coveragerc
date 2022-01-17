@@ -12,4 +12,4 @@ omit =
   */wsgi.py,
   alexandria/settings/*,
   alexandria/conftest.py,
-  catalog/management/commands/*,
+  */management/commands/*

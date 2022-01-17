@@ -7,8 +7,8 @@ class SearchableFieldsException(Exception):
 
 
 class SearchablefieldsConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'alexandria.searchablefields'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "alexandria.searchablefields"
 
     def ready(self) -> None:
         """

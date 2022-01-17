@@ -122,9 +122,7 @@ class EditPatronUser(PermissionRequiredMixin, View):
         if request.user.is_superuser:
             user = get_object_or_404(User, card_number=user_id)
         else:
-            user = get_object_or_404(
-                User, card_number=user_id, host=request.get_host()
-            )
+            user = get_object_or_404(User, card_number=user_id, host=request.get_host())
 
         form = PatronEditForm(
             initial={
@@ -160,9 +158,7 @@ class EditPatronUser(PermissionRequiredMixin, View):
             user = get_object_or_404(User, card_number=user_id)
         else:
             # A non-superuser can only edit users belonging to their own host
-            user = get_object_or_404(
-                User, card_number=user_id, host=request.host
-            )
+            user = get_object_or_404(User, card_number=user_id, host=request.host)
 
         form = PatronEditForm(request.POST)
         if form.is_valid():

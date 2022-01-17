@@ -16,10 +16,12 @@ from taggit.managers import TaggableManager
 from alexandria.records import openlibrary
 from alexandria.users.models import BranchLocation, User
 from alexandria.searchablefields.mixins import SearchableFieldMixin
+from alexandria.utils.models import TimeStampMixin
 
-UTC = zoneinfo.ZoneInfo('UTC')
+UTC = zoneinfo.ZoneInfo("UTC")
 
-class Subject(models.Model):
+
+class Subject(TimeStampMixin):
     name = models.CharField(max_length=100)
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
@@ -27,7 +29,7 @@ class Subject(models.Model):
         return self.name
 
 
-class Collection(models.Model):
+class Collection(TimeStampMixin):
     name = models.CharField(max_length=200)
     home = models.ForeignKey(
         BranchLocation, null=True, blank=True, on_delete=models.CASCADE
@@ -65,7 +67,7 @@ class BibliographicLevel(models.Model):
         return self.get_name_display()
 
 
-class ItemTypeBase(models.Model):
+class ItemTypeBase(TimeStampMixin):
     """
     Record type base.
 
@@ -118,7 +120,7 @@ class ItemTypeBase(models.Model):
         return self.get_name_display()
 
 
-class ItemType(models.Model):
+class ItemType(TimeStampMixin):
     name = models.CharField(max_length=40)
     base = models.ForeignKey(ItemTypeBase, on_delete=models.CASCADE)
     # Movies might be only checkout-able for three days, but books might get 21.
@@ -170,7 +172,7 @@ class ItemType(models.Model):
         super().save(*args, **kwargs)
 
 
-class Record(models.Model, SearchableFieldMixin):
+class Record(TimeStampMixin, SearchableFieldMixin):
     """
     Information that should not change between different types of the same media.
     For example, an audiobook vs the original text.
@@ -267,7 +269,7 @@ class Record(models.Model, SearchableFieldMixin):
         }
 
 
-class Item(models.Model):
+class Item(TimeStampMixin):
     NEW = "new"
     FINE = "fine"
     VERY_GOOD = "vygd"
@@ -287,7 +289,7 @@ class Item(models.Model):
     class Meta:
         permissions = [
             ("check_in", _("Can check in materials")),
-            ("check_out", _("Can check out materials"))
+            ("check_out", _("Can check out materials")),
         ]
 
     def get_due_date(self):
@@ -363,9 +365,10 @@ class Item(models.Model):
     # https://www.fdlp.gov/about-fdlp/22-services/929-sudoc-classification-scheme
     # Superintendent of Documents Classification Scheme
     sudoc = models.CharField(_("sudoc"), max_length=30, blank=True, null=True)
-    # date updated when material is checked in
+
     last_checked_out = models.DateTimeField(
-        _("last_checked_out"), default=timezone.datetime(year=1970, month=1, day=1, tzinfo=UTC)
+        _("last_checked_out"),
+        default=timezone.datetime(year=1970, month=1, day=1, tzinfo=UTC),
     )
     # Is this specific item actually allowed to be checked out?
     can_circulate = models.BooleanField(_("can_circulate"), default=True)
@@ -441,6 +444,19 @@ class Item(models.Model):
     def export_marc(self):
         # TODO
         ...
+
+    def check_out_to(self, target):
+        if not any(
+            [isinstance(target, get_user_model()), isinstance(target, BranchLocation)]
+        ):
+            raise Exception(
+                f"Cannot check out to {target}! Must be instance of User or"
+                f" BranchLocation."
+            )
+
+        self.last_checked_out = timezone.now()
+        self.checked_out_to = target
+        self.save()
 
     def is_checked_out(self) -> bool:
         return isinstance(self.checked_out_to, get_user_model())
@@ -518,7 +534,7 @@ class Item(models.Model):
         return string
 
 
-class Hold(models.Model):
+class Hold(TimeStampMixin):
     date_created = models.DateTimeField(default=timezone.now)
     placed_by = models.ForeignKey(User, on_delete=models.CASCADE)
     # TODO: Add data cleanup to remove expired holds / migrate to primary location
@@ -526,9 +542,7 @@ class Hold(models.Model):
         BranchLocation, on_delete=models.SET_NULL, null=True
     )
 
-    item = models.ForeignKey(
-        Item, null=True, blank=True, on_delete=models.CASCADE
-    )
+    item = models.ForeignKey(Item, null=True, blank=True, on_delete=models.CASCADE)
 
     # used to see whether we can recalculate a hold in the event that a hold
     # is placed on an item but someone tries to check out the item
@@ -542,7 +556,7 @@ class Hold(models.Model):
             " this makes this hold be processed next, no matter where it is in the queue."
             " If there are multiple holds with this flag, then they will be processed in"
             " order of oldest first."
-        )
+        ),
     )
 
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
@@ -552,15 +566,15 @@ class Hold(models.Model):
 
     def get_hold_queue_number(self):
         # todo: add handling for a specific host
-        open_holds = (
-            Hold.objects.filter(
-                item=self.item,
-            ).order_by("-date_created")
-        )
+        open_holds = Hold.objects.filter(
+            item=self.item,
+        ).order_by("-date_created")
         return (*open_holds,).index(self) + 1
 
     def is_ready_for_pickup(self):
-        return self.item.checked_out_to == BranchLocation.objects.get(name="ready_for_pickup")
+        return self.item.checked_out_to == BranchLocation.objects.get(
+            name="ready_for_pickup"
+        )
 
     def get_status_for_patron(self):
         if self.is_ready_for_pickup():
