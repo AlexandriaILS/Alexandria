@@ -112,7 +112,7 @@
                             {% endif %}
                         {% endfor %}
                         {% for obj in type.list %}
-                            {% include 'partials/catalog/item_detail_list.partial' with record=item item=obj %}
+                            {% include 'catalog/item_detail_list.partial' with record=item item=obj %}
                             <hr>
                         {% endfor %}
                     </div>
@@ -120,5 +120,5 @@
             </div>
         {% endwith %}
     </div>
-    {% include 'partials/catalog/hold_location.partial' %}
+    {% include 'catalog/hold_location.partial' %}
 {% endblock %}

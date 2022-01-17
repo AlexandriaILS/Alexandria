@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
-from alexandria.catalog import Record
-from alexandria.catalog import upload
+from alexandria.records.models import Record
+from alexandria.records.zenodotus_utils import upload
 
 
 class Command(BaseCommand):

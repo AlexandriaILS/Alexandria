@@ -14,12 +14,12 @@
         {% for item in page %}
             {% include "partials/single_search_result.partial" with item=item %}
         {% endfor %}
-        {% include 'partials/catalog/hold_location.partial' %}
+        {% include 'catalog/hold_location.partial' %}
         {% if page.paginator.num_pages > 1 %}
             {# Only show the pagination buttons if we actually got results. #}
             {% include 'partials/pagination.partial' %}
         {% endif %}
     {% else %}
-        {% include 'partials/catalog/no_results_found.partial' %}
+        {% include 'catalog/no_results_found.partial' %}
     {% endif %}
 {% endblock %}
