@@ -1,0 +1,2 @@
+{% icon name="mail_outline" description="Patron email address" %}
+{{ obj.email }}

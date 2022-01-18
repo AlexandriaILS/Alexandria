@@ -33,7 +33,7 @@ def test_my_holds(client: Client, setup_site):
     response = client.get(reverse("my_holds"))
     assert len(response.context["holds"]) == 0
 
-    hold = Hold.objects.create(placed_by=user, item=item)
+    hold = Hold.objects.create(placed_for=user, item=item)
 
     response = client.get(reverse("my_holds"))
     assert hold in response.context["holds"]

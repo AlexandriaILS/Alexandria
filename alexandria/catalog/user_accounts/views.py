@@ -20,7 +20,7 @@ def my_checkouts(request: HttpRequest) -> HttpResponse:
 
 @login_required()
 def my_holds(request: HttpRequest) -> HttpResponse:
-    my_holds = Hold.objects.filter(placed_by=request.user, host=request.host)
+    my_holds = Hold.objects.filter(placed_for=request.user, host=request.host)
     return render(request, "user/my_holds.html", {"holds": my_holds})
 
 

@@ -456,6 +456,7 @@ class Item(TimeStampMixin):
 
         self.last_checked_out = timezone.now()
         self.checked_out_to = target
+        self.due_date = self.calculate_due_date()
         self.save()
 
     def is_checked_out(self) -> bool:
@@ -536,7 +537,8 @@ class Item(TimeStampMixin):
 
 class Hold(TimeStampMixin):
     date_created = models.DateTimeField(default=timezone.now)
-    placed_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    placed_for = models.ForeignKey(User, on_delete=models.CASCADE)
+    notes = models.TextField(_("notes"), blank=True, null=True)
     # TODO: Add data cleanup to remove expired holds / migrate to primary location
     destination = models.ForeignKey(
         BranchLocation, on_delete=models.SET_NULL, null=True

@@ -32,7 +32,12 @@ urlpatterns = [
         "patron_edit/<str:user_id>/",
         patron_management.EditPatronUser.as_view(),
         name="edit_patron",
-    )
+    ),
+    path(
+        "patron_view/<str:user_id>/",
+        patron_management.view_patron_account,
+        name="view_patron",
+    ),
     # path(
     #     "patron_edit/<int:user_id>/",
     #     general.EditPatronUser.as_view(),

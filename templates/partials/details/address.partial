@@ -1,0 +1,3 @@
+{% icon name="home" description="Patron address" %}
+{{ obj.address.address_1 }}{% if obj.address.address_2 %}, {{ obj.address.address_2 }}{% endif %},
+{{ obj.address.city }}, {{ obj.address.state }} {{ obj.address.zip_code }}

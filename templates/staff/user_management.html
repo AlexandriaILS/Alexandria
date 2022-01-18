@@ -50,12 +50,12 @@
                             <div class="d-grid gap-2">
                                 <a class="btn btn-primary"
                                         {% if patron_mode %}
-                                   href="{% url 'edit_patron' user_id=u.card_number %}"
+                                   href="{% url 'view_patron' user_id=u.card_number %}"
                                         {% else %}
                                    href="{% url 'edit_staff_user' user_id=u.card_number %}"
                                    {% if not perms.users.change_staff_account %}disabled{% endif %}
                                         {% endif %}
-                                >{% translate "Edit" %}</a>
+                                >{% translate "View" %}</a>
                             </div>
                         </div>
                         <div class="col-1 col-md-2 col-lg-0"></div>

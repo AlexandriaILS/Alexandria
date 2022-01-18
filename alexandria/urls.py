@@ -32,7 +32,7 @@ handler500 = "alexandria.errors.server_error"
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("staff/", decorator_include(staff_member_required, "alexandria.users.urls")),
-    path('__debug__/', include('debug_toolbar.urls')),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 urlpatterns += catalog_urls

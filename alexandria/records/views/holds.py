@@ -18,7 +18,7 @@ def create_hold(
     request, item, location, specific_copy=False
 ) -> Union[HttpResponse, JsonResponse]:
     filters = {
-        "placed_by": request.user,
+        "placed_for": request.user,
         "destination": location,
         "item": item,
     }

@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
 from alexandria.catalog.helpers import get_results_per_page
+from alexandria.records.models import Hold
 from alexandria.users.forms import PatronForm, PatronEditForm
 from alexandria.users.models import User, USLocation
 from alexandria.searchablefields.strings import clean_text
@@ -167,3 +168,21 @@ class EditPatronUser(PermissionRequiredMixin, View):
 
         # if there are errors, they should automatically propogate to the form
         return HttpResponseRedirect(reverse("edit_patron", args=[user.card_number]))
+
+
+@permission_required("users.read_patron_account")
+def view_patron_account(request, user_id):
+    user = get_object_or_404(User, card_number=user_id)
+    checkouts = user.checkouts.all()
+    holds = Hold.objects.filter(placed_for=user)
+
+    return render(
+        request,
+        "staff/patron_account_view.html",
+        {
+            "page_title": _("View Patron"),
+            "user": user,
+            "checkouts": checkouts,
+            "holds": holds,
+        },
+    )
