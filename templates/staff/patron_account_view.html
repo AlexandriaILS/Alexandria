@@ -27,65 +27,95 @@
                 <div class="col-12 d-flex align-items-center mt-2">
                     {% include 'partials/details/address.partial' with obj=user %}
                 </div>
-                <div class="col-sm-5 mt-3">
-                    <div class="d-grid gap-2">
-                        <a
-                                href="{% url 'edit_patron' user_id=user.card_number %}"
-                                class="btn btn-outline-secondary"
-                        >Edit User
-                        </a>
-                    </div>
-                </div>
-                <div class="col-sm-7 mt-3">
-                    <div class="d-grid gap-2">
-                        <a
-                                href="#"
-                                class="btn btn-outline-primary"
-                        >Place Holds for User
-                        </a>
-                    </div>
-                </div>
             </div>
+
         </div>
         <div class="col-12 col-xl-6">
             <div class="d-xl-none mt-5"></div>
-            <h2>{% translate "Checkouts" %}</h2>
-            {% if not checkouts %}
-                This user has nothing checked out.
-            {% else %}
-                {% for item in checkouts %}
-                    <div class="row mt-3">
-                        <div class="col-sm-6 mt-2">
-                            <div class="d-flex align-items-center mt-2">
-                                {% include 'partials/details/title.partial' %}
-                            </div>
-                        </div>
-                        <div class="col-sm-6 mt-2">
-                            <div class="d-flex align-items-center mt-2">
-                                {% include 'partials/details/due_date.partial' %}
-                            </div>
-                        </div>
-                        <div class="col-12 mt-2">
-                        {% #centered_column center_width=8 %}
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-secondary">
-                                    {% blocktranslate with count=item.get_max_renewal_count|sub:item.renewal_count %}
-                                        Renew - {{ count }} remaining
-                                    {% endblocktranslate %}
-                                </button>
-                            </div>
-                        {% /centered_column %}
-                        </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
-
-            <h2 class="mt-5">{% translate "Holds" %}</h2>
-            {% if not holds %}
-                This user has no active holds.
-            {% else %}
-                {{ holds }}
-            {% endif %}
+            {% #centered_column center_width=10 %}
+            <div class="d-grid gap-2">
+                <a
+                        href="{% url 'edit_patron' user_id=user.card_number %}"
+                        class="btn btn-outline-secondary"
+                >Edit User
+                </a>
+                <a
+                        href="#"
+                        class="btn btn-outline-primary"
+                >Place Holds for User
+                </a>
+            </div>
+            {% /centered_column %}
         </div>
     </div>
+    <h2 class="mt-5">{% translate "Checkouts" %}</h2>
+    {% if not checkouts %}
+        This user has nothing checked out.
+    {% else %}
+        {% for item in checkouts %}
+            <div class="row mt-3">
+                <div class="col-sm-6 col-xl-3 mt-2">
+                    <div class="d-flex align-items-center">
+                        {% include 'partials/details/title.partial' %}
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3 mt-2">
+                    <div class="d-flex align-items-center">
+                        {% include 'partials/details/publisher_info.partial' %}
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3 mt-2">
+                    <div class="d-flex align-items-center">
+                        {% include 'partials/details/due_date.partial' %}
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3 mt-2 text-center">
+                    <div class="d-grid">
+                        <button class="btn btn-primary">
+                            {% blocktranslate with count=item.get_max_renewal_count|sub:item.renewal_count %}
+                                Renew - {{ count }} remaining
+                            {% endblocktranslate %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <hr>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <h2 class="mt-5">{% translate "Holds" %}</h2>
+    {% if not holds %}
+        This user has no active holds.
+    {% else %}
+        {% for hold in holds %}
+            <div class="row mt-3">
+                <div class="col-sm-6 col-xl-3 mt-2">
+                    <div class="d-flex align-items-center">
+                        {% include 'partials/details/title.partial' with item=hold.item %}
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3 mt-2">
+                    <div class="d-flex align-items-center">
+                        {% include 'partials/details/publisher_info.partial' with item=hold.item %}
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3 mt-2">
+                    <div class="d-flex align-items-center">
+                        {% include 'partials/details/queue_position.partial' %}
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3 mt-2 text-center">
+                    <div class="d-grid">
+                        <button class="btn btn-secondary">
+                            Edit Hold
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <hr>
+            </div>
+        {% endfor %}
+    {% endif %}
 {% endblock %}
