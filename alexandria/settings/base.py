@@ -102,7 +102,9 @@ INSTALLED_APPS = [
     "widget_tweaks",
     "slippers",
     "taggit",
+    "rest_framework",
     # first party
+    "alexandria.api",
     "alexandria.searchablefields",
     "alexandria.distributed",
     "alexandria.utils",
@@ -212,3 +214,8 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
 DEFAULT_FROM_EMAIL = "no-reply@alexandrialibraries.dev"
 SERVER_EMAIL = "thefabled@alexandrialibraries.dev"
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 25
+}
