@@ -43,3 +43,7 @@ def load_site_config(domain: str) -> Dict:
         return config
 
     return {}
+
+
+def get_domains_from_configs() -> list:
+    return list(settings.SITE_DATA.keys())
