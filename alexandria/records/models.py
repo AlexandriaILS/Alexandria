@@ -459,6 +459,9 @@ class Item(TimeStampMixin):
         self.due_date = self.calculate_due_date()
         self.save()
 
+    def is_available(self) -> bool:
+        return not any([self.is_checked_out(), self.is_checked_out_to_system()])
+
     def is_checked_out(self) -> bool:
         return isinstance(self.checked_out_to, get_user_model())
 

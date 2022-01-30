@@ -111,19 +111,3 @@ def place_hold_on_item(
     target = get_object_or_404(Item, id=item_id)
     location = get_object_or_404(BranchLocation, id=location_id)
     return create_hold(request, target, location, specific_copy=True)
-
-
-def renew_hold_on_item(request: WSGIRequest, item_id: int):
-    if not request.user.is_authenticated:
-        return HttpResponse(status=401)
-
-    target = get_object_or_404(Item, id=item_id, host=request.host)
-
-    if target.can_renew():
-        target.renewal_count += 1
-        target.due_date = target.calculate_renewal_due_date()
-        target.save()
-        return JsonResponse(
-            status=200, data={"new_due_date": target.due_date.strftime("%b. %d, %Y")}
-        )
-    return HttpResponse(status=403)
