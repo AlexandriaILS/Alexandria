@@ -75,10 +75,9 @@ def create_patron(request):
                 default_branch=data["default_branch"],
                 is_staff=data["is_staff"],
             )
-            messages.success(request, _("User created!"))
             # Todo: send an email to the newly created user welcoming them to the system!
             return HttpResponseRedirect(
-                reverse("edit_patron", args=[newuser.card_number])
+                reverse("view_user", args=[newuser.card_number])
             )
         else:
             return render(
@@ -166,7 +165,7 @@ class EditPatronUser(PermissionRequiredMixin, View):
             user.update_from_form(form)
             messages.success(request, _("User updated!"))
 
-        # if there are errors, they should automatically propogate to the form
+        # if there are errors, they should automatically propagate to the form
         return HttpResponseRedirect(reverse("edit_patron", args=[user.card_number]))
 
 

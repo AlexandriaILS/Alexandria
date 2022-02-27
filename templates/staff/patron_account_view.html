@@ -28,14 +28,18 @@
                     {% include 'partials/details/address.partial' with obj=user %}
                 </div>
             </div>
-
         </div>
         <div class="col-12 col-xl-6">
             <div class="d-xl-none mt-5"></div>
             {% #centered_column center_width=10 %}
             <div class="d-grid gap-2">
                 <a
-                        href="{% url 'edit_patron' user_id=user.card_number %}"
+                        {% if user.is_staff %}
+                            href="{% url 'edit_staff_user' user_id=user.card_number %}"
+                            {% if not perms.users.change_staff_account %}disabled{% endif %}
+                        {% else %}
+                            href="{% url 'edit_patron' user_id=user.card_number %}"
+                        {% endif %}
                         class="btn btn-outline-secondary"
                 >Edit User
                 </a>

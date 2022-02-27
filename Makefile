@@ -6,3 +6,9 @@ dev_data:
 
 run:
 	.venv/bin/python manage.py runserver
+
+nuke:
+	rm db.sqlite3
+
+shell:
+	.venv/bin/python manage.py shell_plus

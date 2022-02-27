@@ -34,9 +34,9 @@ urlpatterns = [
         name="edit_patron",
     ),
     path(
-        "patron_view/<str:user_id>/",
+        "user_view/<str:user_id>/",
         patron_management.view_patron_account,
-        name="view_patron",
+        name="view_user",
     ),
     # path(
     #     "patron_edit/<int:user_id>/",
