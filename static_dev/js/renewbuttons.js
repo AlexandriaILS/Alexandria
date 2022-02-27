@@ -1,7 +1,7 @@
 function processRenew(el) {
     const DATA = JSON.parse(document.getElementById('alert-data').textContent);
     const LIBRARY_DATA = JSON.parse(document.getElementById('library-data').textContent);
-    let url = `/renewhold/${el.dataset.itemId}/`;
+    let url = `/api/items/${el.dataset.itemId}/renew/`;
 
     let toastId = `toast${el.dataset.itemId}-${el.dataset.subitemId}`;
 

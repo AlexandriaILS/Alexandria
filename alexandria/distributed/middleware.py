@@ -20,7 +20,7 @@ class HostValidationMiddleware(MiddlewareMixin):
                 else settings.DEFAULT_HOST_KEY
             )
         else:
-            raise DisallowedHost(f"Detected host: {host}")
+            raise DisallowedHost(f"Invalid host: {host}")
 
 
 class ContextUpdateMiddleware(MiddlewareMixin):

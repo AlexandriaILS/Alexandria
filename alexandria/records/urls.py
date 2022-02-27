@@ -13,10 +13,5 @@ urlpatterns = [
         holds.place_hold_on_item,
         name="place_hold_on_item",
     ),
-    path(
-        "renewhold/<int:item_id>/",
-        holds.renew_hold_on_item,
-        name="renew_hold_on_item",
-    ),
     path("deletehold/<int:hold_id>/", holds.delete_hold, name="delete_hold"),
 ]

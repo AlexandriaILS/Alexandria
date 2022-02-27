@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 class Command(BaseCommand):
     help = "Creates the base types"
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **kwargs):
         from alexandria.records.models import ItemTypeBase, BibliographicLevel
 
         items = [

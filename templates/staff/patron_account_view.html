@@ -118,4 +118,13 @@
             </div>
         {% endfor %}
     {% endif %}
+    <h2 class="mt-5">{% translate "Fines" %}</h2>
+    {% if not fines %}
+        This user has no active fines.
+    {% else %}
+        {% for fine in fines %}
+            {# TODO: finish me! #}
+            ...
+        {% endfor %}
+    {% endif %}
 {% endblock %}

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "alexandria"
-version = "0.26.0"
+version = "0.33.0"
 description = "Bespoke. Books. Battlestar Galactica."
 authors = ["Joe Kaufeld <joe.kaufeld@gmail.com>"]
 
@@ -20,6 +20,7 @@ django-anymail = {extras = ["mailgun"], version = "^8.4"}
 django-decorator-include = "^3.0"
 django-taggit = {git = "https://github.com/jazzband/django-taggit.git"}
 django-debug-toolbar = "^3.2.4"
+djangorestframework = "^3.13.1"
 
 [tool.poetry.dev-dependencies]
 better_exceptions = "^0.2.2"

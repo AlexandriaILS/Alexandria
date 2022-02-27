@@ -22,7 +22,6 @@ from decorator_include import decorator_include
 
 from alexandria.catalog.urls import urlpatterns as catalog_urls
 from alexandria.records.urls import urlpatterns as records_urls
-from alexandria.users.urls import urlpatterns as user_urls
 
 # handler400 = 'alexandria.errors.bad_request'
 # handler403 = 'alexandria.errors.permission_denied'
@@ -32,6 +31,7 @@ handler500 = "alexandria.errors.server_error"
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("staff/", decorator_include(staff_member_required, "alexandria.users.urls")),
+    path("api/", include("alexandria.api.urls")),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
 
