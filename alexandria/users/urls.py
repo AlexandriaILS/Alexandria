@@ -38,6 +38,9 @@ urlpatterns = [
         patron_management.view_patron_account,
         name="view_user",
     ),
+    path(
+        "act_as_user/<str:user_id>/", patron_management.act_as_user, name="act_as_user"
+    ),
     # path(
     #     "patron_edit/<int:user_id>/",
     #     general.EditPatronUser.as_view(),
