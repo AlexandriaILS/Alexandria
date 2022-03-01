@@ -4,6 +4,7 @@
 
 
 {% block content %}
+    {% include 'partials/acting_user_warning.partial' %}
     {% if search_term %}
         {% blocktranslate count result_count as r_count %}
             <h1><span id="resultCount">{{ r_count }}</span> Result</h1>

@@ -39,7 +39,7 @@ def search(request: WSGIRequest) -> HttpResponse:
         ]
     )
 
-    if settings.DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
+    if "postgresql" in settings.DATABASES["default"]["ENGINE"]:
         # TODO: refactor for SearchVector and SearchRank -- requires Postgres
         # https://docs.djangoproject.com/en/dev/ref/contrib/postgres/search/#searchvector
         results = ...

@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% if request.session.acting_patron %}
+    <div class="alert alert-danger" role="alert">
+        {% icon name="warning" description="Warning!" %}
+        {% blocktranslate %}
+            Currently acting as {{ request.session.acting_patron.get_shortened_name }}!
+        {% endblocktranslate %}
+        <a href="{% url 'end_act_as_user' %}" class="alert-link">{% translate "Exit" %}</a>
+    </div>
+{% endif %}
