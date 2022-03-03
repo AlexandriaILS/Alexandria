@@ -57,9 +57,8 @@ def act_as_user(request, user_id: str):
         # superusers can act as any user
         args.update({"host": request.host})
 
-    breakpoint()
     patron = get_object_or_404(User, **args)
-    request.session["acting_patron"] = patron
+    request.session["acting_as_patron"] = patron.card_number
     return HttpResponseRedirect(reverse("homepage"))
 
 
@@ -67,9 +66,9 @@ def act_as_user(request, user_id: str):
 def end_act_as_user(request):
     # remove the target user ID from the session and redirect to the
     # user detail page on the staff side.
-    user_id = request.session.get("acting_patron")
+    user_id = request.session.get("acting_as_patron")
     try:
-        del request.session["acting_patron"]
+        del request.session["acting_as_patron"]
     except KeyError:
         pass
 
