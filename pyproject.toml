@@ -2,7 +2,7 @@
 name = "alexandria"
 version = "0.39.0"
 description = "Bespoke. Books. Battlestar Galactica."
-authors = ["Joe Kaufeld <joe.kaufeld@gmail.com>"]
+authors = ["Joe Kaufeld <alexandria@joekaufeld.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -29,11 +29,7 @@ pytest = "^6.2.2"
 pytest-django = "^4.1.0"
 coverage = "^5.5"
 pytest-cov = "^2.11.1"
-behave = "^1.2.6"
-selenium = "^3.141.0"
-behave-webdriver = "^0.3.0"
 pdbpp = "^0.10.2"
-behave-django = "^1.4.0"
 mimesis = "^5.1.0"
 
 [build-system]
