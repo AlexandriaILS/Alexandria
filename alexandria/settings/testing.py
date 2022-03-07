@@ -77,5 +77,3 @@ SITE_DATA = {
         },
     }
 }
-
-INSTALLED_APPS += ["behave_django"]
