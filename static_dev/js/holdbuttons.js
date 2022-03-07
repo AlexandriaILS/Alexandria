@@ -12,7 +12,7 @@ function cancelHold(el) {
     const DATA = JSON.parse(document.getElementById('alert-data').textContent);
     const LIBRARY_DATA = JSON.parse(document.getElementById('library-data').textContent);
 
-    const url = `/deletehold/${el.dataset.holdId}/`;
+    const url = `/api/holds/${el.dataset.holdId}/`;
 
     if (toastGlobalErrorExists()) {
         return
@@ -21,7 +21,7 @@ function cancelHold(el) {
     const toastId = `toast${el.dataset.holdId}-0`;
 
     let newtoast;
-    fetch(url).then(function (response) {
+    fetch(url, {method: 'DELETE'}).then(function (response) {
         return response.ok ? response : Promise.reject(response);
     }).then(function () {
         // The response was successful, so reload the page to refresh the info.
@@ -30,39 +30,16 @@ function cancelHold(el) {
         // work nicely.
         window.location.reload();
     }).catch(function (err) {
-         if (err.status === 401) {
-            newtoast = createToastHTML(
-                DATA['not_logged_in'],
-                colorClass = "bg-danger",
-                id = el.dataset.holdId,
-                itemTypeId = 0,
-                globalError = true,
-            )
+        if (err.status === 401) {
+            newtoast = createToastHTML(DATA['not_logged_in'], colorClass = "bg-danger", id = el.dataset.holdId, itemTypeId = 0, globalError = true,)
         } else if (err.status === 403) {
-            newtoast = createToastHTML(
-                DATA['hold_insufficient_permissions'],
-                colorClass = "bg-danger",
-                id = el.dataset.holdId,
-                itemTypeId = 0,
-                globalError = true,
-            )
+            newtoast = createToastHTML(DATA['hold_insufficient_permissions'], colorClass = "bg-danger", id = el.dataset.holdId, itemTypeId = 0, globalError = true,)
         } else if (parseInt(err.status.toString()[0]) === 5) {
-             console.log('hi');
-            newtoast = createToastHTML(
-                `Something went wrong -- please contact ${LIBRARY_DATA['name']} IT support.`,
-                colorClass = "bg-danger",
-                id = el.dataset.holdId,
-                itemTypeId = 0,
-                globalError = true,
-            )
+            console.log('hi');
+            newtoast = createToastHTML(`Something went wrong -- please contact ${LIBRARY_DATA['name']} IT support.`, colorClass = "bg-danger", id = el.dataset.holdId, itemTypeId = 0, globalError = true,)
             console.log(err)
         } else {
-            newtoast = createToastHTML(
-                DATA['general_error_message'],
-                colorClass = "bg-danger",
-                id = el.dataset.holdId,
-                itemTypeId = 0,
-            )
+            newtoast = createToastHTML(DATA['general_error_message'], colorClass = "bg-danger", id = el.dataset.holdId, itemTypeId = 0,)
         }
     }).finally(function () {
         document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
@@ -81,13 +58,15 @@ function processHold() {
     const DATA = JSON.parse(document.getElementById('alert-data').textContent);
     const LIBRARY_DATA = JSON.parse(document.getElementById('library-data').textContent);
 
-    let locationId = document.getElementById('holdBranchSelector').value;
-    let url = `/placehold/THING/${window.holdContext['itemId']}/${window.holdContext['subitemId']}/${locationId}/`;
+    let url = `/api/THING/${window.holdContext['itemId']}/place_hold/`;
     if (window.holdContext['isItem']) {
-        url = url.replace("THING", "item")
+        url = url.replace("THING", "items")
     } else {
-        url = url.replace("THING", "record")
+        url = url.replace("THING", "records")
     }
+
+    let locationId = document.getElementById('holdBranchSelector').value;
+    let postData = {"item_type_id": parseInt(window.holdContext['subitemId']), "location_id": parseInt(locationId)}
 
     const toastId = `toast${window.holdContext['itemId']}-${window.holdContext['subitemId']}`;
 
@@ -104,56 +83,33 @@ function processHold() {
     // because this is declared outside the fetch request, it's available inside
     // all the different sections which would normally be closed off from each other.
     let newtoast;
-    fetch(url).then(function (response) {
+    fetch(url, {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json, text/plain',
+            'Content-Type': 'application/json;charset=UTF-8'
+        },
+        body: JSON.stringify(postData)
+    }).then(function (response) {
         return response.ok ? response.json() : Promise.reject(response);
     }).then(function (resp) {
         let message = DATA['hold_success_message'];
         message = message.replace("(itemTitle)", window.holdContext['title']);
         message = message.replace("(itemType)", resp['name']);
         message = message.replace("(holdNum)", resp['hold_number']);
-        newtoast = createToastHTML(
-            message, colorClass = "bg-success", id = window.holdContext['itemId'], itemTypeId = window.holdContext['subitemId']
-        );
+        newtoast = createToastHTML(message, colorClass = "bg-success", id = window.holdContext['itemId'], itemTypeId = window.holdContext['subitemId']);
     }).catch(function (err) {
         if (err.status === 409) {
-            newtoast = createToastHTML(
-                DATA['hold_duplicate'],
-                colorClass = "bg-secondary",
-                id = window.holdContext['itemId'],
-                itemTypeId = window.holdContext['subitemId']
-            )
+            newtoast = createToastHTML(DATA['hold_duplicate'], colorClass = "bg-secondary", id = window.holdContext['itemId'], itemTypeId = window.holdContext['subitemId'])
         } else if (err.status === 401) {
-            newtoast = createToastHTML(
-                DATA['not_logged_in'],
-                colorClass = "bg-danger",
-                id = window.holdContext['itemId'],
-                itemTypeId = window.holdContext['subitemId'],
-                globalError = true,
-            )
+            newtoast = createToastHTML(DATA['not_logged_in'], colorClass = "bg-danger", id = window.holdContext['itemId'], itemTypeId = window.holdContext['subitemId'], globalError = true,)
         } else if (err.status === 406) {
-            newtoast = createToastHTML(
-                DATA['already_checked_out'],
-                colorClass = "bg-danger",
-                id = window.holdContext['itemId'],
-                itemTypeId = window.holdContext['subitemId'],
-                globalError = true,
-            )
+            newtoast = createToastHTML(DATA['already_checked_out'], colorClass = "bg-danger", id = window.holdContext['itemId'], itemTypeId = window.holdContext['subitemId'], globalError = true,)
         } else if (parseInt(err.status.toString()[0]) === 5) {
-            newtoast = createToastHTML(
-                `Something went wrong -- please contact ${LIBRARY_DATA['name']} IT support.`,
-                colorClass = "bg-danger",
-                id = window.holdContext['itemId'],
-                itemTypeId = window.holdContext['subitemId'],
-                globalError = true,
-            )
+            newtoast = createToastHTML(`Something went wrong -- please contact ${LIBRARY_DATA['name']} IT support.`, colorClass = "bg-danger", id = window.holdContext['itemId'], itemTypeId = window.holdContext['subitemId'], globalError = true,)
             console.log(err)
         } else {
-            newtoast = createToastHTML(
-                DATA['general_error_message'],
-                colorClass = "bg-danger",
-                id = window.holdContext['itemId'],
-                itemTypeId = window.holdContext['subitemId']
-            )
+            newtoast = createToastHTML(DATA['general_error_message'], colorClass = "bg-danger", id = window.holdContext['itemId'], itemTypeId = window.holdContext['subitemId'])
         }
     }).finally(function () {
         document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);

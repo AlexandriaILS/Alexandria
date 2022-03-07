@@ -1,7 +1,7 @@
 from django.test import Client
 from django.shortcuts import reverse
 
-from alexandria.utils.tests.helpers import get_default_patron_user, DEFAULT_PATRON_USER
+from alexandria.tests.helpers import get_default_patron_user, DEFAULT_PATRON_USER
 
 
 def test_login(client: Client):

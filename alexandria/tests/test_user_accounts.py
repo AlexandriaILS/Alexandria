@@ -3,10 +3,10 @@ from django.shortcuts import reverse
 import pytest
 
 from alexandria.records.models import Hold
-from alexandria.utils.tests.helpers import get_test_item, get_default_patron_user
+from alexandria.tests.helpers import get_test_item, get_default_patron_user
 
 
-def test_my_checkouts(client: Client, setup_site):
+def test_my_checkouts(client: Client):
     """Verify that the My Checkouts page works as expected."""
     item = get_test_item()
     user = get_default_patron_user()
@@ -24,7 +24,7 @@ def test_my_checkouts(client: Client, setup_site):
     assert item in response.context["checkouts"]
 
 
-def test_my_holds(client: Client, setup_site):
+def test_my_holds(client: Client):
     """Verify that the My Holds page works as expected."""
     item = get_test_item()
     user = get_default_patron_user()
@@ -40,6 +40,6 @@ def test_my_holds(client: Client, setup_site):
 
 
 @pytest.mark.skip
-def test_my_fees(client: Client, setup_site):
+def test_my_fees(client: Client):
     """Verify that the My Fees page works as expected."""
     ...

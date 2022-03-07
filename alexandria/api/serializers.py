@@ -38,3 +38,23 @@ class HoldSerializer(serializers.ModelSerializer):
             "specific_copy",
             "force_next_available",
         ]
+
+
+class RecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Record
+        fields = [
+            "id",
+            "authors",
+            "subtitle",
+            "uniform_title",
+            "notes",
+            "series",
+            "subjects",
+            "tags",
+            "type",
+            "bibliographic_level",
+            "summary",
+            "zenodotus_id",
+            "zenodotus_record_version",
+        ]
