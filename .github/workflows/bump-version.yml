@@ -1,8 +1,8 @@
 name: Bump Version Number
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+    branches: [ master ]
+    types: [ opened ]
 
 jobs:
   run:

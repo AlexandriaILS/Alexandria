@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models.expressions import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, reverse, get_object_or_404
+from django.shortcuts import render, reverse, get_object_or_404, redirect
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
@@ -45,6 +45,43 @@ def patron_management(request):
     }
 
     return render(request, "staff/user_management.html", context)
+
+
+@permission_required("users.change_patron_account")
+def act_as_user(request, user_id: str):
+    # Take the requested user id, add it to the session, and redirect
+    # to the catalog so that we can put things on hold for the user
+
+    args = {"card_number": user_id}
+    if not request.user.is_superuser:
+        # superusers can act as any user
+        args.update({"host": request.host})
+
+    patron = get_object_or_404(User, **args)
+    request.session["acting_as_patron"] = patron.card_number
+    return HttpResponseRedirect(reverse("homepage"))
+
+
+@permission_required("users.change_patron_account")
+def end_act_as_user(request):
+    # remove the target user ID from the session and redirect to the
+    # user detail page on the staff side.
+    user_id = request.session.get("acting_as_patron")
+    try:
+        del request.session["acting_as_patron"]
+    except KeyError:
+        pass
+
+    args = {"card_number": user_id}
+    if not request.user.is_superuser:
+        # superusers can pull any user
+        args.update({"host": request.host})
+
+    user_exists = bool(User.objects.filter(**args).first())
+    if user_exists:
+        return HttpResponseRedirect(reverse("view_user", args=[user_id]))
+    else:
+        return HttpResponseRedirect(reverse("staff_index"))
 
 
 @permission_required("users.create_patron_account")

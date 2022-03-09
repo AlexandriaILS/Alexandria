@@ -1,6 +1,6 @@
 from typing import Dict
 
-from alexandria.records.models import Record, Item, ItemType, ItemTypeBase
+from alexandria.records.models import Record, Item, ItemType, ItemTypeBase, Hold
 from alexandria.users.models import BranchLocation, User, AccountType
 
 DEFAULT_STAFF_USER = {
@@ -10,14 +10,12 @@ DEFAULT_STAFF_USER = {
     "is_staff": True,
     "password": "lightitup",
 }
-
 DEFAULT_PATRON_USER = {
     "card_number": "2345",
-    "first_name": "Guy",
-    "last_name": "Montag",
-    "password": "lightitup",
+    "first_name": "Fitzwilliam",
+    "last_name": "Darcy",
+    "password": "misunderst00ddefect",
 }
-
 DEFAULT_UNDERAGE_PATRON_USER = {
     "card_number": "3456",
     "first_name": "Augustus",
@@ -26,7 +24,6 @@ DEFAULT_UNDERAGE_PATRON_USER = {
     "is_minor": True,
     "password": "chocolateriver4me",
 }
-
 DEFAULT_US_LOCATION = {
     "address_1": "123 Main St",
     "address_2": None,
@@ -34,50 +31,74 @@ DEFAULT_US_LOCATION = {
     "state": "ZZ",
     "zip_code": "00000",
 }
-
-DEFAULT_BRANCH_LOCATION = {
-    "name": "Central Library",
-}
-
+DEFAULT_BRANCH_LOCATION = {"name": "Central Library"}
 DEFAULT_ACCOUNT_TYPE = {"name": "Default"}
-
-DEFAULT_RECORD = {
-    "title": "Test Record",
-}
-
-DEFAULT_ITEM_TYPE = {
-    "name": "Book",
-}
+DEFAULT_RECORD = {"title": "Test Record"}
+DEFAULT_ITEM_TYPE = {"name": "Book"}
 
 
 def get_default_item_type(**kwargs):
     if not "base" in kwargs:
         kwargs["base"] = ItemTypeBase.objects.get(id=1)
-    obj, _ = ItemType.objects.get_or_create(**DEFAULT_ITEM_TYPE, **kwargs)
+    data = {
+        **DEFAULT_ITEM_TYPE,
+        **{key: kwargs[key] for key in kwargs if key in dir(ItemType)},
+    }
+    obj, _ = ItemType.objects.get_or_create(**data)
     return obj
 
 
 def get_default_record(**kwargs):
-    obj, _ = Record.objects.get_or_create(**DEFAULT_RECORD, **kwargs)
+    data = {
+        **DEFAULT_RECORD,
+        **{key: kwargs[key] for key in kwargs if key in dir(Record)},
+    }
+    obj, _ = Record.objects.get_or_create(**data)
     return obj
 
 
 def get_test_item(**kwargs):
-    if not kwargs.get("type"):
-        kwargs["type"] = get_default_item_type()
-    return Item.objects.create(
-        record=kwargs.get("record", get_default_record()), **kwargs
-    )
+    DEFAULT_ITEM = {
+        "type": get_default_item_type(),
+        "record": get_default_record(),
+        "is_active": True,
+    }
+    data = {
+        **DEFAULT_ITEM,
+        **{key: kwargs[key] for key in kwargs if key in dir(Item)},
+    }
+    return Item.objects.create(**data)
 
 
 def get_default_location(**kwargs):
-    obj, _ = BranchLocation.objects.get_or_create(**DEFAULT_BRANCH_LOCATION, **kwargs)
+    data = {
+        **DEFAULT_BRANCH_LOCATION,
+        **{key: kwargs[key] for key in kwargs if key in dir(BranchLocation)},
+    }
+    obj, _ = BranchLocation.objects.get_or_create(**data)
     return obj
 
 
 def get_default_accounttype(**kwargs):
-    obj, _ = AccountType.objects.get_or_create(**DEFAULT_ACCOUNT_TYPE, **kwargs)
+    data = {
+        **DEFAULT_ACCOUNT_TYPE,
+        **{key: kwargs[key] for key in kwargs if key in dir(AccountType)},
+    }
+    obj, _ = AccountType.objects.get_or_create(**data)
     return obj
+
+
+def get_default_hold(**kwargs):
+    DEFAULT_HOLD = {
+        "placed_for": get_default_patron_user(),
+        "destination": get_default_location(),
+        "item": get_test_item(),
+    }
+    data = {
+        **DEFAULT_HOLD,
+        **{key: kwargs[key] for key in kwargs if key in dir(Hold)},
+    }
+    obj, _ = Hold.objects.get_or_create(**data)
 
 
 def _get_user(base_data: Dict, **kwargs) -> User:

@@ -21,7 +21,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 from decorator_include import decorator_include
 
 from alexandria.catalog.urls import urlpatterns as catalog_urls
-from alexandria.records.urls import urlpatterns as records_urls
 
 # handler400 = 'alexandria.errors.bad_request'
 # handler403 = 'alexandria.errors.permission_denied'
@@ -36,7 +35,6 @@ urlpatterns = [
 ]
 
 urlpatterns += catalog_urls
-urlpatterns += records_urls
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

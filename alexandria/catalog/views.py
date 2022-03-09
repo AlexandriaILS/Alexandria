@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from alexandria.catalog.helpers import get_results_per_page
 from alexandria.records.models import Record
+from alexandria.users.helpers import add_patron_acted_as
 from alexandria.utils.db import filter_db
 
 
@@ -22,7 +23,8 @@ def index(request: WSGIRequest) -> HttpResponse:
         return HttpResponseRedirect(
             reverse("search") + ("?q=" + quote_plus(search_text)) if search_text else ""
         )
-    return render(request, "catalog/index.html")
+    context = add_patron_acted_as(request, {})
+    return render(request, "catalog/index.html", context)
 
 
 def search(request: WSGIRequest) -> HttpResponse:
@@ -39,7 +41,7 @@ def search(request: WSGIRequest) -> HttpResponse:
         ]
     )
 
-    if settings.DATABASES["default"]["ENGINE"] == "django.db.backends.postgresql":
+    if "postgresql" in settings.DATABASES["default"]["ENGINE"]:
         # TODO: refactor for SearchVector and SearchRank -- requires Postgres
         # https://docs.djangoproject.com/en/dev/ref/contrib/postgres/search/#searchvector
         results = ...
@@ -80,9 +82,11 @@ def search(request: WSGIRequest) -> HttpResponse:
         context.update(
             {"search_term": search_term, "results": results, "page": page_obj}
         )
+    context = add_patron_acted_as(request, context)
     return render(request, "catalog/search.html", context)
 
 
 def item_detail(request, item_id):
     record = get_object_or_404(Record, id=item_id, host=request.host)
-    return render(request, "catalog/item_detail.html", {"record": record})
+    context = add_patron_acted_as(request, {"record": record})
+    return render(request, "catalog/item_detail.html", context)

@@ -40,62 +40,6 @@ tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)"
 tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "cloudpickle"]
 
 [[package]]
-name = "beautifulsoup4"
-version = "4.10.0"
-description = "Screen-scraping library"
-category = "dev"
-optional = false
-python-versions = ">3.0.0"
-
-[package.dependencies]
-soupsieve = ">1.2"
-
-[package.extras]
-html5lib = ["html5lib"]
-lxml = ["lxml"]
-
-[[package]]
-name = "behave"
-version = "1.2.6"
-description = "behave is behaviour-driven development, Python style"
-category = "dev"
-optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
-
-[package.dependencies]
-parse = ">=1.8.2"
-parse-type = ">=0.4.2"
-six = ">=1.11"
-
-[package.extras]
-develop = ["coverage", "pytest (>=3.0)", "pytest-cov", "tox", "invoke (>=0.21.0)", "path.py (>=8.1.2)", "pycmd", "pathlib", "modernize (>=0.5)", "pylint"]
-docs = ["sphinx (>=1.6)", "sphinx-bootstrap-theme (>=0.6)"]
-
-[[package]]
-name = "behave-django"
-version = "1.4.0"
-description = "Behave BDD integration for Django"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-beautifulsoup4 = "*"
-behave = "*"
-
-[[package]]
-name = "behave-webdriver"
-version = "0.3.1"
-description = "Selenium webdriver step library for behave BDD testing"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-behave = "*"
-selenium = "<4"
-
-[[package]]
 name = "better-exceptions"
 version = "0.2.3"
 description = "Pretty and helpful exceptions, automatically"
@@ -376,30 +320,6 @@ python-versions = ">=3.6"
 pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
 
 [[package]]
-name = "parse"
-version = "1.19.0"
-description = "parse() is the opposite of format()"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[[package]]
-name = "parse-type"
-version = "0.5.2"
-description = "Simplifies to build parse types based on the parse module"
-category = "dev"
-optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*"
-
-[package.dependencies]
-parse = ">=1.8.4"
-six = ">=1.11"
-
-[package.extras]
-develop = ["coverage (>=4.4)", "pytest (>=3.2)", "pytest-cov", "tox (>=2.8)"]
-docs = ["sphinx (>=1.2)"]
-
-[[package]]
 name = "pathspec"
 version = "0.9.0"
 description = "Utility library for gitignore style pattern matching of file paths."
@@ -603,25 +523,6 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
 use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
 
 [[package]]
-name = "selenium"
-version = "3.141.0"
-description = "Python bindings for Selenium"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-urllib3 = "*"
-
-[[package]]
-name = "six"
-version = "1.16.0"
-description = "Python 2 and 3 compatibility utilities"
-category = "dev"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
-
-[[package]]
 name = "slippers"
 version = "0.3.1"
 description = "Build reusable components in Django without writing a single line of Python."
@@ -632,14 +533,6 @@ python-versions = ">=3.7.0,<4.0.0"
 [package.dependencies]
 Django = ">=2.2,<4.1"
 PyYAML = ">=5.4.1,<6.0.0"
-
-[[package]]
-name = "soupsieve"
-version = "2.3.1"
-description = "A modern CSS selector implementation for Beautiful Soup."
-category = "dev"
-optional = false
-python-versions = ">=3.6"
 
 [[package]]
 name = "sqlparse"
@@ -705,7 +598,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "7743f2f65b4bca557dd6e88105a68e30a6c39e3737fd4784b88f176d0ee2a7d9"
+content-hash = "f0fcd173d3920faad291998dd36656cee0c0e9bda10fe478a64d7afc0657c8b9"
 
 [metadata.files]
 appdirs = [
@@ -723,22 +616,6 @@ atomicwrites = [
 attrs = [
     {file = "attrs-21.4.0-py2.py3-none-any.whl", hash = "sha256:2d27e3784d7a565d36ab851fe94887c5eccd6a463168875832a1be79c82828b4"},
     {file = "attrs-21.4.0.tar.gz", hash = "sha256:626ba8234211db98e869df76230a137c4c40a12d72445c45d5f5b716f076e2fd"},
-]
-beautifulsoup4 = [
-    {file = "beautifulsoup4-4.10.0-py3-none-any.whl", hash = "sha256:9a315ce70049920ea4572a4055bc4bd700c940521d36fc858205ad4fcde149bf"},
-    {file = "beautifulsoup4-4.10.0.tar.gz", hash = "sha256:c23ad23c521d818955a4151a67d81580319d4bf548d3d49f4223ae041ff98891"},
-]
-behave = [
-    {file = "behave-1.2.6-py2.py3-none-any.whl", hash = "sha256:ebda1a6c9e5bfe95c5f9f0a2794e01c7098b3dde86c10a95d8621c5907ff6f1c"},
-    {file = "behave-1.2.6.tar.gz", hash = "sha256:b9662327aa53294c1351b0a9c369093ccec1d21026f050c3bd9b3e5cccf81a86"},
-]
-behave-django = [
-    {file = "behave-django-1.4.0.tar.gz", hash = "sha256:aecbc535699517100c1e443eadb4a5d761c2b1d2f4364d88c8e74a236c915c9c"},
-    {file = "behave_django-1.4.0-py3-none-any.whl", hash = "sha256:a75b88ab7e5ceb1efa9836c73e5e2db2c5fdc2e99d5901138c5cdab356d1680b"},
-]
-behave-webdriver = [
-    {file = "behave-webdriver-0.3.1.tar.gz", hash = "sha256:bd1102c4c72df45def84675eb341396b48266c3665fb990a31126bd46553ca6b"},
-    {file = "behave_webdriver-0.3.1-py2.py3-none-any.whl", hash = "sha256:4b194262dccf9f93c71aa70a47c1f57d660ec6d56356f8824371451e6d8b666b"},
 ]
 better-exceptions = [
     {file = "better_exceptions-0.2.3-py3-none-any.whl", hash = "sha256:28a851a58155cac9e677d632fba64b101151e4c6b3a5c92ecd27ca17e9bbd005"},
@@ -881,13 +758,6 @@ mypy-extensions = [
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
     {file = "packaging-21.3.tar.gz", hash = "sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb"},
-]
-parse = [
-    {file = "parse-1.19.0.tar.gz", hash = "sha256:9ff82852bcb65d139813e2a5197627a94966245c897796760a3a2a8eb66f020b"},
-]
-parse-type = [
-    {file = "parse_type-0.5.2-py2.py3-none-any.whl", hash = "sha256:089a471b06327103865dfec2dd844230c3c658a4a1b5b4c8b6c16c8f77577f9e"},
-    {file = "parse_type-0.5.2.tar.gz", hash = "sha256:7f690b18d35048c15438d6d0571f9045cffbec5907e0b1ccf006f889e3a38c0b"},
 ]
 pathspec = [
     {file = "pathspec-0.9.0-py2.py3-none-any.whl", hash = "sha256:7d15c4ddb0b5c802d161efc417ec1a2558ea2653c2e8ad9c19098201dc1c993a"},
@@ -1090,21 +960,9 @@ requests = [
     {file = "requests-2.27.1-py2.py3-none-any.whl", hash = "sha256:f22fa1e554c9ddfd16e6e41ac79759e17be9e492b3587efa038054674760e72d"},
     {file = "requests-2.27.1.tar.gz", hash = "sha256:68d7c56fd5a8999887728ef304a6d12edc7be74f1cfa47714fc8b414525c9a61"},
 ]
-selenium = [
-    {file = "selenium-3.141.0-py2.py3-none-any.whl", hash = "sha256:2d7131d7bc5a5b99a2d9b04aaf2612c411b03b8ca1b1ee8d3de5845a9be2cb3c"},
-    {file = "selenium-3.141.0.tar.gz", hash = "sha256:deaf32b60ad91a4611b98d8002757f29e6f2c2d5fcaf202e1c9ad06d6772300d"},
-]
-six = [
-    {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
-    {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
-]
 slippers = [
     {file = "slippers-0.3.1-py3-none-any.whl", hash = "sha256:a85938c478210dd1827a82e6a2c673bda6ccedc1c108984e1126e1fa27559dfb"},
     {file = "slippers-0.3.1.tar.gz", hash = "sha256:6d0f29ef34f28a5608c36079d7fe12952e5e6c16a9d0b4d1a828be262af41850"},
-]
-soupsieve = [
-    {file = "soupsieve-2.3.1-py3-none-any.whl", hash = "sha256:1a3cca2617c6b38c0343ed661b1fa5de5637f257d4fe22bd9f1338010a1efefb"},
-    {file = "soupsieve-2.3.1.tar.gz", hash = "sha256:b8d49b1cd4f037c7082a9683dfa1801aa2597fb11c3a1155b7a5b94829b4f1f9"},
 ]
 sqlparse = [
     {file = "sqlparse-0.4.2-py3-none-any.whl", hash = "sha256:48719e356bb8b42991bdbb1e8b83223757b93789c00910a616a071910ca4a64d"},
