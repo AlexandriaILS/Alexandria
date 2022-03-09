@@ -1,6 +1,10 @@
 name: Tests
 
-on: [push]
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
 
 jobs:
   build:
@@ -24,3 +28,13 @@ jobs:
     - name: Run Tests
       run: |
         poetry run pytest
+    - name: Set coverage amount
+      id: vars
+      run: echo ::set-output name=coverage_percent::$(coverage report | grep "%" | tail -1 | awk '{print $4}')
+    - name: 'Comment the coverage amount.'
+      uses: actions/github-script@0.3.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
+          github.issues.createComment({ issue_number, owner, repo, body: 'Current coverage: ${{ steps.vars.outputs.coverage_percent }}' });
