@@ -30,7 +30,7 @@ jobs:
         poetry run pytest
     - name: Set coverage amount
       id: vars
-      run: echo ::set-output name=coverage_percent::$(coverage report | grep "%" | tail -1 | awk '{print $4}')
+      run: echo ::set-output name=coverage_percent::$(poetry run coverage report | grep "%" | tail -1 | awk '{print $4}')
     - name: 'Comment the coverage amount.'
       uses: actions/github-script@0.3.0
       with:
