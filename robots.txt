@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://alexandriails.github.io/Alexandria/sitemap.xml.gz

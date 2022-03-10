@@ -1,2 +1,0 @@
-{% icon name="book" description="Publisher information" %}
-{{ item.pubyear }}, {{ item.publisher }}

@@ -1,4 +1,0 @@
-{% load i18n %}
-
-{% icon name="calendar_month" description="Patron birth year" %}
-{{ obj.birth_year }}{% if obj.is_minor %} {% translate "(Minor)" %}{% endif %}

@@ -1,2 +1,0 @@
-{% icon name="mail_outline" description="Patron email address" %}
-<a href="mailto:{{ obj.email }}" class="text-decoration-underline" style="color: black">{{ obj.email }}</a>

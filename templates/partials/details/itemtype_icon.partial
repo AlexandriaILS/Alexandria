@@ -1,8 +1,0 @@
-{% if item.type %}
-    {% if item.type.icon_name %}
-        <span class="material-icons" style="font-size: 36px;">{{ item.type.icon_name }}</span>
-    {% elif item.type.icon_svg %}
-        {{ item.type.icon_svg|safe }}
-    {% endif %}
-    <br>{{ item.type.name }}
-{% endif %}

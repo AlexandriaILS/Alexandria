@@ -1,6 +1,0 @@
-{% load i18n %}
-
-{% icon name="queue" description="Hold Queue Position" %}
-{% blocktranslate with queue=hold.get_hold_queue_number%}
-Currently #{{ queue }} in line
-{% endblocktranslate %}

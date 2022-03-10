@@ -1,2 +1,0 @@
-{% icon name="info" description="Item information" %}
-{{ item.record.title }}, {{ item.record.authors }} ({{ item.pubyear }})
