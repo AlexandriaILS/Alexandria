@@ -1,0 +1,17 @@
+input: .docs
+output: .retype
+url: # Add your website address here
+branding:
+  title: AlexandriaILS
+  label: Docs
+links:
+  - text: Getting Started
+    link: https://retype.com/guides/getting-started/
+    target: blank
+footer:
+  copyright: "Eventually AGPL, but for now all rights reserved."
+edit:
+  repo: "https://github.com/AlexandriaILS/Alexandria"
+  base: /docs
+meta:
+  title: " | AlexandriaILS"
