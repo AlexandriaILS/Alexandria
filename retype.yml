@@ -1,6 +1,6 @@
-input: .docs
+input: docs
 output: .retype
-url: # Add your website address here
+url: https://alexandriails.github.io/Alexandria/
 branding:
   title: AlexandriaILS
   label: Docs
