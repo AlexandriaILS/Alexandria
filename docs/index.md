@@ -13,7 +13,7 @@ Alexandria is an Integrated Library System (ILS) that aims to be a free and open
 Click on each of the below sections to get more details.
 
 ==- User-facing Catalog
-The catalog is the heart and soul of any ILS - making sure that your patrons can access it and easily obtain the materials they need is critical.
+The catalog is the heart and soul of any ILS - making sure that your patrons can access it and easily obtain the materials they need is critical. Patrons also have access to see their checkouts, limited account settings, due dates, holds, and fines & fees. (In case you're wondering, yes, you can disable fines for your library.)
 ===
 
 ==- Mobile (and Tablet!) Friendly
