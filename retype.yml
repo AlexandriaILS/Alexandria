@@ -5,8 +5,11 @@ branding:
   title: AlexandriaILS
   label: Docs
 links:
-  - text: Getting Started
-    link: https://retype.com/guides/getting-started/
+  - text: Website
+    link: https://alexandrialibrary.dev
+    target: blank
+  - text: GitHub
+    link: https://github.com/alexandriails/alexandria
     target: blank
 footer:
   copyright: "Eventually AGPL, but for now all rights reserved."

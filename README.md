@@ -79,6 +79,4 @@ LOGGING = {
 MIDDLEWARE = ["alexandria.middleware.BetterExceptionsMiddleware"] + MIDDLEWARE
 ```
 
-Running `behave` tests requires that you have `geckodriver` and Firefox installed -- you can get it from [the release page](https://github.com/mozilla/geckodriver/releases).
-
 note for later: https://python-escpos.readthedocs.io/en/latest/index.html
