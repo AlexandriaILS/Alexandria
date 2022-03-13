@@ -1,3 +1,5 @@
+.PHONY: migrate dev_data run nuke shell docs
+
 migrate:
 	.venv/bin/python manage.py migrate
 
@@ -12,3 +14,6 @@ nuke:
 
 shell:
 	.venv/bin/python manage.py shell_plus
+
+docs:
+	retype watch
