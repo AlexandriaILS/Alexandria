@@ -79,7 +79,7 @@ Alexandria is built from the ground up using [ALA's Privacy Checklist for ILS'](
 
 ### Ease of Use
 
-Alexandria is a web-based platform designed for easy navigation, access from anywhere, and usable by patrons and staff alike regardless of technological skill or knowledge. Staff both behind the desk or in the stacks have access to the same tools using whatever device they have on hand, and mobile-friendly design means that what works on one device will work on another.
+Alexandria is a web-based platform designed for easy navigation, access from anywhere, and usable by patrons and staff alike regardless of technological skill or knowledge. Our platform is built with accessibility in mind and follows the current [WCAG Accessibility guidelines](https://www.w3.org/TR/WCAG21/) and is natively usable with tooling like screen readers or custom fonts. Staff both behind the desk or in the stacks have access to the same tools using whatever device they have on hand, and mobile-friendly design means that what works on one device will work on another.
 
 ---
 
