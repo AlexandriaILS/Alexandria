@@ -38,3 +38,4 @@ jobs:
         script: |
           const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
           github.issues.createComment({ issue_number, owner, repo, body: 'Current coverage: ${{ steps.vars.outputs.coverage_percent }}' });
+      continue-on-error: true
