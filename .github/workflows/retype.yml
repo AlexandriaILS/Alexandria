@@ -14,9 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: retypeapp/action-build@v2.0.0-preview
+      - uses: retypeapp/action-build@v2
 
-      - uses: retypeapp/action-github-pages@v2.0.0-preview
+      - uses: retypeapp/action-github-pages@v2
         with:
           branch: gh-pages
           update-branch: true
