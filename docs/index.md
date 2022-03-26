@@ -67,7 +67,7 @@ There's no vendor lock-in here, and the only contracts here are optional support
 
 ### A Simple Solution
 
-"Simple" is almost a misnomer when talking about something this complicated, but what we mean is that we've worked with librarians and patrons to find the functionality that you need without the extra bells and whistles that may look cool but, ultimately, are schlock.
+"Simple" is almost a misnomer when talking about something this complicated, but what we mean is that we've worked with librarians and patrons to find the functionality that you need without extra bells and whistles that may look cool but, ultimately, are schlock.
 
 That said, not every feature or default configuration works for every organization; we have lots of settings so that you can set up your library with exactly what you need without overwhelming staff or patrons. (And maybe there's something that you still need that we haven't addressed! If that's so, open an issue and let's work together to get that functionality implemented!) 
 
