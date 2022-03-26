@@ -62,7 +62,7 @@ Running a library is expensive, especially for small ones with only a handful of
 We hope that Alexandria is the best of both worlds -- free, pretty, _and_ easy to use.
 
 !!!success
-There's no vendor lock-in here, and the only contracts here are support or cloud hosting; otherwise, it's 100% free.
+There's no vendor lock-in here, and the only contracts here are optional support or cloud hosting; otherwise, it's 100% free.
 !!!
 
 ### A Simple Solution
