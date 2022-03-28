@@ -36,7 +36,7 @@ def get_base_id(route, level) -> [int, None]:
 
 
 def sync_object_with_z(object, endpoint, itemtype=False) -> int:
-    # Check to make sure that a string string isn't already with Z; if it
+    # Check to make sure that a string isn't already with Z; if it
     # is, then return the ID number. Otherwise, create the subject and return
     # the ID.
     resp = requests.get(

@@ -29,6 +29,12 @@ class Command(BaseCommand):
         position += ["Librarian"] * 5
         position += ["Circ General", "Page"] * 2
 
+        valid_branches = list(
+            BranchLocation.objects.filter(
+                open_to_public=True, host=settings.DEFAULT_HOST_KEY
+            )
+        )
+
         for _ in range(count):
             location = USLocation.objects.create(
                 address_1=address.address(),
@@ -47,13 +53,8 @@ class Command(BaseCommand):
                 email=person.email(),
                 birth_year=2021 - person.age(minimum=20),
                 is_staff=True,
-                default_branch=random.choice(
-                    list(
-                        BranchLocation.objects.filter(
-                            open_to_public=True, host=settings.DEFAULT_HOST_KEY
-                        )
-                    )
-                ),
+                default_branch=random.choice(valid_branches),
+                work_branch=random.choice(valid_branches),
             )
             newbie.user_permissions.set(perms.permissions.all())
             newbie.set_password("asdf")

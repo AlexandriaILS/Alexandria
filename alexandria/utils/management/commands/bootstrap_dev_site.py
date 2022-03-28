@@ -22,7 +22,7 @@ BRANCH_LOCATIONS = [
     "Woodhall",
 ]
 
-SVG = (
+CASSETTE_SVG = (
     '<svg xmlns="http://www.w3.org/2000/svg"'
     ' xmlns:xlink="http://www.w3.org/1999/xlink"'
     ' version="1.1"'
@@ -57,11 +57,12 @@ def create_test_locations_and_types():
         BranchLocation.objects.get_or_create(name=branch)
 
     base = ItemTypeBase.objects.get(name=ItemTypeBase.LANGUAGE_MATERIAL)
-    # ["Audiobook (CD)", "Book", "Audiobook (Cassette)", "Ebook"]
     ItemType.objects.get_or_create(name="Audiobook (CD)", base=base, icon_name="album")
     ItemType.objects.get_or_create(name="eBook", base=base, icon_name="tablet_android")
     ItemType.objects.get_or_create(name="Book", base=base, icon_name="auto_stories")
-    ItemType.objects.get_or_create(name="Audiobook (Cassette)", base=base, icon_svg=SVG)
+    ItemType.objects.get_or_create(
+        name="Audiobook (Cassette)", base=base, icon_svg=CASSETTE_SVG
+    )
 
 
 class Command(BaseCommand):
@@ -71,7 +72,7 @@ class Command(BaseCommand):
         # First instantiate the site as normal
         bootstrap_site.Command().handle()
         create_test_locations_and_types()
-        import_from_z.Command().handle()
+        # import_from_z.Command().handle()
         # roughly 1 librarian for every 600 cardholders
         self.stdout.write("Creating a metric ton of patrons...")
         create_test_patrons.Command().handle(count=12000)

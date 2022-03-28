@@ -105,7 +105,7 @@ MIDDLEWARE = ["alexandria.middleware.BetterExceptionsMiddleware"] + MIDDLEWARE
 
 ## Database Operations
 
-Local dev can be done entirely with SQLite; it's not perfect, but it is more than enough to handle almost everything that Alexandria needs. All of the initial setup commands are built into the `Makefile`, so just run the following to get set up:
+Local dev can be done entirely with SQLite; it's not perfect, but it is more than enough to handle almost everything that Alexandria needs. All the initial setup commands are built into the `Makefile`, so just run the following to get set up:
 
 !!!
 Get a notice about not being able to import Django? Make sure that you've run `poetry shell` and that you've installed the dependencies first!

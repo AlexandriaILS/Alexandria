@@ -22,7 +22,8 @@ UTC = zoneinfo.ZoneInfo("UTC")
 
 
 class Subject(TimeStampMixin):
-    name = models.CharField(max_length=100)
+    # look, sometimes people are more wordy than they need to be, that's all I'm saying
+    name = models.CharField(max_length=500)
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     def __str__(self):
@@ -232,7 +233,8 @@ class Record(TimeStampMixin, SearchableFieldMixin):
         if self.type:
             if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
                 try:
-                    openlibrary.download_cover(self)
+                    # openlibrary.download_cover(self)
+                    ...
                 except requests.exceptions.HTTPError:
                     pass
         super(Record, self).save(*args, **kwargs)

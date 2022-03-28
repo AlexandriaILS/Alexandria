@@ -13,7 +13,6 @@ try:
 except ImportError:
     raise CommandError("Cannot proceed; missing dev dependencies.")
 
-
 class Command(BaseCommand):
     help = "Creates X (int) number of patrons for tests."
 

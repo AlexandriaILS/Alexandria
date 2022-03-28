@@ -43,7 +43,9 @@ def search(request: WSGIRequest) -> HttpResponse:
 
     if "postgresql" in settings.DATABASES["default"]["ENGINE"]:
         # TODO: refactor for SearchVector and SearchRank -- requires Postgres
-        # https://docs.djangoproject.com/en/dev/ref/contrib/postgres/search/#searchvector
+        # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#searchrank
+        # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#searchvector
+        # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#trigram-similarity
         results = ...
     else:
         results = (
