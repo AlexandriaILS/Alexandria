@@ -28,12 +28,12 @@
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/Alexandria/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="/Alexandria/resources/css/retype.css?v=2.1.701586511852" rel="stylesheet" data-turbo-track="reload" />
+    <link href="/Alexandria/resources/css/retype.css?v=2.1.701787015145" rel="stylesheet" data-turbo-track="reload" />
 
-    <script type="text/javascript" src="/Alexandria/resources/js/config.js?v=2.1.701586511852" defer data-turbo-track="reload"></script>
+    <script type="text/javascript" src="/Alexandria/resources/js/config.js?v=2.1.701787015145" defer data-turbo-track="reload"></script>
     <script type="text/javascript" src="/Alexandria/resources/js/retype.js?v=2.1" defer data-turbo-track="reload"></script>
-    <script id="lunr-js" type="text/javascript" src="/Alexandria/resources/js/lunr.js?v=2.1.701586511852" defer></script>
-    <script id="prism-js" type="text/javascript" src="/Alexandria/resources/js/prism.js?v=2.1.701586511852" defer></script>
+    <script id="lunr-js" type="text/javascript" src="/Alexandria/resources/js/lunr.js?v=2.1.701787015145" defer></script>
+    <script id="prism-js" type="text/javascript" src="/Alexandria/resources/js/prism.js?v=2.1.701787015145" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -294,7 +294,7 @@ MIDDLEWARE = [&quot;alexandria.middleware.BetterExceptionsMiddleware&quot;] + MI
         <span>Database Operations</span>
     </h2>
 </doc-anchor-target>
-<p>Local dev can be done entirely with SQLite; it&#x27;s not perfect, but it is more than enough to handle almost everything that Alexandria needs. All of the initial setup commands are built into the <code v-pre>Makefile</code>, so just run the following to get set up:</p>
+<p>Local dev can be done entirely with SQLite; it&#x27;s not perfect, but it is more than enough to handle almost everything that Alexandria needs. All the initial setup commands are built into the <code v-pre>Makefile</code>, so just run the following to get set up:</p>
 <div class="flex mb-6">
     <div class="shrink-0 w-1 rounded-tl rounded-bl bg-blue-500 dark:bg-blue-400"></div>
     <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
