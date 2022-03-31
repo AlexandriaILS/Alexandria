@@ -1,9 +1,9 @@
 from django.core.management.base import BaseCommand
 
-from alexandria.catalog.management.commands import import_from_z
 from alexandria.records.models import ItemTypeBase, ItemType
 from alexandria.users.management.commands import create_test_patrons, create_test_staff
 from alexandria.utils.management.commands import bootstrap_site
+from alexandria.utils.management.commands import import_gutenberg_titles
 
 from alexandria.users.models import BranchLocation
 
@@ -72,9 +72,10 @@ class Command(BaseCommand):
         # First instantiate the site as normal
         bootstrap_site.Command().handle()
         create_test_locations_and_types()
-        # import_from_z.Command().handle()
         # roughly 1 librarian for every 600 cardholders
         self.stdout.write("Creating a metric ton of patrons...")
         create_test_patrons.Command().handle(count=12000)
         self.stdout.write("Creating some staff...")
         create_test_staff.Command().handle(count=20)
+        self.stdout.write("Building the library...")
+        import_gutenberg_titles.Command().handle()

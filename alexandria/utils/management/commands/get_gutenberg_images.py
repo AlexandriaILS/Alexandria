@@ -1,9 +1,9 @@
 import time
 
-from alexandria.utils.images import get_and_save_image
 from django.core.management.base import BaseCommand
 
-from alexandria.records.models import Subject, Record, Item, ItemType, BibliographicLevel
+from alexandria.records.models import Record
+from alexandria.utils.images import get_and_save_image
 
 
 class Command(BaseCommand):
@@ -20,7 +20,7 @@ class Command(BaseCommand):
             time.sleep(0.1)
             try:
                 get_and_save_image(url.format(book.notes.split(":")[1]), book)
-                book.save()
+                book.save(skip_extras=True)
             except:
                 self.stdout.write(f"Error on {book.id} -- continuing.")
             counter += 1

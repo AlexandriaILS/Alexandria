@@ -159,5 +159,5 @@ def second_stage_compression():
 
 
 if __name__ == "__main__":
-    # get_from_gutendex()
+    get_from_gutendex()
     second_stage_compression()

@@ -229,14 +229,13 @@ class Record(TimeStampMixin, SearchableFieldMixin):
 
     def save(self, *args, **kwargs):
         self.update_searchable_fields()
-
-        if self.type:
-            if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
-                try:
-                    # openlibrary.download_cover(self)
-                    ...
-                except requests.exceptions.HTTPError:
-                    pass
+        if kwargs.get("skip_extras", False) is False:
+            if self.type:
+                if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
+                    try:
+                        openlibrary.download_cover(self)
+                    except requests.exceptions.HTTPError:
+                        pass
         super(Record, self).save(*args, **kwargs)
 
     def get_available_types(self):
