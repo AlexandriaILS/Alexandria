@@ -3,12 +3,6 @@ import time
 import functools
 
 
-def filter_db(request, klass, *args, **kwargs):
-    """Filter the requested class and enforce the host check."""
-    kwargs["host"] = request.host
-    return klass.objects.filter(*args, **kwargs)
-
-
 def query_debugger(func):
     # https://betterprogramming.pub/django-select-related-and-prefetch-related-f23043fd635d
     @functools.wraps(func)

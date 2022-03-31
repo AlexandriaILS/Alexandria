@@ -13,7 +13,6 @@ from django.views.decorators.csrf import csrf_exempt
 from alexandria.catalog.helpers import get_results_per_page
 from alexandria.records.models import Record
 from alexandria.users.helpers import add_patron_acted_as
-from alexandria.utils.db import filter_db
 
 
 @csrf_exempt
@@ -49,15 +48,15 @@ def search(request: WSGIRequest) -> HttpResponse:
         results = ...
     else:
         results = (
-            filter_db(
-                request,
-                Record,
+            Record.objects.filter(
                 Q(searchable_title__icontains=search_term)
                 | Q(searchable_authors__icontains=search_term)
                 | Q(searchable_subtitle__icontains=search_term)
                 | Q(searchable_uniform_title__icontains=search_term)
                 | Q(item__barcode=search_term)
                 | Q(item__call_number=search_term),
+                host=request.host,
+                id__in=Record.objects.filter(item__isnull=False)
             )
             .exclude(
                 id__in=(
@@ -67,7 +66,6 @@ def search(request: WSGIRequest) -> HttpResponse:
                     .filter(Q(is_active=F("total_count")))
                 )
             )
-            .exclude(id__in=Record.objects.filter(item__isnull=True))
             .order_by(Lower("title"))
             .distinct()
         )
