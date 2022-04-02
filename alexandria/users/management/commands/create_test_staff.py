@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import Group
 from alexandria.users.models import User, USLocation, BranchLocation
+from alexandria.utils import us_state_to_abbrev
 
 
 class Command(BaseCommand):
@@ -39,7 +40,7 @@ class Command(BaseCommand):
             location = USLocation.objects.create(
                 address_1=address.address(),
                 city=address.city(),
-                state=address.state(),
+                state=us_state_to_abbrev[address.state()],
                 zip_code=address.zip_code(),
             )
             title = random.choice(position)

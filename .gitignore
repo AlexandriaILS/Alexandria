@@ -11,3 +11,4 @@ htmlcov/
 static/
 configs/
 sent_emails/
+postgres_data/

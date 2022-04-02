@@ -6,12 +6,14 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 from alexandria.users.models import User, USLocation, BranchLocation
+from alexandria.utils import us_state_to_abbrev
 
 try:
     from mimesis import Person
     from mimesis import Address
 except ImportError:
     raise CommandError("Cannot proceed; missing dev dependencies.")
+
 
 class Command(BaseCommand):
     help = "Creates X (int) number of patrons for tests."
@@ -41,7 +43,7 @@ class Command(BaseCommand):
                 USLocation(
                     address_1=address.address(),
                     city=address.city(),
-                    state=address.state(),
+                    state=us_state_to_abbrev[address.state()],
                     zip_code=address.zip_code(),
                 )
             )

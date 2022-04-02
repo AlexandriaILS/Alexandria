@@ -187,7 +187,7 @@ class Record(TimeStampMixin, SearchableFieldMixin):
     # Field 245c is used, as it always includes all authors.
     # This field may not have a relevant answer; for example, DVDs don't really have
     # an author. Filling this field out is encouraged, but therefore not required.
-    authors = models.CharField(max_length=500, blank=True, null=True)
+    authors = models.CharField(max_length=800, blank=True, null=True)
 
     # tag 245b
     subtitle = models.CharField(max_length=26021, blank=True, null=True)
