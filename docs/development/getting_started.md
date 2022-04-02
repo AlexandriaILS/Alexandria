@@ -168,12 +168,9 @@ make psql_setup
 
 # push the db schema to the container
 make migrate
-
-# bring down the db when you're down
-make psql_down
 ```
 
-At this point, running `make run` should just work and have all of your queries passed through the Postgres Docker container!
+At this point, running `make run` should just work and have all of your queries passed through the Postgres Docker container! Bring down the container when you're finished with `make psql_down`.
 
 ### Install PostgreSQL on your local machine
 
