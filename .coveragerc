@@ -13,3 +13,4 @@ omit =
   alexandria/settings/*,
   alexandria/conftest.py,
   */management/commands/*
+  alexandria/middleware.py
