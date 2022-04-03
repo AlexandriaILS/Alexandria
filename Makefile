@@ -32,6 +32,7 @@ psql_down:
 	docker rm dev-postgres
 
 psql_setup:
+	docker exec -it dev-postgres bash -c "apt update && apt install postgresql-contrib -y"
 	docker exec -it dev-postgres bash -c "printf '\set AUTOCOMMIT on\ncreate database alexandria;create user alexandria with superuser password '\''asdf'\'';grant all on database alexandria to alexandria;' | psql -h localhost -U postgres"
 
 psql_shell:

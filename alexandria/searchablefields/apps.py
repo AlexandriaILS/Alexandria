@@ -67,6 +67,6 @@ class SearchablefieldsConfig(AppConfig):
                         for name in ["null", "blank", "max_length"]
                         if hasattr(field_base, name)
                     }
-                    field_base.__class__(**options).contribute_to_class(
+                    field_base.__class__(**options, db_index=True).contribute_to_class(
                         model, new_field_name
                     )
