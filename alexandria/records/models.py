@@ -182,7 +182,8 @@ class Record(TimeStampMixin, SearchableFieldMixin):
     SEARCHABLE_FIELDS = ["title", "authors", "subtitle", "uniform_title"]
 
     # tag 245a
-    title = models.CharField(max_length=26021)  # thanks, Yethindra
+    # https://www.guinnessworldrecords.com/world-records/358711-longest-title-of-a-book
+    title = models.CharField(max_length=27979)
     # This may be multiple people in one string; it's a limitation of the MARC format.
     # Field 245c is used, as it always includes all authors.
     # This field may not have a relevant answer; for example, DVDs don't really have
