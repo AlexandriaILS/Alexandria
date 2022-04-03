@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('records', '0005_alter_subject_name'),
+        ("records", "0005_alter_subject_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='record',
-            name='authors',
+            model_name="record",
+            name="authors",
             field=models.CharField(blank=True, max_length=800, null=True),
         ),
         migrations.AlterField(
-            model_name='record',
-            name='searchable_authors',
+            model_name="record",
+            name="searchable_authors",
             field=models.CharField(blank=True, max_length=800, null=True),
         ),
     ]
