@@ -18,7 +18,6 @@ from django.contrib.postgres.search import (
 from alexandria.catalog.helpers import get_results_per_page
 from alexandria.records.models import Record
 from alexandria.users.helpers import add_patron_acted_as
-from alexandria.utils.db import query_debugger
 
 
 @csrf_exempt
@@ -32,7 +31,6 @@ def index(request: WSGIRequest) -> HttpResponse:
     return render(request, "catalog/index.html", context)
 
 
-@query_debugger
 def search(request: WSGIRequest) -> HttpResponse:
     context = dict()
     search_term = request.GET.get("q")
@@ -83,7 +81,7 @@ def search(request: WSGIRequest) -> HttpResponse:
                     .filter(Q(is_active=F("total_count")))
                 )
             )
-            .prefetch_related('type')
+            .prefetch_related("type")
             .order_by("-rank")
             .distinct()
         )
@@ -92,7 +90,8 @@ def search(request: WSGIRequest) -> HttpResponse:
             # fuzzy. If it doesn't match above, see if the search is a barcode or call
             # number.
             results = Record.objects.filter(
-                Q(item__barcode__icontains=search_term) | Q(item__call_number__icontains=search_term),
+                Q(item__barcode__icontains=search_term)
+                | Q(item__call_number__icontains=search_term),
                 host=request.host,
                 item__is_active=True,
             ).order_by("-created_at")

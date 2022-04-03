@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0003_accounttype_created_at_accounttype_updated_at_and_more'),
+        ("users", "0003_accounttype_created_at_accounttype_updated_at_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='searchable_first_name',
+            model_name="user",
+            name="searchable_first_name",
             field=models.CharField(blank=True, db_index=True, max_length=150),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='searchable_last_name',
+            model_name="user",
+            name="searchable_last_name",
             field=models.CharField(blank=True, db_index=True, max_length=150),
         ),
     ]

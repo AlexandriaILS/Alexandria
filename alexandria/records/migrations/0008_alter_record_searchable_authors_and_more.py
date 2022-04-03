@@ -6,28 +6,34 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('records', '0007_activate_trigram_search'),
+        ("records", "0007_activate_trigram_search"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='record',
-            name='searchable_authors',
-            field=models.CharField(blank=True, db_index=True, max_length=800, null=True),
+            model_name="record",
+            name="searchable_authors",
+            field=models.CharField(
+                blank=True, db_index=True, max_length=800, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='record',
-            name='searchable_subtitle',
-            field=models.CharField(blank=True, db_index=True, max_length=26021, null=True),
+            model_name="record",
+            name="searchable_subtitle",
+            field=models.CharField(
+                blank=True, db_index=True, max_length=26021, null=True
+            ),
         ),
         migrations.AlterField(
-            model_name='record',
-            name='searchable_title',
+            model_name="record",
+            name="searchable_title",
             field=models.CharField(db_index=True, max_length=26021),
         ),
         migrations.AlterField(
-            model_name='record',
-            name='searchable_uniform_title',
-            field=models.CharField(blank=True, db_index=True, max_length=26021, null=True),
+            model_name="record",
+            name="searchable_uniform_title",
+            field=models.CharField(
+                blank=True, db_index=True, max_length=26021, null=True
+            ),
         ),
     ]
