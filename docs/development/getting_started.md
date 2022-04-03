@@ -198,6 +198,9 @@ Make sure to end every command with a semicolon (`;`) AND press Enter when you'r
 !!!
 
 ```sql
+-- Note: if this fails, you need to install postgresql-contrib. pg_trgm is NOT optional.
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+-- After you get pg_trgm installed, you can build the rest:
 CREATE DATABASE alexandria;
 CREATE USER alexandria WITH SUPERUSER PASSWORD 'asdf';
 GRANT ALL ON DATABASE alexandria TO alexandria;
@@ -206,6 +209,7 @@ GRANT ALL ON DATABASE alexandria TO alexandria;
 If everything ran correctly, you should see the following responses to your commands:
 
 ```shell
+CREATE
 CREATE
 CREATE
 GRANT

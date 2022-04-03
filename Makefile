@@ -22,7 +22,7 @@ docs:
 # copy of Postgres through docker. Note: this does expect that you've set up the
 # `docker` command to not require the use of `sudo`.
 psql_up:
-	docker run -d \
+	docker run \
 		--name dev-postgres \
 		-e POSTGRES_PASSWORD=alexandria \
 		-v $(PWD)/postgres_data/:/var/lib/postgresql/data -p 5432:5432 postgres
@@ -32,6 +32,7 @@ psql_down:
 	docker rm dev-postgres
 
 psql_setup:
+	docker exec -it dev-postgres bash -c "apt update && apt install postgresql-contrib -y"
 	docker exec -it dev-postgres bash -c "printf '\set AUTOCOMMIT on\ncreate database alexandria;create user alexandria with superuser password '\''asdf'\'';grant all on database alexandria to alexandria;' | psql -h localhost -U postgres"
 
 psql_shell:
