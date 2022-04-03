@@ -22,7 +22,7 @@ docs:
 # copy of Postgres through docker. Note: this does expect that you've set up the
 # `docker` command to not require the use of `sudo`.
 psql_up:
-	docker run \
+	docker run -d \
 		--name dev-postgres \
 		-e POSTGRES_PASSWORD=alexandria \
 		-v $(PWD)/postgres_data/:/var/lib/postgresql/data -p 5432:5432 postgres
