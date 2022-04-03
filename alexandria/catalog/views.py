@@ -55,8 +55,6 @@ def search(request: WSGIRequest) -> HttpResponse:
             + SearchVector("searchable_title", weight="B")
             + SearchVector("searchable_uniform_title", weight="B")
             + SearchVector("searchable_subtitle", weight="C")
-            # + SearchVector("item__barcode", weight="D")
-            # + SearchVector("item__call_number", weight="D")
         )
         query = SearchQuery(search_term)
         results = (
