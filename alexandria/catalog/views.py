@@ -18,6 +18,7 @@ from django.contrib.postgres.search import (
 from alexandria.catalog.helpers import get_results_per_page
 from alexandria.records.models import Record
 from alexandria.users.helpers import add_patron_acted_as
+from alexandria.utils.db import query_debugger
 
 
 @csrf_exempt
@@ -31,6 +32,7 @@ def index(request: WSGIRequest) -> HttpResponse:
     return render(request, "catalog/index.html", context)
 
 
+@query_debugger
 def search(request: WSGIRequest) -> HttpResponse:
     context = dict()
     search_term = request.GET.get("q")
@@ -54,6 +56,7 @@ def search(request: WSGIRequest) -> HttpResponse:
             + SearchVector("searchable_title", weight="B")
             + SearchVector("searchable_uniform_title", weight="B")
             + SearchVector("searchable_subtitle", weight="C")
+            + SearchVector("subjects__searchable_name", weight="C")
         )
         query = SearchQuery(search_term)
         results = (
@@ -103,6 +106,7 @@ def search(request: WSGIRequest) -> HttpResponse:
                 | Q(searchable_authors__icontains=search_term)
                 | Q(searchable_subtitle__icontains=search_term)
                 | Q(searchable_uniform_title__icontains=search_term)
+                | Q(subjects__searchable_name__icontains=search_term)
                 | Q(item__barcode=search_term)
                 | Q(item__call_number=search_term),
                 host=request.host,

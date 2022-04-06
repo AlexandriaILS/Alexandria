@@ -21,13 +21,19 @@ from alexandria.utils.models import TimeStampMixin
 UTC = zoneinfo.ZoneInfo("UTC")
 
 
-class Subject(TimeStampMixin):
+class Subject(TimeStampMixin, SearchableFieldMixin):
+    SEARCHABLE_FIELDS = ["name"]
+
     # look, sometimes people are more wordy than they need to be, that's all I'm saying
     name = models.CharField(max_length=500)
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.update_searchable_fields()
+        super().save(*args, **kwargs)
 
 
 class Collection(TimeStampMixin):
