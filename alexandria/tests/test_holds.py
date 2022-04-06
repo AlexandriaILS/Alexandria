@@ -119,6 +119,7 @@ def test_create_hold_verify_correct_data(rf: RequestFactory):
     request = rf.get("/")
     request.user = user
     request.host = "example.com"
+    request.session = {}
 
     assert Hold.objects.count() == 0
 

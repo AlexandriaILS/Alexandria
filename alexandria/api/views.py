@@ -10,7 +10,7 @@ from rest_framework import status
 from alexandria.api.authentication import CsrfExemptSessionAuthentication
 from alexandria.api.serializers import ItemSerializer, HoldSerializer, RecordSerializer
 from alexandria.records.models import Hold, Item, Record, ItemType
-from alexandria.users.models import BranchLocation
+from alexandria.users.models import BranchLocation, User
 
 SUCCESS = 201
 HOLD_ALREADY_EXISTS = 409
@@ -19,14 +19,24 @@ YOU_ALREADY_HAVE_THIS_CHECKED_OUT = 406
 
 def create_hold(request, item, location, specific_copy=False) -> Response:
     filters = {
-        "placed_for": request.user,
         "item": item,
         "host": request.host,
     }
 
+    if patron_id := request.session.get('acting_as_patron'):
+        # We're currently impersonating a patron and placing a hold in their name.
+        # Reroute the next step so that we set the hold as them and not ourselves.
+        target_account = User.objects.get(card_number=patron_id)
+    else:
+        # We'll land here the grand majority of the time. This is someone setting
+        # a hold for themselves.
+        target_account = request.user
+
     # sanity check: can't put something on hold that you already have checked out.
-    if item.checked_out_to == request.user:
+    if item.checked_out_to == target_account:
         return Response(status=YOU_ALREADY_HAVE_THIS_CHECKED_OUT)
+
+    filters.update({'placed_for': target_account})
 
     existing = Hold.objects.filter(**filters).first()
     if existing:
