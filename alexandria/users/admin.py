@@ -4,8 +4,8 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext as _
 
-from alexandria.users.models import User, BranchLocation, USLocation
 from alexandria.catalog.authentication.views import LoginView
+from alexandria.users.models import BranchLocation, User, USLocation
 
 admin.autodiscover()
 admin.site.login = LoginView.as_view()

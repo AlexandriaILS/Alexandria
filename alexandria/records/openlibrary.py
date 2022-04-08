@@ -1,5 +1,5 @@
 from random import choice
-from typing import Any, Dict, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, Union
 
 import requests
 

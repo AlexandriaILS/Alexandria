@@ -4,15 +4,15 @@ import random
 from django.core.management.base import BaseCommand
 
 from alexandria.catalog.management.commands.import_from_z import (
-    generate_LOC_call_number,
     PUBLISHERS,
+    generate_LOC_call_number,
 )
 from alexandria.records.models import (
-    Subject,
-    Record,
-    ItemType,
     BibliographicLevel,
     Item,
+    ItemType,
+    Record,
+    Subject,
 )
 from alexandria.users.models import BranchLocation
 from alexandria.utils.gutenberg import decompressBytesToString

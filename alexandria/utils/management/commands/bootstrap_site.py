@@ -1,12 +1,12 @@
-from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
+from django.core.management.base import BaseCommand
+
+from alexandria.users.models import USLocation
 from alexandria.utils.management.commands import (
     bootstrap_system_branches,
     bootstrap_types,
     create_permissions_groups,
 )
-
-from alexandria.users.models import USLocation
 
 
 class Command(BaseCommand):

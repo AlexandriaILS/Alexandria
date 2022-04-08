@@ -1,7 +1,6 @@
 from alexandria.utils.context import *
 from alexandria.utils.images import *
 
-
 # https://gist.github.com/rogerallen/1583593
 us_state_to_abbrev = {
     "Alabama": "AL",

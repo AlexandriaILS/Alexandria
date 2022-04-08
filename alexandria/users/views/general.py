@@ -3,9 +3,9 @@ from urllib.parse import quote_plus
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, reverse
 from django.views.decorators.csrf import csrf_exempt
-from alexandria.users.views.ajax import patron_search, item_search, record_search
-from alexandria.searchablefields.strings import clean_text
 
+from alexandria.searchablefields.strings import clean_text
+from alexandria.users.views.ajax import item_search, patron_search, record_search
 
 # Create your views here.
 # TODO: create checkout views

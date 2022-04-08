@@ -1,9 +1,9 @@
-from django.test import Client
-from django.shortcuts import reverse
 import pytest
+from django.shortcuts import reverse
+from django.test import Client
 
 from alexandria.records.models import Hold
-from alexandria.tests.helpers import get_test_item, get_default_patron_user
+from alexandria.utils.test_helpers import get_default_patron_user, get_test_item
 
 
 def test_my_checkouts(client: Client):

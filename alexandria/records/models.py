@@ -14,8 +14,8 @@ from django.utils.translation import gettext as _
 from taggit.managers import TaggableManager
 
 from alexandria.records import openlibrary
-from alexandria.users.models import BranchLocation, User
 from alexandria.searchablefields.mixins import SearchableFieldMixin
+from alexandria.users.models import BranchLocation, User
 from alexandria.utils.models import TimeStampMixin
 
 UTC = zoneinfo.ZoneInfo("UTC")

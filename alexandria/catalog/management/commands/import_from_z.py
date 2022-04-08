@@ -9,17 +9,16 @@ from django.core.management.base import BaseCommand
 
 from alexandria.distributed.configs import init_site_data
 from alexandria.records.models import (
-    Record,
-    Subject,
     BibliographicLevel,
     Item,
     ItemType,
     ItemTypeBase,
+    Record,
+    Subject,
 )
 from alexandria.records.zenodotus_utils import slash_join
 from alexandria.users.models import BranchLocation
 from alexandria.utils.images import get_and_save_image
-
 
 BOOK_OPTIONS = ["Audiobook (CD)", "Book", "Audiobook (Cassette)", "Ebook"]
 PUBLISHERS = [

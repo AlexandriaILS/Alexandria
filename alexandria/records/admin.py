@@ -1,13 +1,13 @@
 from django.contrib import admin
 
 from alexandria.records.models import (
-    Hold,
-    Subject,
-    Record,
-    Item,
     Collection,
+    Hold,
+    Item,
     ItemType,
     ItemTypeBase,
+    Record,
+    Subject,
 )
 
 

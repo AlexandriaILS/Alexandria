@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('records', '0009_alter_record_searchable_title_alter_record_title'),
+        ("records", "0009_alter_record_searchable_title_alter_record_title"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='subject',
-            name='searchable_name',
-            field=models.CharField(db_index=True, default='', max_length=500),
+            model_name="subject",
+            name="searchable_name",
+            field=models.CharField(db_index=True, default="", max_length=500),
             preserve_default=False,
         ),
     ]

@@ -5,16 +5,16 @@ from django.contrib.auth.models import Permission
 from django.core.paginator import Paginator
 from django.db.models.expressions import Q
 from django.http import Http404
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
 from alexandria.catalog.helpers import get_results_per_page
+from alexandria.searchablefields.strings import clean_text
 from alexandria.users.forms import StaffSettingsForm
 from alexandria.users.models import User
 from alexandria.utils.permissions import permission_to_perm
-from alexandria.searchablefields.strings import clean_text
 
 
 @csrf_exempt

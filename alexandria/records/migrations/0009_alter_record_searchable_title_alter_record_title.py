@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('records', '0008_alter_record_searchable_authors_and_more'),
+        ("records", "0008_alter_record_searchable_authors_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='record',
-            name='searchable_title',
+            model_name="record",
+            name="searchable_title",
             field=models.CharField(db_index=True, max_length=27979),
         ),
         migrations.AlterField(
-            model_name='record',
-            name='title',
+            model_name="record",
+            name="title",
             field=models.CharField(max_length=27979),
         ),
     ]

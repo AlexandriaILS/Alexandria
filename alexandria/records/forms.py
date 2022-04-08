@@ -1,5 +1,6 @@
 from django import forms
-from alexandria.records.models import ItemType, BibliographicLevel
+
+from alexandria.records.models import BibliographicLevel, ItemType
 
 
 class LoCSearchForm(forms.Form):

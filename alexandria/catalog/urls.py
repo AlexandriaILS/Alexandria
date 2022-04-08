@@ -1,5 +1,5 @@
-from django.urls import path
 from django.contrib.auth import views as django_auth_views
+from django.urls import path
 
 from alexandria.catalog import views
 from alexandria.catalog.authentication import views as auth_views

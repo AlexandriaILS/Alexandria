@@ -4,7 +4,7 @@ from typing import List, Union
 import pymarc
 from django.conf import settings
 
-from alexandria.records.models import Item, Record, Subject, BibliographicLevel
+from alexandria.records.models import BibliographicLevel, Item, Record, Subject
 from alexandria.users.models import BranchLocation
 
 YEAR_RE = r"[0-9]{4}"

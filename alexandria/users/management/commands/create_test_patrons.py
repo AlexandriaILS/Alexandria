@@ -5,12 +5,11 @@ from datetime import datetime
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from alexandria.users.models import User, USLocation, BranchLocation
+from alexandria.users.models import BranchLocation, User, USLocation
 from alexandria.utils import us_state_to_abbrev
 
 try:
-    from mimesis import Person
-    from mimesis import Address
+    from mimesis import Address, Person
 except ImportError:
     raise CommandError("Cannot proceed; missing dev dependencies.")
 

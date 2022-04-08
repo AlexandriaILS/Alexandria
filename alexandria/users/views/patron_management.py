@@ -4,16 +4,16 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models.expressions import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, reverse, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, render, reverse
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 
 from alexandria.catalog.helpers import get_results_per_page
 from alexandria.records.models import Hold
-from alexandria.users.forms import PatronForm, PatronEditForm
-from alexandria.users.models import User, USLocation
 from alexandria.searchablefields.strings import clean_text
+from alexandria.users.forms import PatronEditForm, PatronForm
+from alexandria.users.models import User, USLocation
 
 
 @csrf_exempt

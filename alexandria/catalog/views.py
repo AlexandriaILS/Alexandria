@@ -1,6 +1,12 @@
 from urllib.parse import quote_plus
 
 from django.conf import settings
+from django.contrib.postgres.search import (
+    SearchQuery,
+    SearchRank,
+    SearchVector,
+    TrigramSimilarity,
+)
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator
 from django.db.models.aggregates import Count
@@ -8,12 +14,6 @@ from django.db.models.expressions import F, Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, reverse
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.postgres.search import (
-    TrigramSimilarity,
-    SearchRank,
-    SearchQuery,
-    SearchVector,
-)
 
 from alexandria.catalog.helpers import get_results_per_page
 from alexandria.records.models import Record

@@ -1,23 +1,32 @@
 from typing import Dict
 
-from alexandria.records.models import Record, Item, ItemType, ItemTypeBase, Hold
-from alexandria.users.models import BranchLocation, User, AccountType
+from django.contrib.auth.models import Group
 
+from alexandria.records.models import Hold, Item, ItemType, ItemTypeBase, Record
+from alexandria.users.models import AccountType, BranchLocation, User
+
+DEFAULT_SUPERUSER = {
+    "first_name": "Atticus",
+    "last_name": "Finch",
+    "is_staff": True,
+    "is_superuser": True,
+    "password": "headhighfistsdown",
+}
 DEFAULT_STAFF_USER = {
-    "card_number": "1234",
+    "card_number": "2345",  # existing Admin user is 1234
     "first_name": "Guy",
     "last_name": "Montag",
     "is_staff": True,
     "password": "lightitup",
 }
 DEFAULT_PATRON_USER = {
-    "card_number": "2345",
+    "card_number": "3456",
     "first_name": "Fitzwilliam",
     "last_name": "Darcy",
     "password": "misunderst00ddefect",
 }
 DEFAULT_UNDERAGE_PATRON_USER = {
-    "card_number": "3456",
+    "card_number": "4567",
     "first_name": "Augustus",
     "last_name": "Gloop",
     "birth_year": 2012,
@@ -114,7 +123,9 @@ def _get_user(base_data: Dict, **kwargs) -> User:
 
 
 def get_default_staff_user(**kwargs):
-    return _get_user(DEFAULT_STAFF_USER, **kwargs)
+    user = _get_user(DEFAULT_STAFF_USER, **kwargs)
+    user.user_permissions.set(Group.objects.get(name="Manager").permissions.all())
+    return user
 
 
 def get_default_patron_user(**kwargs):
@@ -123,3 +134,7 @@ def get_default_patron_user(**kwargs):
 
 def get_default_underage_patron_user(**kwargs):
     return _get_user(DEFAULT_UNDERAGE_PATRON_USER, **kwargs)
+
+
+def get_superuser(**kwargs):
+    return _get_user(DEFAULT_SUPERUSER, **kwargs)

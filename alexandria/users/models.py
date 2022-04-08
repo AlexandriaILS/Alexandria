@@ -1,17 +1,14 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from django.apps import apps
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    PermissionsMixin,
-    Group,
-)
+from django.conf import settings
+from django.contrib.auth.models import AbstractBaseUser, Group, PermissionsMixin
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.mail import send_mail
 from django.db import models
-from django.conf import settings
 from django.forms import Form
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -21,7 +18,6 @@ from alexandria.distributed.configs import load_site_config
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 from alexandria.utils.models import TimeStampMixin
 from alexandria.utils.permissions import perm_to_permission
-
 
 if TYPE_CHECKING:
     from alexandria.records.models import ItemType

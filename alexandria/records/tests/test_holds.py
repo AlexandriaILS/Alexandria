@@ -1,16 +1,16 @@
-from django.utils import timezone
 from django.test import Client, RequestFactory
+from django.utils import timezone
 
 from alexandria.api.views import create_hold
 from alexandria.records.models import Hold
-from alexandria.tests.helpers import (
-    get_test_item,
-    get_default_patron_user,
-    get_default_location,
-    get_default_record,
+from alexandria.utils.test_helpers import (
     get_default_hold,
-    get_default_underage_patron_user,
+    get_default_location,
+    get_default_patron_user,
+    get_default_record,
     get_default_staff_user,
+    get_default_underage_patron_user,
+    get_test_item,
 )
 
 
@@ -130,6 +130,27 @@ def test_create_hold_verify_correct_data(rf: RequestFactory):
     assert new_hold.placed_for == user
     assert new_hold.item == item
     assert new_hold.host == "example.com"
+
+
+def test_set_hold_for_other_user(rf: RequestFactory):
+    """Placing a hold for a patron should not set it for the staff member."""
+    item = get_test_item()
+    location = get_default_location()
+    user = get_default_patron_user()
+    staff_member = get_default_staff_user()
+
+    request = rf.get("/")
+    request.user = staff_member
+    request.host = "example.com"
+    request.session = {"acting_as_patron": user.card_number}
+
+    assert Hold.objects.count() == 0
+
+    create_hold(request, item, location, specific_copy=True)
+
+    new_hold = Hold.objects.first()
+    assert new_hold.placed_for == user
+    assert Hold.objects.filter(placed_for=staff_member).count() == 0
 
 
 def delete_hold(client: Client):

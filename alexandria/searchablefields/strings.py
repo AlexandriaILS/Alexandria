@@ -1,5 +1,5 @@
-import unicodedata
 import string
+import unicodedata
 from typing import Union
 
 

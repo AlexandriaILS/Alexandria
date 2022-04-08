@@ -1,9 +1,9 @@
-from alexandria.distributed.configs import get_domains_from_configs
-
 from django.conf import settings
-from django.shortcuts import reverse, redirect, HttpResponseRedirect
 from django.http import HttpRequest
+from django.shortcuts import HttpResponseRedirect, redirect, reverse
 from django.utils.http import url_has_allowed_host_and_scheme
+
+from alexandria.distributed.configs import get_domains_from_configs
 
 
 def next_or_reverse(request: HttpRequest, view_name: str) -> str:

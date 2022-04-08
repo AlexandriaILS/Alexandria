@@ -2,12 +2,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 from django.views.generic import View
 
-from alexandria.records.models import Hold, Item
 from alexandria.catalog.forms import PatronSettingsForm
+from alexandria.records.models import Hold, Item
 
 
 @login_required()

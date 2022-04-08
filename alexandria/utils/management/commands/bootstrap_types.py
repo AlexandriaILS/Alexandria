@@ -5,7 +5,7 @@ class Command(BaseCommand):
     help = "Creates the base types"
 
     def handle(self, *args, **kwargs):
-        from alexandria.records.models import ItemTypeBase, BibliographicLevel
+        from alexandria.records.models import BibliographicLevel, ItemTypeBase
 
         items = [
             (ItemTypeBase, ItemTypeBase.TYPE_OPTIONS),

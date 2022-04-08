@@ -1,12 +1,9 @@
 from django.core.management.base import BaseCommand
 
-from alexandria.records.models import ItemTypeBase, ItemType
+from alexandria.records.models import ItemType, ItemTypeBase
 from alexandria.users.management.commands import create_test_patrons, create_test_staff
-from alexandria.utils.management.commands import bootstrap_site
-from alexandria.utils.management.commands import import_gutenberg_titles
-
 from alexandria.users.models import BranchLocation
-
+from alexandria.utils.management.commands import bootstrap_site, import_gutenberg_titles
 
 BRANCH_LOCATIONS = [
     "Crickhollow",

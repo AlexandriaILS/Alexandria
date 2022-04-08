@@ -34,6 +34,7 @@ In this module, term *perm* indicate the identifier string permission written
 in 'app_label.codename' format.
 """
 from __future__ import unicode_literals
+
 from functools import wraps
 
 

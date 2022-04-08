@@ -1,8 +1,7 @@
 from typing import Dict
 
-from django.conf import settings
-
 import requests
+from django.conf import settings
 
 
 def slash_join(*args: str, params: Dict = None) -> str:

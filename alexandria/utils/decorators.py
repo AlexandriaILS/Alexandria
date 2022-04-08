@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import user_passes_test, REDIRECT_FIELD_NAME
+from django.contrib.auth.decorators import REDIRECT_FIELD_NAME, user_passes_test
 
 
 def library_staff_required(

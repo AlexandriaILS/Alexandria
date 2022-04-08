@@ -1,15 +1,15 @@
 from django.http import HttpResponse
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
-from rest_framework.generics import get_object_or_404
+from rest_framework import status
 from rest_framework.decorators import action, authentication_classes
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import status
 
 from alexandria.api.authentication import CsrfExemptSessionAuthentication
-from alexandria.api.serializers import ItemSerializer, HoldSerializer, RecordSerializer
-from alexandria.records.models import Hold, Item, Record, ItemType
+from alexandria.api.serializers import HoldSerializer, ItemSerializer, RecordSerializer
+from alexandria.records.models import Hold, Item, ItemType, Record
 from alexandria.users.models import BranchLocation, User
 
 SUCCESS = 201
@@ -23,7 +23,7 @@ def create_hold(request, item, location, specific_copy=False) -> Response:
         "host": request.host,
     }
 
-    if patron_id := request.session.get('acting_as_patron'):
+    if patron_id := request.session.get("acting_as_patron"):
         # We're currently impersonating a patron and placing a hold in their name.
         # Reroute the next step so that we set the hold as them and not ourselves.
         target_account = User.objects.get(card_number=patron_id)
@@ -36,7 +36,7 @@ def create_hold(request, item, location, specific_copy=False) -> Response:
     if item.checked_out_to == target_account:
         return Response(status=YOU_ALREADY_HAVE_THIS_CHECKED_OUT)
 
-    filters.update({'placed_for': target_account})
+    filters.update({"placed_for": target_account})
 
     existing = Hold.objects.filter(**filters).first()
     if existing:

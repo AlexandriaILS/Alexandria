@@ -1,20 +1,23 @@
-from typing import Dict
-import json
-import os
-import logging
 import glob
+import json
+import logging
+import os
+from typing import Dict
 
 from django.conf import settings
 
 logger = logging.getLogger("alexandria")
 
 
-def init_site_data():
-    with open(
-        os.path.join("alexandria", "distributed", "default.json"), "r"
-    ) as base_json:
-        sites: Dict = json.load(base_json)
-        logger.info("Loaded default site information!")
+def init_site_data(initial_data: dict = None):
+    if not initial_data:
+        with open(
+            os.path.join("alexandria", "distributed", "default.json"), "r"
+        ) as base_json:
+            sites: Dict = json.load(base_json)
+            logger.info("Loaded default site information!")
+    else:
+        sites = initial_data
 
     if os.path.exists(os.path.join(settings.BASE_DIR, "configs")):
         logger.info("Cloud config directory found, merging configs into site object.")

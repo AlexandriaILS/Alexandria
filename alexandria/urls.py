@@ -13,12 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import include, path
+from decorator_include import decorator_include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
 from django.contrib.admin.views.decorators import staff_member_required
-from decorator_include import decorator_include
+from django.urls import include, path
 
 from alexandria.catalog.urls import urlpatterns as catalog_urls
 
