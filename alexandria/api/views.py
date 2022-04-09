@@ -64,8 +64,8 @@ class ItemViewSet(ModelViewSet):
     authentication_classes = [CsrfExemptSessionAuthentication]
 
     @action(methods=["get"], detail=True)
-    def renew(self, request, item_id=None):
-        target = get_object_or_404(Item, id=item_id, host=request.host)
+    def renew(self, request, pk=None):
+        target = get_object_or_404(Item, pk=pk, host=request.host)
 
         if request.user != target.checked_out_to and not request.user.is_staff:
             # Staff can hit this, but otherwise if the thing ain't yours then
@@ -85,8 +85,6 @@ class ItemViewSet(ModelViewSet):
 
     @action(methods=["post"], detail=True)
     def place_hold(self, request, pk: int = None):
-        # TODO: We don't actually need obj_type here because it's only used for Records,
-        #  so it should be adjusted in holdbuttons.js, the route, and here.
         location_id: int = request.data["location_id"]
         target = get_object_or_404(Item, id=pk)
         location = get_object_or_404(BranchLocation, id=location_id)

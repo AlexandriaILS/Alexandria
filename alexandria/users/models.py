@@ -22,19 +22,37 @@ from alexandria.utils.permissions import perm_to_permission
 if TYPE_CHECKING:
     from alexandria.records.models import ItemType
 
+BRANCH_SERIALIZER_SHORT_FIELDS = ["id", "name", "address__address_1"]
+
 
 class UserManager(DjangoUserManager):
     use_in_migrations = True
 
-    def _create_user(self, card_number, email, password, **extra_fields):
+    def _create_user(
+        self,
+        card_number=None,
+        email=None,
+        password=None,
+        first_name=None,
+        **extra_fields,
+    ):
         """
         Create and save a user with the given username, email, and password.
+
+        Note: traditionally card numbers are, as the name implies, numbers, but
+        there is a possibility that it might not be. Ergo, we don't check for
+        whether it's a number or not.
         """
         if not card_number:
-            raise ValueError("The given card_number must be set")
+            raise ValueError("Card number must be set")
+        if not email:
+            raise ValueError("Email address must be set")
+        if not first_name:
+            raise ValueError("First name must be set")
         email = self.normalize_email(email)
-        card_number = int(card_number)
-        user = self.model(card_number=card_number, email=email, **extra_fields)
+        user = self.model(
+            card_number=card_number, email=email, first_name=first_name, **extra_fields
+        )
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -99,6 +117,13 @@ class BranchLocation(TimeStampMixin):
         if self.address:
             return f"{self.name} - {self.address.address_1}"
         return f"{self.name}"
+
+    def get_serialized_short_fields(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'address__address_1': self.address.address_1 if self.address else None
+        }
 
 
 class AccountType(TimeStampMixin):
@@ -203,8 +228,9 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
     )
     title = models.CharField(_("title"), max_length=50, null=True, blank=True)
 
-    first_name = models.CharField(_("first name"), max_length=150, blank=True)
-    last_name = models.CharField(_("last name"), max_length=150, blank=True)
+    # first name is mandatory, last name is optional
+    first_name = models.CharField(_("first name"), max_length=255)
+    last_name = models.CharField(_("last name"), max_length=255, null=True, blank=True)
     email = models.EmailField(_("email address"), blank=True)
     is_minor = models.BooleanField(
         default=False,
@@ -269,8 +295,6 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
     USERNAME_FIELD = "card_number"
     REQUIRED_FIELDS = []
 
-    SERIALIZER_SHORT_FIELDS = ["id", "name", "address__address_1"]
-
     objects = UserManager()
 
     def __str__(self):
@@ -314,13 +338,13 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
         ).order_by("name")
 
     def get_serializable_branches(self) -> list:
-        return list(self.get_branches().values(*self.SERIALIZER_SHORT_FIELDS))
+        return list(self.get_branches().values(*BRANCH_SERIALIZER_SHORT_FIELDS))
 
     def get_default_branch(self):
         if not self.default_branch:
             # this shouldn't really happen, but we can at least correct for it if it does
             self.default_branch = BranchLocation.objects.get(
-                id=load_site_config(self.host)["default_location_id"]
+                id=load_site_config(self.host)["default_location_id"], host=self.host
             )
             self.save()
         return self.default_branch
@@ -331,7 +355,7 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
             return None
         if not self.work_branch:
             self.work_branch = BranchLocation.objects.get(
-                id=load_site_config(self.host)["default_location_id"]
+                id=load_site_config(self.host)["default_location_id"], host=self.host
             )
             self.save()
         return self.work_branch
@@ -342,8 +366,8 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
         default_branch = BranchLocation.objects.filter(id=self.get_default_branch().id)
         branches = self.get_branches().exclude(pk__in=default_branch).order_by("name")
         data = {
-            "default": default_branch.values(*self.SERIALIZER_SHORT_FIELDS)[0],
-            "others": branches.values(*self.SERIALIZER_SHORT_FIELDS),
+            "default": default_branch.first().get_serialized_short_fields(),
+            "others": [branch.get_serialized_short_fields() for branch in branches],
         }
         return data
 
@@ -360,13 +384,16 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
         """
         Return first name and initial of last name.
 
-        Also accounts for last names with multiple words like "Von Person".
+        Also accounts for last names with multiple words like "Von Person". Returns just
+        the first name if the given account does not have a last name.
         """
-
         # https://english.stackexchange.com/a/413015
-        return (
-            f"{self.first_name} {''.join([name[0] for name in self.last_name.split()])}"
-        )
+        if self.last_name:
+            shortened_last_name = "".join([name[0] for name in self.last_name.split()])
+            name = f"{self.first_name} {shortened_last_name}"
+        else:
+            name = f"{self.first_name}"
+        return name
 
     def update_from_form(self, form: Form) -> None:
         """Grab all the form data, split out the address info, and save it all."""
