@@ -367,7 +367,6 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
         branches = self.get_branches().exclude(pk__in=default_branch).order_by("name")
         data = {
             "default": default_branch.first().get_serialized_short_fields(),
-            # "others": branches.values(*BRANCH_SERIALIZER_SHORT_FIELDS),
             "others": [branch.get_serialized_short_fields() for branch in branches],
         }
         return data
