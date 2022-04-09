@@ -1,5 +1,6 @@
 from django.test import Client, RequestFactory
 from django.utils import timezone
+from rest_framework.test import APIClient
 
 from alexandria.api.views import create_hold
 from alexandria.records.models import Hold
@@ -33,9 +34,23 @@ def test_create_hold_for_item(client: Client):
     assert Hold.objects.count() == 1
 
 
+def test_create_hold_for_item_without_login(client: Client):
+    """Verify a hold cannot be created for an unauthenticated user."""
+    item = get_test_item()
+    location = get_default_location()
+
+    assert Hold.objects.count() == 0
+
+    data = {"location_id": location.id}
+
+    resp = client.post(f"/api/items/{item.id}/place_hold/", data=data)
+    assert resp.status_code == 403
+    assert Hold.objects.count() == 0
+
+
 def test_create_hold_for_record(client: Client):
     """Verify a hold can be created from only a record."""
-    record = get_default_record()
+    record = get_default_record()   
     location = get_default_location()
     item = get_test_item(home_location=location)
     user = get_default_patron_user()
@@ -50,6 +65,24 @@ def test_create_hold_for_record(client: Client):
     assert resp.json()["hold_number"] == 1
     assert resp.json()["name"] == item.type.name
     assert Hold.objects.count() == 1
+
+
+def test_create_hold_for_record_with_no_items(client: Client):
+    """Verify a hold with no items returns an error."""
+    record = get_default_record()
+    location = get_default_location()
+    item = get_test_item(home_location=location)
+    user = get_default_patron_user()
+    client.force_login(user)
+
+    assert Hold.objects.count() == 0
+
+    data = {"item_type_id": item.type.id, "location_id": location.id}
+    item.delete()
+
+    resp = client.post(f"/api/records/{record.id}/place_hold/", data=data)
+    assert resp.status_code == 412
+    assert Hold.objects.count() == 0
 
 
 def test_record_available_at_target_location(client: Client):
@@ -153,45 +186,45 @@ def test_set_hold_for_other_user(rf: RequestFactory):
     assert Hold.objects.filter(placed_for=staff_member).count() == 0
 
 
-def delete_hold(client: Client):
+def test_delete_hold(api_client: APIClient):
     """Verify that users can delete their own holds."""
     user = get_default_patron_user()
     new_hold = get_default_hold(placed_for=user)
-    client.force_login(user)
+    api_client.force_authenticate(user)
 
     assert Hold.objects.count() == 1
 
-    resp = client.delete(f"/api/holds/{new_hold.id}/")
+    resp = api_client.delete(f"/api/holds/{new_hold.id}/")
     assert resp.status_code == 200
 
     assert Hold.objects.count() == 0
 
 
-def delete_hold_as_wrong_user(client: Client):
+def test_delete_hold_as_wrong_user(api_client: APIClient):
     """Verify that people cannot delete someone else's hold."""
     user = get_default_patron_user()
     new_hold = get_default_hold(placed_for=user)
     bad_actor = get_default_underage_patron_user()  # darn those teens
-    client.force_login(bad_actor)
+    api_client.force_authenticate(bad_actor)
 
     assert Hold.objects.count() == 1
 
-    resp = client.delete(f"/api/holds/{new_hold.id}/")
+    resp = api_client.delete(f"/api/holds/{new_hold.id}/")
     assert resp.status_code == 403
 
     assert Hold.objects.count() == 1
 
 
-def delete_hold_as_staff(client: Client):
+def test_delete_hold_as_staff(api_client: APIClient):
     """Verify that staff can delete holds."""
     user = get_default_patron_user()
     new_hold = get_default_hold(placed_for=user)
     staff = get_default_staff_user()
-    client.force_login(staff)
+    api_client.force_authenticate(staff)
 
     assert Hold.objects.count() == 1
 
-    resp = client.delete(f"/api/holds/{new_hold.id}/")
+    resp = api_client.delete(f"/api/holds/{new_hold.id}/")
     assert resp.status_code == 200
 
     assert Hold.objects.count() == 0

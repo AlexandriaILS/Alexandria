@@ -2,12 +2,12 @@ from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.decorators import action, authentication_classes
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
-from alexandria.api.authentication import CsrfExemptSessionAuthentication
+from alexandria.api.authentication import CsrfExemptSessionAuthentication, SessionAuthentication
 from alexandria.api.serializers import HoldSerializer, ItemSerializer, RecordSerializer
 from alexandria.records.models import Hold, Item, ItemType, Record
 from alexandria.users.models import BranchLocation, User
@@ -85,24 +85,23 @@ class ItemViewSet(ModelViewSet):
         # TODO: We don't actually need obj_type here because it's only used for Records,
         #  so it should be adjusted in holdbuttons.js, the route, and here.
         location_id: int = request.data["location_id"]
-        if not request.user.is_authenticated:
-            return HttpResponse(status=401)
         target = get_object_or_404(Item, id=pk)
         location = get_object_or_404(BranchLocation, id=location_id)
         return create_hold(request, target, location, specific_copy=True)
 
 
-class HoldViewSet(ModelViewSet):
+class HoldViewSet(GenericViewSet):
     queryset = Hold.objects.all()
     serializer_class = HoldSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [CsrfExemptSessionAuthentication]
 
-    def destroy(self, request, pk=None) -> Response:
+    def destroy(self, request, pk=None, **kwargs) -> Response:
         hold = get_object_or_404(Hold, id=pk)
-        if not hold.placed_for == request.user or not request.user.is_staff:
+        if hold.placed_for != request.user:
             # Only staff or the person who placed the hold should be able to remove it.
-            return Response(status=403)
+            if not request.user.is_staff:
+                return Response(status=403)
 
         hold.delete()
         return Response(status=200)
@@ -159,5 +158,5 @@ class RecordViewSet(ModelViewSet):
             # be a valid target for the hold. But just in case there isn't... we should
             # handle it.
             # TODO: Add handling for this in holdbuttons.js
-            return Response(status=412)  # 410 gone
+            return Response(status=412)  # 412 precondition failed
         return create_hold(request, item, location)

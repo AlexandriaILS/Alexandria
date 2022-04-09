@@ -6,6 +6,7 @@ from alexandria.records.models import Hold, Item, ItemType, ItemTypeBase, Record
 from alexandria.users.models import AccountType, BranchLocation, User
 
 DEFAULT_SUPERUSER = {
+    "card_number": "123444",
     "first_name": "Atticus",
     "last_name": "Finch",
     "is_staff": True,
@@ -108,6 +109,7 @@ def get_default_hold(**kwargs):
         **{key: kwargs[key] for key in kwargs if key in dir(Hold)},
     }
     obj, _ = Hold.objects.get_or_create(**data)
+    return obj
 
 
 def _get_user(base_data: Dict, **kwargs) -> User:
@@ -115,7 +117,14 @@ def _get_user(base_data: Dict, **kwargs) -> User:
         **base_data,
         **{key: kwargs[key] for key in kwargs if key in dir(User)},
     }
-    user, _ = User.objects.get_or_create(**user_info)
+    if not User.objects.filter(card_number=user_info['card_number']).exists():
+        user = User.objects.create(**user_info)
+    else:
+        # perform the update in the db without actually getting the object; much faster
+        User.objects.filter(card_number=user_info['card_number']).update(**user_info)
+        # now get the updated object
+        user = User.objects.get(card_number=user_info['card_number'])
+
     user.account_type = get_default_accounttype()
     user.set_password(user_info["password"])
     user.save()
