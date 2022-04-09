@@ -14,3 +14,4 @@ omit =
   alexandria/conftest.py,
   */management/commands/*
   alexandria/middleware.py
+  alexandria/records/zenodotus_utils.py

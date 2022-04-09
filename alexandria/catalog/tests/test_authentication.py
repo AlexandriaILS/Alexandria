@@ -39,3 +39,14 @@ def test_bad_login(client: Client):
 
     assert result.status_code == 302
     assert reverse("login") in result.url
+
+
+def test_logout(client: Client):
+    user = get_default_patron_user()
+    assert len(client.session.keys()) == 0
+    client.force_login(user)
+    assert len(client.session.keys()) > 0
+
+    resp = client.get(reverse("logout"))
+    assert len(client.session.keys()) == 0
+    assert resp.status_code == 302

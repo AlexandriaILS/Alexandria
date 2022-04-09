@@ -18,7 +18,7 @@ DEFAULT_STAFF_USER = {
     "first_name": "Guy",
     "last_name": "Montag",
     "is_staff": True,
-    "password": "lightitup",
+    "password": "l1ght1tup",
 }
 DEFAULT_PATRON_USER = {
     "card_number": "3456",
@@ -80,7 +80,7 @@ def get_test_item(**kwargs):
     return Item.objects.create(**data)
 
 
-def get_default_location(**kwargs):
+def get_default_branch_location(**kwargs):
     data = {
         **DEFAULT_BRANCH_LOCATION,
         **{key: kwargs[key] for key in kwargs if key in dir(BranchLocation)},
@@ -101,7 +101,7 @@ def get_default_accounttype(**kwargs):
 def get_default_hold(**kwargs):
     DEFAULT_HOLD = {
         "placed_for": get_default_patron_user(),
-        "destination": get_default_location(),
+        "destination": get_default_branch_location(),
         "item": get_test_item(),
     }
     data = {
