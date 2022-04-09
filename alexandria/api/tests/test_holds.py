@@ -50,7 +50,7 @@ def test_create_hold_for_item_without_login(client: Client):
 
 def test_create_hold_for_record(client: Client):
     """Verify a hold can be created from only a record."""
-    record = get_default_record()   
+    record = get_default_record()
     location = get_default_location()
     item = get_test_item(home_location=location)
     user = get_default_patron_user()

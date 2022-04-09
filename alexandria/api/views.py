@@ -2,12 +2,15 @@ from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.decorators import action, authentication_classes
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from alexandria.api.authentication import CsrfExemptSessionAuthentication, SessionAuthentication
+from alexandria.api.authentication import (
+    CsrfExemptSessionAuthentication,
+    SessionAuthentication,
+)
 from alexandria.api.serializers import HoldSerializer, ItemSerializer, RecordSerializer
 from alexandria.records.models import Hold, Item, ItemType, Record
 from alexandria.users.models import BranchLocation, User

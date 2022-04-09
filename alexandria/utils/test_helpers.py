@@ -117,13 +117,13 @@ def _get_user(base_data: Dict, **kwargs) -> User:
         **base_data,
         **{key: kwargs[key] for key in kwargs if key in dir(User)},
     }
-    if not User.objects.filter(card_number=user_info['card_number']).exists():
+    if not User.objects.filter(card_number=user_info["card_number"]).exists():
         user = User.objects.create(**user_info)
     else:
         # perform the update in the db without actually getting the object; much faster
-        User.objects.filter(card_number=user_info['card_number']).update(**user_info)
+        User.objects.filter(card_number=user_info["card_number"]).update(**user_info)
         # now get the updated object
-        user = User.objects.get(card_number=user_info['card_number'])
+        user = User.objects.get(card_number=user_info["card_number"])
 
     user.account_type = get_default_accounttype()
     user.set_password(user_info["password"])
