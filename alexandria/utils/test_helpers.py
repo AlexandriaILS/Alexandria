@@ -131,9 +131,11 @@ def _get_user(base_data: Dict, **kwargs) -> User:
     return user
 
 
-def get_default_staff_user(**kwargs):
+def get_default_staff_user(update_permissions=True, **kwargs):
+    """Set update_permissions as false to just pull the staff user."""
     user = _get_user(DEFAULT_STAFF_USER, **kwargs)
-    user.user_permissions.set(Group.objects.get(name="Manager").permissions.all())
+    if update_permissions:
+        user.user_permissions.set(Group.objects.get(name="Manager").permissions.all())
     return user
 
 
