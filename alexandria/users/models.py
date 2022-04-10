@@ -462,6 +462,9 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
         groups = Group.objects.filter(name__in=options)
         for group in groups:
             group_permissions = group.permissions.all()
+            # todo: can this allow a staff member to escalate someone's permissions
+            #  to the next level up if they have even one of the permissions assigned
+            #  manually? Need to test.
             if all([el in user_permissions for el in group_permissions]):
                 perm_groups += tree[group.name]
 
