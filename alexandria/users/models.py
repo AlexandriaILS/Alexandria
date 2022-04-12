@@ -120,9 +120,9 @@ class BranchLocation(TimeStampMixin):
 
     def get_serialized_short_fields(self):
         return {
-            'id': self.id,
-            'name': self.name,
-            'address__address_1': self.address.address_1 if self.address else None
+            "id": self.id,
+            "name": self.name,
+            "address__address_1": self.address.address_1 if self.address else None,
         }
 
 

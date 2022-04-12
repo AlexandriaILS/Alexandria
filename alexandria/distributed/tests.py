@@ -25,7 +25,7 @@ def test_valid_host_response(
     assert request.context == {"a": "b"}
 
 
-def test_invalid_host(rf: RequestFactory, settings: SettingsWrapper):
+def test_invalid_host(rf: RequestFactory):
     request = rf.get("/")
     request.get_host = lambda: "example.com"
 

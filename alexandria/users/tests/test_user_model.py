@@ -3,11 +3,12 @@ from django.contrib.auth.models import Group
 from django.db.models import QuerySet
 
 from alexandria.users.models import BranchLocation, User, USLocation
+from alexandria.utils.permissions import perm_to_permission
 from alexandria.utils.test_helpers import (
     get_default_branch_location,
-    get_default_patron_user, get_default_staff_user,
+    get_default_patron_user,
+    get_default_staff_user,
 )
-from alexandria.utils.permissions import perm_to_permission
 
 
 class TestCreateUser:
@@ -141,9 +142,9 @@ class TestUserFunctions:
 
         result = user.get_branches_for_holds()
         assert len(result.keys()) == 2
-        assert result['default']['name'] == branch.name
-        assert result['others'][0] == branch2.get_serialized_short_fields()
-        assert result['others'][1] == branch3.get_serialized_short_fields()
+        assert result["default"]["name"] == branch.name
+        assert result["others"][0] == branch2.get_serialized_short_fields()
+        assert result["others"][1] == branch3.get_serialized_short_fields()
 
     def test_get_shortened_name(self):
         user = get_default_staff_user()
@@ -171,7 +172,7 @@ class TestUserFunctions:
         """Verify that patrons from different hosts are not visible."""
         user = get_default_staff_user()
         patron = get_default_patron_user()
-        patron.host = 'aaaa'
+        patron.host = "aaaa"
         patron.save()
         assert len(user.get_modifiable_patrons()) == 0
         # superusers can see users from other hosts
@@ -217,7 +218,7 @@ class TestUserFunctions:
         User.objects.get(card_number=1234).delete()  # nuke the default admin account
         user = get_default_staff_user()
         patron = get_default_patron_user(is_staff=True)
-        patron.host = 'aaaa'
+        patron.host = "aaaa"
         patron.save()
         assert len(user.get_modifiable_staff()) == 0
         # superusers can see users from other hosts
@@ -257,7 +258,14 @@ class TestUserFunctions:
         circ_sup = Group.objects.get(name="Circ Supervisor")
         circ_gen = Group.objects.get(name="Circ General")
         page = Group.objects.get(name="Page")
-        assert user.get_viewable_permissions_groups() == [manager, in_charge, librarian, circ_sup, circ_gen, page]
+        assert user.get_viewable_permissions_groups() == [
+            manager,
+            in_charge,
+            librarian,
+            circ_sup,
+            circ_gen,
+            page,
+        ]
 
         user.user_permissions.set(librarian.permissions.all())
         # pull object again to refresh permissions caching
@@ -266,7 +274,13 @@ class TestUserFunctions:
 
         user.user_permissions.set(circ_sup.permissions.all())
         user = get_default_staff_user(update_permissions=False)
-        assert user.get_viewable_permissions_groups() == [in_charge, librarian, circ_sup, circ_gen, page]
+        assert user.get_viewable_permissions_groups() == [
+            in_charge,
+            librarian,
+            circ_sup,
+            circ_gen,
+            page,
+        ]
 
         user.user_permissions.set(page.permissions.all())
         user = get_default_staff_user(update_permissions=False)
