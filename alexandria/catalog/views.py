@@ -26,7 +26,9 @@ def index(request: WSGIRequest) -> HttpResponse:
     if request.method == "POST":
         search_text = request.POST.get("search_text")
         return HttpResponseRedirect(
-            reverse("search") + ("?q=" + quote_plus(search_text)) if search_text else ""
+            reverse("search")
+            + "?q="
+            + ((quote_plus(search_text)) if search_text else "")
         )
     context = add_patron_acted_as(request, {})
     return render(request, "catalog/index.html", context)
@@ -132,9 +134,7 @@ def search(request: WSGIRequest) -> HttpResponse:
     )
 
     if search_term:
-        context.update(
-            {"search_term": search_term, "results": results, "page": page_obj}
-        )
+        context.update({"search_term": search_term, "page": page_obj})
     context = add_patron_acted_as(request, context)
     return render(request, "catalog/search.html", context)
 
