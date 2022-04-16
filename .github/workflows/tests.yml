@@ -39,10 +39,6 @@ jobs:
         PGPASSWORD="asdf" psql -h postgres -U postgres -c "create user alexandria with superuser password 'asdf';grant all on database alexandria to alexandria;"
     - name: Checkout current branch
       uses: actions/checkout@v2
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.10.2
     - uses: snok/install-poetry@v1
       with:
         virtualenvs-create: true
