@@ -28,8 +28,8 @@ jobs:
     steps:
     - name: Install psql
       run: |
-        apt-get update
-        apt-get install --yes --no-install-recommends postgresql-client
+        sudo apt-get update
+        sudo apt-get install --yes --no-install-recommends postgresql-client
     - name: Configure Postgres
       run: |
         psql -h localhost -U alexandria -d template1 -c 'CREATE EXTENSION pg_trgm;'
