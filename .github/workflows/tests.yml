@@ -19,7 +19,7 @@ jobs:
       postgres:
         image: postgres:14.2
         env:
-          POSTGRES_USER: postgres
+          POSTGRES_USER: alexandria
           POSTGRES_PASSWORD: asdf
           POSTGRES_DB: alexandria
         ports:
@@ -35,8 +35,7 @@ jobs:
     - name: Configure Postgres
       # need to connect to hostname postgres because that's the name of the container
       run: |
-        PGPASSWORD="asdf" psql -h postgres -U postgres -d template1 -c 'CREATE EXTENSION pg_trgm;'
-        PGPASSWORD="asdf" psql -h postgres -U postgres -c "create user alexandria with superuser password 'asdf';grant all on database alexandria to alexandria;"
+        PGPASSWORD="asdf" psql -h postgres -U alexandria -d template1 -c 'CREATE EXTENSION pg_trgm;'
     - name: Checkout current branch
       uses: actions/checkout@v2
     - uses: snok/install-poetry@v1
