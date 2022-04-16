@@ -47,7 +47,7 @@ jobs:
         poetry install
     - name: Run Tests
       run: |
-        poetry run pytest --workers 4
+        poetry run pytest -n auto
       env:
         # use postgres for the host here because we have specified a container for the job.
         # If we were running the job on the VM this would be localhost
