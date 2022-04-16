@@ -44,7 +44,7 @@ jobs:
         virtualenvs-create: true
     - name: Install Dependencies
       run: |
-        sudo apt-get install libjpeg8 libjpeg-dev libpng-dev libpq-dev -y
+        apt-get install libjpeg8 libjpeg-dev libpng-dev libpq-dev -y
         poetry install
     - name: Run Tests
       run: |
