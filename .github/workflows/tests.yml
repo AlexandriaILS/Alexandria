@@ -7,7 +7,7 @@ on:
       - synchronize
 
 jobs:
-  container-job:
+  Tests:
     runs-on: ubuntu-latest
 
     # runs all of the steps inside the specified container rather than on the VM host.
@@ -33,8 +33,9 @@ jobs:
         apt-get update
         apt-get install --yes --no-install-recommends postgresql-client
     - name: Configure Postgres
+      # need to connect to hostname postgres because that's the name of the container
       run: |
-        psql -h localhost -U alexandria -d template1 -c 'CREATE EXTENSION pg_trgm;'
+        psql -h postgres -U alexandria -d template1 -c 'CREATE EXTENSION pg_trgm;'
     - name: Checkout current branch
       uses: actions/checkout@v2
     - name: Set up Python 3.10
