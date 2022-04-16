@@ -357,6 +357,8 @@ class Item(TimeStampMixin):
         },
     )
     object_id = models.PositiveIntegerField(null=True, blank=True)
+    # Note: do not try to access this directly -- the database doesn't like that.
+    # Go through the object on the other side, e.g. request.user.get_checkouts().
     checked_out_to = GenericForeignKey("content_type", "object_id")
 
     # ebooks don't have call numbers, but pretty much everything else does.

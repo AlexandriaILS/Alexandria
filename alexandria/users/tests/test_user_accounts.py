@@ -7,7 +7,7 @@ from alexandria.utils.test_helpers import get_default_patron_user, get_test_item
 
 
 def test_my_checkouts(client: Client):
-    """Verify that the My Checkouts page works as expected."""
+    """Verify that the 'My Checkouts' page works as expected."""
     item = get_test_item()
     user = get_default_patron_user()
     assert item.checked_out_to is None

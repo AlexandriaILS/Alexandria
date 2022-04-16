@@ -49,81 +49,57 @@ def search(request: WSGIRequest) -> HttpResponse:
         ]
     )
 
-    if "postgresql" in settings.DATABASES["default"]["ENGINE"]:
-        # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#searchrank
-        # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#searchvector
-        # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#trigram-similarity
-        vector = (
-            SearchVector("searchable_authors", weight="A")
-            + SearchVector("searchable_title", weight="B")
-            + SearchVector("searchable_uniform_title", weight="B")
-            + SearchVector("searchable_subtitle", weight="C")
-            + SearchVector("subjects__searchable_name", weight="C")
+    # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#searchrank
+    # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#searchvector
+    # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#trigram-similarity
+    vector = (
+        SearchVector("searchable_authors", weight="A")
+        + SearchVector("searchable_title", weight="B")
+        + SearchVector("searchable_uniform_title", weight="B")
+        + SearchVector("searchable_subtitle", weight="C")
+        + SearchVector("subjects__searchable_name", weight="C")
+    )
+    query = SearchQuery(search_term)
+    results = (
+        Record.objects.annotate(
+            # NOTE! The TrigramSimilarity DOES NOT TAKE a SearchQuery! You must pass
+            # in the actual raw search string. The resulting error message will be
+            # that pg_trgm isn't installed, which is untrue. Thanks to @mcarlton00
+            # for helping me get that figured out.
+            author_similarity=TrigramSimilarity("searchable_authors", search_term),
+            title_similarity=TrigramSimilarity("searchable_title", search_term),
+            rank=SearchRank(vector, query),
         )
-        query = SearchQuery(search_term)
-        results = (
-            Record.objects.annotate(
-                # NOTE! The TrigramSimilarity DOES NOT TAKE a SearchQuery! You must pass
-                # in the actual raw search string. The resulting error message will be
-                # that pg_trgm isn't installed, which is untrue. Thanks to @mcarlton00
-                # for helping me get that figured out.
-                author_similarity=TrigramSimilarity("searchable_authors", search_term),
-                title_similarity=TrigramSimilarity("searchable_title", search_term),
-                rank=SearchRank(vector, query),
-            )
-            .filter(
-                Q(rank__gte=0.3)
-                | Q(author_similarity__gte=0.3)
-                | Q(title_similarity__gte=0.3),
-                host=request.host,
-                id__in=Record.objects.filter(item__isnull=False),
-            )
-            .exclude(
-                id__in=(
-                    Record.objects.annotate(total_count=Count("item", distinct=True))
-                    .filter(item__is_active=False)
-                    .annotate(is_active=Count("item", distinct=True))
-                    .filter(Q(is_active=F("total_count")))
-                )
-            )
-            .prefetch_related("type")
-            .order_by("-rank")
-            .distinct()
+        .filter(
+            Q(rank__gte=0.3)
+            | Q(author_similarity__gte=0.3)
+            | Q(title_similarity__gte=0.3),
+            host=request.host,
+            id__in=Record.objects.filter(item__isnull=False),
         )
-        if not results:
-            # Sometimes we'll get searches for things that are specific and shouldn't be
-            # fuzzy. If it doesn't match above, see if the search is a barcode or call
-            # number.
-            results = Record.objects.filter(
-                Q(item__barcode__icontains=search_term)
-                | Q(item__call_number__icontains=search_term),
-                host=request.host,
-                item__is_active=True,
-            ).order_by("-created_at")
-    else:
-        # sqlite just isn't that powerful, but it gets us close enough most of the time!
-        results = (
-            Record.objects.filter(
-                Q(searchable_title__icontains=search_term)
-                | Q(searchable_authors__icontains=search_term)
-                | Q(searchable_subtitle__icontains=search_term)
-                | Q(searchable_uniform_title__icontains=search_term)
-                | Q(subjects__searchable_name__icontains=search_term)
-                | Q(item__barcode=search_term)
-                | Q(item__call_number=search_term),
-                host=request.host,
-                id__in=Record.objects.filter(item__isnull=False),
+        .exclude(
+            id__in=(
+                Record.objects.annotate(total_count=Count("item", distinct=True))
+                .filter(item__is_active=False)
+                .annotate(is_active=Count("item", distinct=True))
+                .filter(Q(is_active=F("total_count")))
             )
-            .exclude(
-                id__in=(
-                    Record.objects.annotate(total_count=Count("item", distinct=True))
-                    .filter(item__is_active=False)
-                    .annotate(is_active=Count("item", distinct=True))
-                    .filter(Q(is_active=F("total_count")))
-                )
-            )
-            .distinct()
         )
+        .prefetch_related("type")
+        .order_by("-rank")
+        .distinct()
+    )
+    if not results:
+        # Sometimes we'll get searches for things that are specific and shouldn't be
+        # fuzzy. If it doesn't match above, see if the search is a barcode or call
+        # number.
+        results = Record.objects.filter(
+            Q(item__barcode__icontains=search_term)
+            | Q(item__call_number__icontains=search_term),
+            host=request.host,
+            item__is_active=True,
+        ).order_by("-created_at")
+
     results_per_page = get_results_per_page(request)
 
     paginator = Paginator(results, results_per_page)

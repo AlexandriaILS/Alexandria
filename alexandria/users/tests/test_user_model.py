@@ -81,10 +81,10 @@ class TestUserFunctions:
 
     def test_get_serializable_branches(self):
         user = get_default_patron_user()
-        get_default_branch_location()
+        location = get_default_branch_location()
 
         assert user.get_serializable_branches() == [
-            {"address__address_1": None, "id": 5, "name": "Central Library"}
+            {"address__address_1": None, "id": location.id, "name": location.name}
         ]
 
     def test_get_default_branch(self):

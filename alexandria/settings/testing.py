@@ -20,8 +20,12 @@ CACHES = {
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db_testing.sqlite3"),  # noqa: F405
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "alexandria",
+        "USER": "alexandria",
+        "PASSWORD": "asdf",
+        "HOST": os.environ.get("POSTGRES_HOST", "127.0.0.1"),
+        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }
 }
 

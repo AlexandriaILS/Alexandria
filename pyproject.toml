@@ -35,6 +35,7 @@ mimesis = "^5.1.0"
 wheel = "^0.37.1"
 pytest-mock = "^3.7.0"
 isort = "^5.10.1"
+pytest-xdist = "^2.5.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

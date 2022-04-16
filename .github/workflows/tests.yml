@@ -11,7 +11,28 @@ jobs:
 
     runs-on: ubuntu-20.04
 
+    services:
+      postgres:
+        image: postgres:14.2
+        env:
+          POSTGRES_USER: alexandria
+          POSTGRES_PASSWORD: asdf
+          POSTGRES_DB: alexandria
+        ports:
+        # will assign a random free host port
+        - 5432/tcp
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+
     steps:
+    - name: Install psql
+      run: |
+        apt-get update
+        apt-get install --yes --no-install-recommends postgresql-client
+    - name: Configure Postgres
+      run: |
+        psql -h localhost -U alexandria -d template1 -c 'CREATE EXTENSION pg_trgm;'
     - name: Checkout current branch
       uses: actions/checkout@v2
     - name: Set up Python 3.10
@@ -27,7 +48,12 @@ jobs:
         poetry install
     - name: Run Tests
       run: |
-        poetry run pytest
+        poetry run pytest --workers 4
+      env:
+        # use localhost for the host here because we are running the job on the VM.
+        # If we were running the job on in a container this would be postgres
+        POSTGRES_HOST: localhost
+        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }} # get randomly assigned published port
     - name: Set coverage amount
       id: vars
       run: echo ::set-output name=coverage_percent::$(poetry run coverage report | grep "%" | tail -1 | awk '{print $4}')

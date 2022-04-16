@@ -12,9 +12,7 @@ from alexandria.records.models import Hold, Item
 
 @login_required()
 def my_checkouts(request: HttpRequest) -> HttpResponse:
-    my_materials = Item.objects.filter(user_checked_out_to=request.user).order_by(
-        "due_date"
-    )
+    my_materials = request.user.get_checkouts().order_by("due_date")
     return render(request, "user/my_checked_out.html", {"checkouts": my_materials})
 
 

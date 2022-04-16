@@ -477,5 +477,5 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
         # clean the list
         return [group for group in sorted_groups if group is not None]
 
-    def get_checked_out_materials(self):
+    def get_checkouts(self):
         return self.checkouts.all()

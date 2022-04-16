@@ -1,19 +1,19 @@
-.PHONY: migrate dev_data run nuke shell docs postgres_up postgres_down
+.PHONY: migrate dev_data run nuke shell docs postgres_up postgres_down test
 
 migrate:
-	.venv/bin/python manage.py migrate
+	poetry run python manage.py migrate
 
 dev_data:
-	.venv/bin/python manage.py bootstrap_dev_site
+	poetry run python manage.py bootstrap_dev_site
 
 run:
-	.venv/bin/python manage.py runserver
+	poetry run python manage.py runserver
 
 clean:
 	rm db.sqlite3
 
 shell:
-	.venv/bin/python manage.py shell_plus
+	poetry run python manage.py shell_plus
 
 docs:
 	retype watch
@@ -31,8 +31,12 @@ psql_down:
 	docker stop dev-postgres
 	docker rm dev-postgres
 
+# Install dependency for trigram similarities, force it to be available for every
+# test database, and then create the database and user information we'll use to
+# connect with.
 psql_setup:
 	docker exec -it dev-postgres bash -c "apt update && apt install postgresql-contrib -y"
+	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres -d template1 -c 'CREATE EXTENSION pg_trgm;'"
 	docker exec -it dev-postgres bash -c "printf '\set AUTOCOMMIT on\ncreate database alexandria;create user alexandria with superuser password '\''asdf'\'';grant all on database alexandria to alexandria;' | psql -h localhost -U postgres"
 
 psql_shell:
@@ -40,3 +44,6 @@ psql_shell:
 
 psql_clean:
 	sudo rm -rf postgres_data
+
+test:
+	poetry run pytest -n auto
