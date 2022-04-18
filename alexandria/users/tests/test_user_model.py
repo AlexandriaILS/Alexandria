@@ -2,10 +2,12 @@ import pytest
 from django.contrib.auth.models import Group
 from django.db.models import QuerySet
 
-from alexandria.users.models import BranchLocation, User, USLocation
+from alexandria.records.models import ItemType
+from alexandria.users.models import AccountType, BranchLocation, User, USLocation
 from alexandria.utils.permissions import perm_to_permission
 from alexandria.utils.test_helpers import (
     get_default_branch_location,
+    get_default_item_type,
     get_default_patron_user,
     get_default_staff_user,
 )
@@ -289,3 +291,23 @@ class TestUserFunctions:
     def test_get_viewable_permissions_groups_without_staff(self):
         user = get_default_patron_user()
         assert user.get_viewable_permissions_groups() == []
+
+    def test_get_all_itemtype_checkout_limits(self):
+        user = get_default_patron_user()
+        itemtype = get_default_item_type()
+        accounttype = AccountType.objects.create(name="Testing")
+        accounttype.set_itemtype_checkout_limit(itemtype, 1000)
+        user.account_type = accounttype
+        user.save()
+
+        assert user.account_type.get_all_itemtype_checkout_limits() == {itemtype: 1000}
+
+    def test_get_all_itemtype_hold_limits(self):
+        user = get_default_patron_user()
+        itemtype = get_default_item_type()
+        accounttype = AccountType.objects.create(name="Testing")
+        accounttype.set_itemtype_hold_limit(itemtype, 1000)
+        user.account_type = accounttype
+        user.save()
+
+        assert user.account_type.get_all_itemtype_hold_limits() == {itemtype: 1000}
