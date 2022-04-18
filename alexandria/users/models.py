@@ -170,7 +170,7 @@ class AccountType(TimeStampMixin):
         item_type = apps.get_model(app_label="records", model_name="ItemType")
         limits = {}
         # grab all the objects we need in one call and load them into memory
-        type_objects = item_type.objects.get(
+        type_objects = item_type.objects.filter(
             id__in=self._itemtype_checkout_limits.keys()
         )
 
@@ -188,7 +188,7 @@ class AccountType(TimeStampMixin):
         item_type = apps.get_model(app_label="records", model_name="ItemType")
         limits = {}
         # grab all the objects we need in one call and load them into memory
-        type_objects = item_type.objects.get(id__in=self._itemtype_hold_limits.keys())
+        type_objects = item_type.objects.filter(id__in=self._itemtype_hold_limits.keys())
 
         for model_id, value in self._itemtype_hold_limits.items():
             limits[type_objects.get(id=model_id)] = value
@@ -200,7 +200,7 @@ class AccountType(TimeStampMixin):
         )
 
     def set_itemtype_checkout_limit(self, obj: ItemType, limit: int) -> None:
-        self._itemtype_checkout_limits.update({obj.id, limit})
+        self._itemtype_checkout_limits.update({obj.id: limit})
         self.save()
 
     def get_itemtype_hold_limit(self, obj: ItemType) -> int:
@@ -209,7 +209,7 @@ class AccountType(TimeStampMixin):
         )
 
     def set_itemtype_hold_limit(self, obj: ItemType, limit: int) -> None:
-        self._itemtype_hold_limits.update({obj.id, limit})
+        self._itemtype_hold_limits.update({obj.id: limit})
         self.save()
 
 
