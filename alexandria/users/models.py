@@ -188,7 +188,9 @@ class AccountType(TimeStampMixin):
         item_type = apps.get_model(app_label="records", model_name="ItemType")
         limits = {}
         # grab all the objects we need in one call and load them into memory
-        type_objects = item_type.objects.filter(id__in=self._itemtype_hold_limits.keys())
+        type_objects = item_type.objects.filter(
+            id__in=self._itemtype_hold_limits.keys()
+        )
 
         for model_id, value in self._itemtype_hold_limits.items():
             limits[type_objects.get(id=model_id)] = value

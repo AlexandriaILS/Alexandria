@@ -3,12 +3,13 @@ from django.contrib.auth.models import Group
 from django.db.models import QuerySet
 
 from alexandria.records.models import ItemType
-from alexandria.users.models import BranchLocation, User, USLocation, AccountType
+from alexandria.users.models import AccountType, BranchLocation, User, USLocation
 from alexandria.utils.permissions import perm_to_permission
 from alexandria.utils.test_helpers import (
     get_default_branch_location,
+    get_default_item_type,
     get_default_patron_user,
-    get_default_staff_user, get_default_item_type,
+    get_default_staff_user,
 )
 
 
@@ -300,7 +301,6 @@ class TestUserFunctions:
         user.save()
 
         assert user.account_type.get_all_itemtype_checkout_limits() == {itemtype: 1000}
-
 
     def test_get_all_itemtype_hold_limits(self):
         user = get_default_patron_user()
