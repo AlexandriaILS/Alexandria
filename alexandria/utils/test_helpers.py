@@ -49,7 +49,7 @@ DEFAULT_ITEM_TYPE = {"name": "Book"}
 
 def get_default_item_type(**kwargs):
     if not "base" in kwargs:
-        kwargs["base"] = ItemTypeBase.objects.get(id=1)
+        kwargs["base"] = ItemTypeBase.objects.get(name=ItemTypeBase.LANGUAGE_MATERIAL)
     data = {
         **DEFAULT_ITEM_TYPE,
         **{key: kwargs[key] for key in kwargs if key in dir(ItemType)},

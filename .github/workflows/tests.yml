@@ -7,27 +7,52 @@ on:
       - synchronize
 
 jobs:
-  build:
+  Tests:
+    runs-on: ubuntu-latest
 
-    runs-on: ubuntu-20.04
+    # runs all of the steps inside the specified container rather than on the VM host.
+    # Because of this the network configuration changes from host based network to a container network.
+    container:
+      image:  python:3.10-buster
+
+    services:
+      postgres:
+        image: postgres:14.2
+        env:
+          POSTGRES_USER: alexandria
+          POSTGRES_PASSWORD: asdf
+          POSTGRES_DB: alexandria
+        ports:
+        - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
+    - name: Install psql
+      run: |
+        apt-get update
+        apt-get install --yes --no-install-recommends postgresql-client
+    - name: Configure Postgres
+      # need to connect to hostname postgres because that's the name of the container
+      run: |
+        PGPASSWORD="asdf" psql -h postgres -U alexandria -d template1 -c 'CREATE EXTENSION pg_trgm;'
     - name: Checkout current branch
       uses: actions/checkout@v2
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.10.2
     - uses: snok/install-poetry@v1
       with:
         virtualenvs-create: true
     - name: Install Dependencies
       run: |
-        sudo apt-get install libjpeg8 libjpeg-dev libpng-dev libpq-dev -y
+        apt-get install libjpeg62-turbo libjpeg-dev libpng-dev libpq-dev -y
         poetry install
     - name: Run Tests
       run: |
-        poetry run pytest
+        poetry run pytest -n auto
+      env:
+        # use postgres for the host here because we have specified a container for the job.
+        # If we were running the job on the VM this would be localhost
+        POSTGRES_HOST: postgres
+        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }} # get randomly assigned published port
     - name: Set coverage amount
       id: vars
       run: echo ::set-output name=coverage_percent::$(poetry run coverage report | grep "%" | tail -1 | awk '{print $4}')
