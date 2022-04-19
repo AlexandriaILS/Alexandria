@@ -28,12 +28,12 @@
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/Alexandria/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="/Alexandria/resources/css/retype.css?v=2.2.703573310005" rel="stylesheet" data-turbo-track="reload" />
+    <link href="/Alexandria/resources/css/retype.css?v=2.2.703725296664" rel="stylesheet" data-turbo-track="reload" />
 
-    <script type="text/javascript" src="/Alexandria/resources/js/config.js?v=2.2.703573310005" defer data-turbo-track="reload"></script>
+    <script type="text/javascript" src="/Alexandria/resources/js/config.js?v=2.2.703725296664" defer data-turbo-track="reload"></script>
     <script type="text/javascript" src="/Alexandria/resources/js/retype.js?v=2.2" defer data-turbo-track="reload"></script>
-    <script id="lunr-js" type="text/javascript" src="/Alexandria/resources/js/lunr.js?v=2.2.703573310005" defer></script>
-    <script id="prism-js" type="text/javascript" src="/Alexandria/resources/js/prism.js?v=2.2.703573310005" defer></script>
+    <script id="lunr-js" type="text/javascript" src="/Alexandria/resources/js/lunr.js?v=2.2.703725296664" defer></script>
+    <script id="prism-js" type="text/javascript" src="/Alexandria/resources/js/prism.js?v=2.2.703725296664" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -188,6 +188,7 @@
 <li>git</li>
 <li>python3.10+</li>
 <li><a href="https://python-poetry.org/">poetry</a></li>
+<li>Docker (Probably. More on that later.)</li>
 </ul>
 <p>If you don&#x27;t already have a modern version of Python installed, we recommend using <a href="https://github.com/pyenv/pyenv">pyenv</a> to handle installing the appropriate Python version. Here&#x27;s some example commands to get you started:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -256,32 +257,18 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
-# ideally this should be postgres, but developing against sqlite3 will work.
-# Just be aware of potential issues where sqlite3 and postgres do not play well
-# together -- namely, django migrations for sqlite3 will allow a field creation
-# and field alter call in the same transaction. Postgres... will not.
-#
-# Now, that being said: though sqlite is the default dev database, you can work
-# with Postgres if you have it installed locally (or installed through docker,
-# which is the slightly easier method if you don't want to pollute your computer.)
-# If you need to install docker, start here:
-# https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'alexandria',
+        'USER': 'alexandria',
+        'PASSWORD': 'asdf',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'alexandria',
-#         'USER': 'alexandria',
-#         'PASSWORD': 'asdf',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5432',
-#     }
-# }
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -311,7 +298,49 @@ MIDDLEWARE = [&quot;alexandria.middleware.BetterExceptionsMiddleware&quot;] + MI
         <span>Database Operations</span>
     </h2>
 </doc-anchor-target>
-<p>Local dev can be done entirely with SQLite; it&#x27;s not perfect, but it is more than enough to handle almost everything that Alexandria needs. All the initial setup commands are built into the <code v-pre>Makefile</code>, so just run the following to get set up:</p>
+<p>Alexandria requires <a href="https://www.postgresql.org/download/">PostgreSQL</a>, a free and open source database, to function. We rely heavily on the fantastic features provided, so you will need to have an instance of Postgres running before you can bring up Alexandria locally. This is easiest if you have Docker installed -- here are instructions for <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04">Ubuntu and WSL2</a> or <a href="https://docs.docker.com/desktop/mac/install/">MacOS</a>.</p>
+<div class="flex mb-6">
+    <div class="shrink-0 w-1 rounded-tl rounded-bl bg-yellow-500"></div>
+    <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
+        <div class="flex items-center ml-4 h-7">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-yellow-500" width="22" height="22" viewBox="0 0 24 24" role="presentation">
+                <g fill="currentColor"><g>
+                    <path d="M22.48 15.59L14.01 1.45A2.968 2.968 0 0012.16.09c-.78-.19-1.58-.07-2.27.35-.41.25-.76.6-1.01 1.01v.01L.4 15.6c-.83 1.43-.33 3.27 1.1 4.1.45.26.95.4 1.48.4h16.95c.8-.01 1.55-.33 2.11-.9.56-.57.87-1.33.86-2.13a3.04 3.04 0 00-.42-1.48zm-1.87 2.21c-.19.19-.44.3-.69.3H2.99c-.17 0-.34-.05-.49-.13a.992.992 0 01-.37-1.35L10.6 2.48c.08-.14.2-.25.34-.33a.992.992 0 011.37.33l8.46 14.13c.09.15.13.32.13.49 0 .26-.1.51-.29.7z"></path>
+                    <path d="M11.45 12.1c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1s-1 .45-1 1v4c0 .56.45 1 1 1zM11.46 14.1c-.56 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"></path>
+                </g></g>
+            </svg>
+        </div>
+        <div class="pr-5 ml-3 w-full">
+<p>Before continuing, make sure you can access docker by running <code v-pre>docker version</code> (without sudo!). It should print out two sections: one about the Client and one about the Server. If you only see the block about the Client and you get an error about the Server section (usually something like &quot;cannot connect to docker client -- is it running?&quot;) then check the following:</p>
+<ul>
+<li>make sure the server is running</li>
+<li>if <code v-pre>sudo docker version</code> works, you need to fix your permissions</li>
+</ul>
+<doc-panel id="instructions-for-running-docker-without-sudo-ubuntu-wsl2-only" collapsed>
+    <template #title>Instructions for running docker without sudo (Ubuntu / WSL2 only)</template>
+<p>Add your user to the docker group by running the following command in your terminal:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">sudo usermod -aG docker ${USER}</code></pre>
+</doc-codeblock></div>
+<p>You can then either log out and log back in OR force the changes to take effect immediately by running this:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">su - ${USER}</code></pre>
+</doc-codeblock></div>
+<p>Verify that you see the <code v-pre>docker</code> group listed for your account by running:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">groups</code></pre>
+</doc-codeblock></div>
+<p>It should look something like this:</p>
+<p><figure class="content-center">
+    <img src="/static/wsl_groups_screenshot.png" alt="" />
+    <figcaption class="caption"></figcaption>
+</figure>
+</p>
+</doc-panel>
+        </div>
+    </div>
+</div>
+<p>All the initial setup commands are built into the <code v-pre>Makefile</code>, so just run the following to get set up:</p>
 <div class="flex mb-6">
     <div class="shrink-0 w-1 rounded-tl rounded-bl bg-blue-500 dark:bg-blue-400"></div>
     <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
@@ -330,7 +359,12 @@ MIDDLEWARE = [&quot;alexandria.middleware.BetterExceptionsMiddleware&quot;] + MI
     </div>
 </div>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-bash"><code v-pre class="language-bash">make migrate
+<pre class="language-bash"><code v-pre class="language-bash">make db_up
+# wait a few seconds after it completes before running the next one
+make db_setup
+
+# now we can put data in it!
+make migrate
 make dev_data</code></pre>
 </doc-codeblock></div>
 <p>The <code v-pre>migrate</code> command will set up the database to accept data and the <code v-pre>dev_data</code> command will create all the information needed for you to start working on the system. The default admin login is:</p>
@@ -338,74 +372,14 @@ make dev_data</code></pre>
 <p>username: 1234<br />
 password: asdf</p>
 </blockquote>
-<p>Run <code v-pre>make run</code> to start the development server -- you should be able to access the site on <code v-pre>http://localhost:8000</code>!</p>
-<doc-anchor-target id="developing-with-postgresql">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#developing-with-postgresql">#</doc-anchor-trigger>
-        <span>Developing with PostgreSQL</span>
-    </h2>
-</doc-anchor-target>
-<p>Alexandria is set up to be functional with the sqlite3 database out of the box because it&#x27;s a bit easier to get running, but it&#x27;s not representative of how it should be run in production. Alexandria is designed to take advantage of PostgreSQL&#x27;s fantastic feature set, so if you really want to work on the cool stuff, you&#x27;ll need to get Postgres working. There are two ways to do that.</p>
-<div class="flex mb-6">
-    <div class="shrink-0 w-1 rounded-tl rounded-bl bg-blue-500 dark:bg-blue-400"></div>
-    <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
-        <div class="flex items-center ml-4 h-7">
-            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-blue-500 dark:text-blue-400" width="22" height="22" viewBox="0 0 24 24" role="presentation">
-                <g fill="currentColor"><g>
-                    <path d="M12 1C5.93 1 1 5.93 1 12s4.93 11 11 11 11-4.93 11-11S18.07 1 12 1zm0 20c-4.96 0-9-4.04-9-9s4.04-9 9-9 9 4.04 9 9-4.04 9-9 9z"></path>
-                    <path d="M12 11c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1s1-.45 1-1v-4c0-.55-.45-1-1-1zM12.01 7c-.56 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"></path>
-                    <path fill="none" d="M0 0h24v24H0z"></path>
-                </g></g>
-            </svg>
-        </div>
-        <div class="pr-5 ml-3 w-full">
-<p>In your <code v-pre>local_settings.py</code>, make sure that the <code v-pre>DATABASES</code> key that refers to sqlite3 is commented out and the <code v-pre>DATABASES</code> key that refers to postgres is uncommented; you shouldn&#x27;t have to modify any of the fields.</p>
-        </div>
-    </div>
-</div>
-<doc-anchor-target id="running-postgresql-in-docker">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#running-postgresql-in-docker">#</doc-anchor-trigger>
-        <span>Running PostgreSQL in Docker</span>
-    </h3>
-</doc-anchor-target>
-<p>The preferred method for working with Postgres and Alexandria is this option: Postgres in a docker image. It allows much more standardization and lets you effectively start over quickly without worrying about other services that are on your local machine that might be using Postgres. Getting started is very quick as everything is already in makefile commands.</p>
-<p>Start by making sure that Docker is installed -- <a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04">this is a great tutorial</a> if you don&#x27;t already have the docker CLI installed.</p>
-<div class="flex mb-6">
-    <div class="shrink-0 w-1 rounded-tl rounded-bl bg-blue-500 dark:bg-blue-400"></div>
-    <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
-        <div class="flex items-center ml-4 h-7">
-            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-blue-500 dark:text-blue-400" width="22" height="22" viewBox="0 0 24 24" role="presentation">
-                <g fill="currentColor"><g>
-                    <path d="M12 1C5.93 1 1 5.93 1 12s4.93 11 11 11 11-4.93 11-11S18.07 1 12 1zm0 20c-4.96 0-9-4.04-9-9s4.04-9 9-9 9 4.04 9 9-4.04 9-9 9z"></path>
-                    <path d="M12 11c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1s1-.45 1-1v-4c0-.55-.45-1-1-1zM12.01 7c-.56 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"></path>
-                    <path fill="none" d="M0 0h24v24H0z"></path>
-                </g></g>
-            </svg>
-        </div>
-        <div class="pr-5 ml-3 w-full">
-            <h5><span class="docs-emoji">&#x26A0;&#xFE0F;</span> Watch out, gotcha ahead! <span class="docs-emoji">&#x26A0;&#xFE0F;</span></h5>
-<p>The Makefile expects that you&#x27;ve configured <code v-pre>docker</code> to run without <code v-pre>sudo</code>. If you haven&#x27;t done that, you&#x27;ll need to modify your local copy of the Makefile by just adding <code v-pre>sudo</code> before each of the docker commands.</p>
-        </div>
-    </div>
-</div>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-bash"><code v-pre class="language-bash"># bring up the db
-make psql_up
-
-# configure the container for our use
-make psql_setup
-
-# push the db schema to the container
-make migrate</code></pre>
-</doc-codeblock></div>
-<p>At this point, running <code v-pre>make run</code> should just work and have all of your queries passed through the Postgres Docker container! Bring down the container when you&#x27;re finished with <code v-pre>make psql_down</code>.</p>
+<p>Run <code v-pre>make run</code> to start the development server -- you should be able to access the site on <code v-pre>http://localhost:8000</code>! You can bring the database down separately at any time by running <code v-pre>make db_down</code>.</p>
 <doc-anchor-target id="install-postgresql-on-your-local-machine">
     <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#install-postgresql-on-your-local-machine">#</doc-anchor-trigger>
         <span>Install PostgreSQL on your local machine</span>
     </h3>
 </doc-anchor-target>
+<p>We recommend the docker method over this one, as this will leave Postgres running locally on your machine after you&#x27;re finished working with Alexandria, and you may not want or need that. If you still want to run Postgres locally (and not involve Docker), then read on.</p>
 <p>The first thing you&#x27;ll need to do is install a new version of PostgreSQL that works for your operating system. After that&#x27;s done, there&#x27;s a little bit of setup that needs to happen:</p>
 <p>Activate the Postgres shell using <code v-pre>psql</code>:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -451,7 +425,7 @@ CREATE
 CREATE
 GRANT</code></pre>
 </doc-codeblock></div>
-<p>After that&#x27;s done, go ahead and run <code v-pre>make psql_setup</code> -- that should try to connect to the db and verify that everything&#x27;s working. If the command finishes, then Alexandria can talk to your install!</p>
+<p>After that&#x27;s done, go ahead and run <code v-pre>make db_setup</code> -- that should try to connect to the db and verify that everything&#x27;s working. If the command finishes, then Alexandria can talk to your install!</p>
 <p>Run <code v-pre>make migrate</code> to push the db schema and then finally <code v-pre>make run</code> to start Alexandria -- at this point you&#x27;re off to the races!</p>
 
                                 <div class="flex items-center mt-6 mb-6 clear-both">
