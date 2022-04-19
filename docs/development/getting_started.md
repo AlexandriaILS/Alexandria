@@ -151,9 +151,9 @@ Get a notice about not being able to import Django? Make sure that you've run `p
 !!!
 
 ```shell
-make psql_up
+make db_up
 # wait a few seconds after it completes before running the next one
-make psql_setup
+make db_setup
 
 # now we can put data in it!
 make migrate
@@ -165,7 +165,7 @@ The `migrate` command will set up the database to accept data and the `dev_data`
 > username: 1234  
 > password: asdf
 
-Run `make run` to start the development server -- you should be able to access the site on `http://localhost:8000`! You can bring the database down separately at any time by running `make psql_down`.
+Run `make run` to start the development server -- you should be able to access the site on `http://localhost:8000`! You can bring the database down separately at any time by running `make db_down`.
 
 
 ### Install PostgreSQL on your local machine
@@ -213,6 +213,6 @@ CREATE
 GRANT
 ```
 
-After that's done, go ahead and run `make psql_setup` -- that should try to connect to the db and verify that everything's working. If the command finishes, then Alexandria can talk to your install!
+After that's done, go ahead and run `make db_setup` -- that should try to connect to the db and verify that everything's working. If the command finishes, then Alexandria can talk to your install!
 
 Run `make migrate` to push the db schema and then finally `make run` to start Alexandria -- at this point you're off to the races!
