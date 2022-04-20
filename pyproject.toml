@@ -66,4 +66,6 @@ omit = [
     "*/management/commands/*",
     "alexandria/middleware.py",
     "alexandria/records/zenodotus_utils.py",
+    "alexandria/utils/abebooks.py",
+    "alexandria/utils/gutenberg.py"
 ]
