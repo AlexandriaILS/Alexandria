@@ -16,9 +16,9 @@ gunicorn = "^20.0.4"
 slippers = "^0.3.0"
 django-extensions = "^3.1.3"
 django-mathfilters = "^1.0.0"
-django-anymail = {extras = ["mailgun"], version = "^8.4"}
+django-anymail = { extras = ["mailgun"], version = "^8.4" }
 django-decorator-include = "^3.0"
-django-taggit = {git = "https://github.com/jazzband/django-taggit.git"}
+django-taggit = { git = "https://github.com/jazzband/django-taggit.git" }
 django-debug-toolbar = "^3.2.4"
 djangorestframework = "^3.13.1"
 psycopg2-binary = "^2.9.3"
@@ -43,3 +43,27 @@ build-backend = "poetry.masonry.api"
 
 [tool.isort]
 profile = "black"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "alexandria.settings.testing"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+addopts = "--nomigrations --cov=. --cov-report=html --cov-report=term:skip-covered -p no:warnings --ignore=postgres_data"
+
+[tool.coverage.run]
+omit = [
+    ".venv/*",
+    "*tests/*",
+    "manage.py",
+    "*migrations*",
+    "*/static/*",
+    "*/static_dev/*",
+    "*/media/*",
+    "local_settings.py,",
+    "*/urls.py",
+    "*/wsgi.py",
+    "alexandria/settings/*",
+    "alexandria/conftest.py",
+    "*/management/commands/*",
+    "alexandria/middleware.py",
+    "alexandria/records/zenodotus_utils.py",
+]
