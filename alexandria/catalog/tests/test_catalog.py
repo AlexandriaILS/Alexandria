@@ -74,7 +74,7 @@ class TestCatalog:
 
         response = client.get(reverse("item_detail", kwargs={"item_id": 44}))
         assert response.status_code == 404
-        assert 'record' not in response.context
+        assert "record" not in response.context
 
     def test_catalog_detail(self, client: Client):
         user = get_default_patron_user()
@@ -83,6 +83,8 @@ class TestCatalog:
         test_record = get_default_record()
         get_test_item(record=test_record)
 
-        response = client.get(reverse("item_detail", kwargs={"item_id": test_record.id}))
+        response = client.get(
+            reverse("item_detail", kwargs={"item_id": test_record.id})
+        )
         assert response.status_code == 200
-        assert response.context['record'] == test_record
+        assert response.context["record"] == test_record
