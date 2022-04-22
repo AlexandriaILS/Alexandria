@@ -67,12 +67,15 @@ class ItemViewSet(ModelViewSet):
     def renew(self, request, pk=None):
         target = get_object_or_404(Item, pk=pk, host=request.host)
 
-        if request.user != target.checked_out_to and not request.user.is_staff:
+        if (
+            request.user != target.checked_out_to
+            and not request.user.account_type.is_staff
+        ):
             # Staff can hit this, but otherwise if the thing ain't yours then
             # you can't renew it
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        if request.user.is_staff or target.can_renew():
+        if request.user.account_type.is_staff or target.can_renew():
             target.renewal_count += 1
             target.due_date = target.calculate_renewal_due_date()
             target.save()
@@ -101,7 +104,7 @@ class HoldViewSet(GenericViewSet):
         hold = get_object_or_404(Hold, id=pk)
         if hold.placed_for != request.user:
             # Only staff or the person who placed the hold should be able to remove it.
-            if not request.user.is_staff:
+            if not request.user.account_type.is_staff:
                 return Response(status=403)
 
         hold.delete()

@@ -53,9 +53,6 @@ def act_as_user(request, user_id: str):
     # to the catalog so that we can put things on hold for the user
 
     args = {"card_number": user_id}
-    if not request.user.is_superuser:
-        # superusers can act as any user
-        args.update({"host": request.host})
 
     patron = get_object_or_404(User, **args)
     request.session["acting_as_patron"] = patron.card_number
@@ -73,11 +70,8 @@ def end_act_as_user(request):
         pass
 
     args = {"card_number": user_id}
-    if not request.user.is_superuser:
-        # superusers can pull any user
-        args.update({"host": request.host})
 
-    user_exists = bool(User.objects.filter(**args).first())
+    user_exists = bool(User.objects.filter(**args, host=request.host).first())
     if user_exists:
         return HttpResponseRedirect(reverse("view_user", args=[user_id]))
     else:
@@ -119,7 +113,7 @@ def create_patron(request):
         else:
             return render(
                 request,
-                "staff/userform.html",
+                "staff/staff_form.html",
                 {
                     "form": form,
                     "header": _("Register Patron"),
@@ -144,7 +138,7 @@ def create_patron(request):
     )
     return render(
         request,
-        "staff/userform.html",
+        "staff/staff_form.html",
         {
             "form": form,
             "header": _("Register Patron"),
@@ -156,10 +150,7 @@ class EditPatronUser(PermissionRequiredMixin, View):
     permission_required = "users.change_patron_account"
 
     def get(self, request, user_id):
-        if request.user.is_superuser:
-            user = get_object_or_404(User, card_number=user_id)
-        else:
-            user = get_object_or_404(User, card_number=user_id, host=request.get_host())
+        user = get_object_or_404(User, card_number=user_id, host=request.get_host())
 
         form = PatronEditForm(
             initial={
@@ -177,13 +168,12 @@ class EditPatronUser(PermissionRequiredMixin, View):
                 "city": user.address.city,
                 "state": user.address.state,
                 "zip_code": user.address.zip_code,
-                "is_staff": user.is_staff,
                 "is_active": user.is_active,
             },
         )
         return render(
             request,
-            "staff/userform.html",
+            "staff/staff_form.html",
             {
                 "form": form,
                 "header": _("Edit Patron"),
@@ -191,11 +181,7 @@ class EditPatronUser(PermissionRequiredMixin, View):
         )
 
     def post(self, request, user_id):
-        if request.user.is_superuser:
-            user = get_object_or_404(User, card_number=user_id)
-        else:
-            # A non-superuser can only edit users belonging to their own host
-            user = get_object_or_404(User, card_number=user_id, host=request.host)
+        user = get_object_or_404(User, card_number=user_id, host=request.host)
 
         form = PatronEditForm(request.POST)
         if form.is_valid():

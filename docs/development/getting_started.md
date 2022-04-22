@@ -167,6 +167,9 @@ The `migrate` command will set up the database to accept data and the `dev_data`
 
 Run `make run` to start the development server -- you should be able to access the site on `http://localhost:8000`! You can bring the database down separately at any time by running `make db_down`.
 
+!!!danger Danger!
+If you need to completely reset your database, run `make clean`. :warning: THIS WILL DELETE ALL YOUR DATA IN POSTGRES. :warning:
+!!!
 
 ### Install PostgreSQL on your local machine
 

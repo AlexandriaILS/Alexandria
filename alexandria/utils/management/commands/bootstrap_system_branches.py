@@ -8,7 +8,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         from alexandria.users.models import BranchLocation
 
-        items = ["in_transit", "ready_for_pickup", "mending", "discarded"]
+        items = ["In Transit", "Ready for Pickup", "Mending", "Discarded"]
         count = 0
         for option in items:
             item, created = BranchLocation.objects.get_or_create(

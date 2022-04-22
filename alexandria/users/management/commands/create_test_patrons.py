@@ -5,7 +5,7 @@ from datetime import datetime
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from alexandria.users.models import BranchLocation, User, USLocation
+from alexandria.users.models import BranchLocation, User, USLocation, AccountType
 from alexandria.utils import us_state_to_abbrev
 
 try:
@@ -48,6 +48,13 @@ class Command(BaseCommand):
             )
         USLocation.objects.bulk_create(addresses)
 
+        patron = AccountType.objects.create(name="Patron")
+        underage = AccountType.objects.create(
+            name="Patron (under 18)",
+            checkout_limit=10,
+            hold_limit=25,
+        )
+
         self.stdout.write("Generating patrons...")
         for x in range(count):
             age = person.age(minimum=0)
@@ -62,10 +69,10 @@ class Command(BaseCommand):
                     ),  # account for zero and the admin address
                     first_name=person.first_name(),
                     last_name=person.last_name(),
+                    account_type=underage if age < 18 else patron,
                     email=person.email(),
                     birth_year=datetime.now().year - age,
                     is_minor=True if age < 18 else False,
-                    is_staff=False,
                     default_branch=random.choice(valid_branches),
                 )
             )

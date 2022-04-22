@@ -98,7 +98,7 @@
                         {% if 'catalog.check_in' in perms %}
                             <li><a href="#" class="link-dark rounded">{% translate "Check In" %}</a></li>
                         {% endif %}
-                        {% if 'catalog.check_out' in perms %}
+                        {% if "catalog.check_out" in perms %}
                             <li><a href="#" class="link-dark rounded">{% translate "Check Out" %}</a></li>
                         {% endif %}
                         {% if 'users.create_patron_account' in perms %}

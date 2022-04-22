@@ -1,4 +1,4 @@
-.PHONY: migrate dev_data run nuke shell docs db_up db_down db_setup test
+.PHONY: migrate dev_data run nuke shell docs db_up db_down db_setup test wipe_db
 
 migrate:
 	poetry run python manage.py migrate
@@ -9,8 +9,10 @@ dev_data:
 run:
 	poetry run python manage.py runserver
 
-clean:
-	rm db.sqlite3
+wipe_db:
+	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres -c 'drop database if exists alexandria;'"
+
+clean: | wipe_db db_setup migrate
 
 shell:
 	poetry run python manage.py shell_plus
@@ -36,8 +38,9 @@ db_down:
 # connect with.
 db_setup:
 	docker exec -it dev-postgres bash -c "apt update && apt install postgresql-contrib -y"
-	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres -d template1 -c 'CREATE EXTENSION pg_trgm;'"
-	docker exec -it dev-postgres bash -c "printf '\set AUTOCOMMIT on\ncreate database alexandria;create user alexandria with superuser password '\''asdf'\'';grant all on database alexandria to alexandria;' | psql -h localhost -U postgres"
+	docker exec -it dev-postgres bash -c "echo \"SELECT 'CREATE DATABASE alexandria' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'alexandria')\gexec\" | psql -h localhost -U postgres"
+	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres -d template1 -c 'CREATE EXTENSION IF NOT EXISTS pg_trgm;'"
+	docker exec -it dev-postgres bash -c "printf '\set AUTOCOMMIT on\nDROP ROLE IF EXISTS alexandria; CREATE USER alexandria WITH SUPERUSER PASSWORD '\''asdf'\''; GRANT ALL ON DATABASE alexandria TO alexandria;' | psql -h localhost -U postgres"
 
 psql_shell:
 	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres"

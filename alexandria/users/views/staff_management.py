@@ -12,8 +12,8 @@ from django.views.generic import View
 
 from alexandria.catalog.helpers import get_results_per_page
 from alexandria.searchablefields.strings import clean_text
-from alexandria.users.forms import StaffSettingsForm
-from alexandria.users.models import User
+from alexandria.users.forms import StaffSettingsForm, AccountTypeForm
+from alexandria.users.models import User, AccountType
 from alexandria.utils.permissions import permission_to_perm
 
 
@@ -51,15 +51,12 @@ class EditStaffUser(PermissionRequiredMixin, View):
     permission_required = "users.change_staff_account"
 
     def get(self, request, user_id):
-        if request.user.is_superuser:
-            user = get_object_or_404(User, card_number=user_id)
-        else:
-            if user_id == request.user.card_number:
-                messages.error(request, _("Sorry, you can't edit your own account."))
-                raise Http404
 
-            # A non-superuser can only edit users belonging to their own host
-            user = get_object_or_404(User, card_number=user_id, host=request.host)
+        if user_id == request.user.card_number:
+            messages.error(request, _("Sorry, you can't edit your own account."))
+            raise Http404
+
+        user = get_object_or_404(User, card_number=user_id, host=request.host)
 
         form = StaffSettingsForm(
             request=request,
@@ -71,6 +68,8 @@ class EditStaffUser(PermissionRequiredMixin, View):
                 "email": user.email,
                 "is_minor": user.is_minor,
                 "birth_year": user.birth_year,
+                "account_type": user.account_type,
+                "default_account_type_queryset": user.get_account_types(),
                 "notes": user.notes,
                 "default_branch": user.get_default_branch(),
                 "default_branch_queryset": user.get_branches(),
@@ -80,22 +79,14 @@ class EditStaffUser(PermissionRequiredMixin, View):
                 "city": user.address.city,
                 "state": user.address.state,
                 "zip_code": user.address.zip_code,
-                "is_staff": user.is_staff,
                 "is_active": user.is_active,
-                "permissions_initial": user.get_all_permissions(),
             },
         )
-        perm_groups = request.user.get_viewable_permissions_groups()
-        permissions_defaults = {
-            group.name: [i[0] for i in group.permissions.values_list("id")]
-            for group in perm_groups
-        }
         return render(
             request,
-            "staff/userform.html",
+            "staff/staff_form.html",
             {
                 "form": form,
-                "multiwidgetdefaults": permissions_defaults,
                 "header": _("Edit Staff User"),
             },
         )
@@ -103,8 +94,8 @@ class EditStaffUser(PermissionRequiredMixin, View):
     def post(self, request, user_id):
         # this shouldn't matter but if they send a bogus request against this
         # endpoint, this will protect us
-        if request.user.is_superuser:
-            user = get_object_or_404(User, card_number=user_id)
+        if request.user.account_type.is_superuser:
+            user = get_object_or_404(User, card_number=user_id, host=request.host)
         else:
             if user_id == request.user.card_number:
                 messages.error(request, _("Sorry, you can't edit your own account."))
@@ -116,6 +107,53 @@ class EditStaffUser(PermissionRequiredMixin, View):
         form = StaffSettingsForm(request.POST)
 
         if form.is_valid():
+            user.update_from_form(form)
+            messages.success(request, _("Updated account!"))
+        else:
+            messages.error(request, _("Something went wrong. Please try again."))
+        # no matter what happens, return to the same page.
+        return redirect("edit_staff_user", user_id=user_id)
+
+
+class EditAccountType(PermissionRequiredMixin, View):
+    permission_required = "users.change_accounttype"
+
+    def get(self, request, account_type_id):
+        account_type = get_object_or_404(AccountType, id=account_type_id, host=request.host)
+
+        form = AccountTypeForm(
+            request=request,
+            initial={
+                "name": account_type.name,
+                "permissions_initial": account_type.get_all_permissions(),
+                "checkout_limit": account_type.checkout_limit,
+                "hold_limit": account_type.hold_limit,
+                "can_checkout_materials": account_type.can_checkout_materials,
+                "is_staff": account_type.is_staff
+            },
+        )
+        perm_groups = request.user.account_type.get_viewable_permissions_groups()
+        permissions_defaults = {
+            group.name: [i[0] for i in group.permissions.values_list("id")]
+            for group in perm_groups
+        }
+        return render(
+            request,
+            "staff/staff_form.html",
+            {
+                "form": form,
+                "multiwidgetdefaults": permissions_defaults,
+                "header": _("Edit Account Type"),
+            },
+        )
+
+    def post(self, request, account_type_id):
+
+        account_type = get_object_or_404(AccountType, id=account_type_id, host=request.host)
+
+        form = AccountTypeForm(request.POST)
+
+        if form.is_valid():
             # We'll only get back a list of the objects that are toggled on, so we can
             # act directly on those. First we filter them out because they won't show
             # up in the cleaned_data, then we validate that they're actually perms and
@@ -125,23 +163,26 @@ class EditStaffUser(PermissionRequiredMixin, View):
                 i for i in form.data.keys() if i not in form.cleaned_data.keys()
             ]
             permission_objects = Permission.objects.filter(codename__in=permissions)
+
             # Only process the permissions that we have ourselves. There's no
             # reasonable way this should be an issue, but... sometimes you never know.
             valid_perms = []
 
             for permission in permission_objects:
-                if request.user.has_perm(permission_to_perm(permission)):
+                if request.user.account_type.has_perm(permission_to_perm(permission)):
                     valid_perms.append(permission)
 
-            user.groups.clear()
-            user.user_permissions.clear()
-            user.user_permissions.set(valid_perms)
-            user.save()
+            account_type.groups.clear()
+            account_type.user_permissions.clear()
+            account_type.user_permissions.set(valid_perms)
+            account_type.save()
 
-            user.update_from_form(form)
+            account_type.update_from_form(form)
 
             messages.success(request, _("Updated account!"))
         else:
             messages.error(request, _("Something went wrong. Please try again."))
         # no matter what happens, return to the same page.
-        return redirect("edit_staff_user", user_id=user_id)
+        return redirect("edit_account_type", account_type_id=account_type_id)
+
+
