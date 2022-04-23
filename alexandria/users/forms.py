@@ -109,10 +109,9 @@ class AccountTypeForm(forms.Form):
     )
 
     is_staff = forms.BooleanField(
-        label="Person is employed here",
+        label=_("Employee Group"),
         help_text=_(
-            "If checked, this is treated as a staff account. If unchecked, it is a"
-            " Patron account."
+            "If checked, this is treated as a staff group with staff permissions."
         ),
         required=False,
     )

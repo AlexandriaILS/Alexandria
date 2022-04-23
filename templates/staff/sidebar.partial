@@ -95,10 +95,10 @@
                 </button>
                 <div class="collapse" id="circ-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        {% if 'catalog.check_in' in perms %}
+                        {% if 'records.check_in' in perms %}
                             <li><a href="#" class="link-dark rounded">{% translate "Check In" %}</a></li>
                         {% endif %}
-                        {% if "catalog.check_out" in perms %}
+                        {% if "records.check_out" in perms %}
                             <li><a href="#" class="link-dark rounded">{% translate "Check Out" %}</a></li>
                         {% endif %}
                         {% if 'users.create_patron_account' in perms %}
@@ -142,6 +142,13 @@
                             <li>
                                 <a href="{% url 'patron_management' %}" class="link-dark rounded">
                                     {% translate "Patron Management" %}
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if 'users.change_accounttype' in perms %}
+                            <li>
+                                <a href="{% url 'account_type_management' %}" class="link-dark rounded">
+                                    {% translate "Account Types" %}
                                 </a>
                             </li>
                         {% endif %}

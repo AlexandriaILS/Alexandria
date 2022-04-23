@@ -115,6 +115,32 @@ class EditStaffUser(PermissionRequiredMixin, View):
         return redirect("edit_staff_user", user_id=user_id)
 
 
+
+@csrf_exempt
+@permission_required("users.change_accounttype")
+def account_type_management(request):
+    results = request.user.get_account_types()
+    if search_text := request.POST.get("search_text"):
+        search_text = clean_text(search_text)
+        for word in search_text.split():
+            results = results.filter(name__icontains=word)
+
+    results_per_page = get_results_per_page(request)
+
+    paginator = Paginator(results, results_per_page)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    context = {
+        "result_count": paginator.count,
+        "results_per_page": results_per_page,
+        "search_text": search_text,
+        "page": page_obj,
+        "title": _("Account Types"),
+    }
+
+    return render(request, "staff/account_type_list.html", context)
+
+
 class EditAccountType(PermissionRequiredMixin, View):
     permission_required = "users.change_accounttype"
 

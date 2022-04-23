@@ -2,7 +2,6 @@ import random
 import string
 
 from django.conf import settings
-from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
 
 from alexandria.users.models import AccountType, BranchLocation, User, USLocation

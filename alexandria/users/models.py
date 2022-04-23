@@ -130,7 +130,10 @@ class BranchLocation(TimeStampMixin):
             "address__address_1": self.address.address_1 if self.address else None,
         }
 
-
+# add_accounttype
+# change_accounttype
+# delete_accounttype
+# view_accounttype
 class AccountType(TimeStampMixin, PermissionsMixin):
     name = models.CharField(max_length=150)
     is_active = models.BooleanField(default=True)
@@ -288,9 +291,6 @@ class AccountType(TimeStampMixin, PermissionsMixin):
         groups = Group.objects.filter(name__in=options)
         for group in groups:
             group_permissions = group.permissions.all()
-            # todo: can this allow a staff member to escalate someone's permissions
-            #  to the next level up if they have even one of the permissions assigned
-            #  manually? Need to test.
             if all([el in user_permissions for el in group_permissions]):
                 perm_groups += tree[group.name]
 
@@ -521,6 +521,18 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
     @property
     def is_staff(self):
         return self.account_type.is_staff
+
+    @property
+    def is_superuser(self):
+        return self.account_type.is_superuser
+
+    @property
+    def groups(self):
+        return self.account_type.groups
+
+    @property
+    def user_permissions(self):
+        return self.account_type.user_permissions
 
     def has_perm(self, *args, **kwargs):
         return self.account_type.has_perm(*args, **kwargs)
