@@ -1,7 +1,12 @@
 from django.test import Client
 from django.urls import reverse
 
-from alexandria.utils.test_helpers import get_default_record, get_test_item
+from alexandria.utils.test_helpers import (
+    get_default_record,
+    get_test_item,
+    DEFAULT_PATRON_USER,
+    get_default_patron_user,
+)
 
 
 def test_index(client: Client):
@@ -59,3 +64,27 @@ class TestCatalog:
         response = client.get(reverse("search"), data={"q": "a an the asdf"})
         assert response.status_code == 200
         assert response.context["search_term"] == "asdf"
+
+    def test_non_existant_catalog_detail(self, client: Client):
+        user = get_default_patron_user()
+        client.force_login(user)
+
+        test_record = get_default_record()
+        get_test_item(record=test_record)
+
+        response = client.get(reverse("item_detail", kwargs={"item_id": 44}))
+        assert response.status_code == 404
+        assert "record" not in response.context
+
+    def test_catalog_detail(self, client: Client):
+        user = get_default_patron_user()
+        client.force_login(user)
+
+        test_record = get_default_record()
+        get_test_item(record=test_record)
+
+        response = client.get(
+            reverse("item_detail", kwargs={"item_id": test_record.id})
+        )
+        assert response.status_code == 200
+        assert response.context["record"] == test_record
