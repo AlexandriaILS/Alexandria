@@ -24,20 +24,12 @@ class Command(BaseCommand):
         )
         page, _ = AccountType.objects.get_or_create(name="Page", is_staff=True)
 
-        superuser_group, _ = Group.objects.get_or_create(
-            name="Superuser"
-        )
+        superuser_group, _ = Group.objects.get_or_create(name="Superuser")
         manager_group, _ = Group.objects.get_or_create(name="Manager")
         incharge_group, _ = Group.objects.get_or_create(name="In Charge")
-        librarian_group, _ = Group.objects.get_or_create(
-            name="Librarian"
-        )
-        circ_sup_group, _ = Group.objects.get_or_create(
-            name="Circ Supervisor"
-        )
-        circ_general_group, _ = Group.objects.get_or_create(
-            name="Circ General"
-        )
+        librarian_group, _ = Group.objects.get_or_create(name="Librarian")
+        circ_sup_group, _ = Group.objects.get_or_create(name="Circ Supervisor")
+        circ_general_group, _ = Group.objects.get_or_create(name="Circ General")
         page_group, _ = Group.objects.get_or_create(name="Page")
 
         superuser.user_permissions.set(Permission.objects.all())

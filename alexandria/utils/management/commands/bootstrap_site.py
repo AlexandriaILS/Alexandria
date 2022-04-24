@@ -25,10 +25,14 @@ class Command(BaseCommand):
         )
         user, created = get_user_model().objects.get_or_create(
             card_number="1234",
+            email="adminvonadmin@example.com",
+            birth_year=1900,
             account_type=AccountType.objects.get(name="Superuser"),
+            title="Admin Extraordinaire",
             first_name="Admin",
             last_name="von Admin",
             address=location,
+            notes="It's the admin.",
         )
         if created:
             user.set_password("asdf")

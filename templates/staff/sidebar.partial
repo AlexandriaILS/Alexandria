@@ -131,31 +131,27 @@
                 </button>
                 <div class="collapse" id="admin-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        {% if 'users.change_staff_account' in perms %}
+                        {% if 'users.read_staff_account' in perms %}
                             <li>
                                 <a href="{% url 'staff_management' %}" class="link-dark rounded">
                                     {% translate "Staff Management" %}
                                 </a>
                             </li>
                         {% endif %}
-                        {% if 'users.change_patron_account' in perms %}
+                        {% if 'users.read_patron_account' in perms %}
                             <li>
                                 <a href="{% url 'patron_management' %}" class="link-dark rounded">
                                     {% translate "Patron Management" %}
                                 </a>
                             </li>
                         {% endif %}
-                        {% if 'users.change_accounttype' in perms %}
+                        {% if 'users.read_accounttype' in perms %}
                             <li>
                                 <a href="{% url 'account_type_management' %}" class="link-dark rounded">
                                     {% translate "Account Types" %}
                                 </a>
                             </li>
                         {% endif %}
-                        <li><a href="#" class="link-dark rounded">Overview</a></li>
-                        <li><a href="#" class="link-dark rounded">Weekly</a></li>
-                        <li><a href="#" class="link-dark rounded">Monthly</a></li>
-                        <li><a href="#" class="link-dark rounded">Annually</a></li>
                     </ul>
                 </div>
             </li>

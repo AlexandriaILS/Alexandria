@@ -1,5 +1,10 @@
 {% extends 'error_base.html' %}
+{% load i18n %}
 
 {% block error_code %}
     403
+{% endblock %}
+
+{% block additional_information %}
+    <p>{% translate "Sorry, you don't have permission to view this page." %}</p>
 {% endblock %}

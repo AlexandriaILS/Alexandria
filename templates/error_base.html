@@ -1,4 +1,6 @@
 {% extends 'base.partial' %}
+{% load i18n %}
+
 {% block content %}
     {% if messages %}
         {% for message in messages %}
@@ -21,9 +23,12 @@
         {% endfor %}
     {% endif %}
 
-    <h1>{{ error_code }}</h1>
-    {{ request.META.referrer }}
-
-    <pre> {% filter force_escape %} {% debug %} {% endfilter %} </pre>
+    <div class="text-center mt-5">
+        <h1>{% block error_code %}Error!{% endblock %}</h1>
+        {% block additional_information %}
+            {{ request.META.referrer }}
+        {% endblock %}
+        <button class="btn btn-primary" onclick="history.back()">{% translate "Back to safety!" %}</button>
+    </div>
 
 {% endblock %}

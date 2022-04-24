@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0008_accounttype_host_alter_accounttype_hold_limit'),
+        ("users", "0008_accounttype_host_alter_accounttype_hold_limit"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='accounttype',
-            name='is_active',
+            model_name="accounttype",
+            name="is_active",
             field=models.BooleanField(default=True),
         ),
     ]

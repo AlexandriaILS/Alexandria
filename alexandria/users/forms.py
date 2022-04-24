@@ -22,7 +22,7 @@ class PatronForm(forms.Form):
     first_name = forms.CharField()
     last_name = forms.CharField()
     email = forms.EmailField()
-    account_type = forms.ModelChoiceField(queryset=AccountType.objects.none())
+    account_type = forms.ModelChoiceField(queryset=AccountType.objects.all())
     is_minor = forms.BooleanField(label=_("Person is legally a minor"), required=False)
     birth_year = forms.IntegerField(
         label=_("Year of birth"),
@@ -33,7 +33,7 @@ class PatronForm(forms.Form):
     )
     notes = forms.CharField(widget=forms.Textarea, required=False)
     # this queryset is replaced
-    default_branch = forms.ModelChoiceField(queryset=BranchLocation.objects.none())
+    default_branch = forms.ModelChoiceField(queryset=BranchLocation.objects.all())
 
     address_1 = forms.CharField()
     address_2 = forms.CharField(required=False)

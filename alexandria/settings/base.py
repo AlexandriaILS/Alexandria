@@ -93,8 +93,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_extensions",
+    "django.contrib.humanize",
     # third party
+    "django_extensions",
     "debug_toolbar",
     "anymail",
     "localflavor",
@@ -142,7 +143,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "alexandria.context_processors.fix_perms"
+                "alexandria.context_processors.fix_perms",
             ],
             "builtins": ["slippers.templatetags.slippers"],
         },
@@ -183,7 +184,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = ['alexandria.backends.Authentication']
+AUTHENTICATION_BACKENDS = ["alexandria.backends.Authentication"]
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

@@ -37,7 +37,7 @@ class CustomUserAdmin(UserAdmin):
                     "first_name",
                     "last_name",
                     "title",
-                    'account_type',
+                    "account_type",
                     "email",
                     "default_branch",
                     "address",

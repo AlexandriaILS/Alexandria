@@ -164,25 +164,25 @@ class TestUserFunctions:
 
         assert user.get_shortened_name() == "Gandalf"
 
-    def test_get_modifiable_patrons(self):
+    def test_get_viewable_patrons(self):
         user = get_default_staff_user()
-        assert len(user.get_modifiable_patrons()) == 0
+        assert len(user.get_viewable_patrons()) == 0
         get_default_patron_user()
-        assert len(user.get_modifiable_patrons()) == 1
+        assert len(user.get_viewable_patrons()) == 1
 
-    def test_get_modifiable_patrons_from_different_hosts(self):
+    def test_get_viewable_patrons_from_different_hosts(self):
         """Verify that patrons from different hosts are not visible."""
         user = get_default_staff_user()
         patron = get_default_patron_user()
         patron.host = "aaaa"
         patron.save()
-        assert len(user.get_modifiable_patrons()) == 0
+        assert len(user.get_viewable_patrons()) == 0
         # superusers can see users from other hosts
         user.is_superuser = True
         user.save()
-        assert len(user.get_modifiable_patrons()) == 1
+        assert len(user.get_viewable_patrons()) == 1
 
-    def test_get_modifiable_patrons_without_permission(self):
+    def test_get_viewable_patrons_without_permission(self):
         # Django _aggressively_ caches permissions, so even `refresh_from_db` doesn't
         # work. We have to fetch the whole object again in order to clean the cache.
         perm_str = "users.change_patron_account"
@@ -195,41 +195,41 @@ class TestUserFunctions:
         user = get_default_staff_user(update_permissions=False)
         assert not user.has_perm(perm_str)
         # there's a patron here, we just can't see them
-        assert user.get_modifiable_patrons() == []
+        assert user.get_viewable_patrons() == []
 
         # modify the permissions one more time and refetch
         user.user_permissions.add(perm_to_permission(perm_str))
         user.save()
         user = get_default_staff_user(update_permissions=False)
-        assert len(user.get_modifiable_patrons()) == 1
+        assert len(user.get_viewable_patrons()) == 1
 
-    def test_get_modifiable_staff(self):
+    def test_get_viewable_staff(self):
         User.objects.get(card_number=1234).delete()  # nuke the default admin account
         user = get_default_staff_user()
         # Staff can't see themselves, but superusers can
-        assert len(user.get_modifiable_staff()) == 0
+        assert len(user.get_viewable_staff()) == 0
         get_default_patron_user(is_staff=True)
-        assert len(user.get_modifiable_staff()) == 1
+        assert len(user.get_viewable_staff()) == 1
         # superusers can see themselves
         user.is_superuser = True
         user.save()
-        assert len(user.get_modifiable_staff()) == 2
+        assert len(user.get_viewable_staff()) == 2
 
-    def test_get_modifiable_staff_from_different_hosts(self):
+    def test_get_viewable_staff_from_different_hosts(self):
         """Verify that patrons from different hosts are not visible."""
         User.objects.get(card_number=1234).delete()  # nuke the default admin account
         user = get_default_staff_user()
         patron = get_default_patron_user(is_staff=True)
         patron.host = "aaaa"
         patron.save()
-        assert len(user.get_modifiable_staff()) == 0
+        assert len(user.get_viewable_staff()) == 0
         # superusers can see users from other hosts
         user.is_superuser = True
         user.save()
         # superusers can also see themselves here, so 2 == self + other host staff member
-        assert len(user.get_modifiable_staff()) == 2
+        assert len(user.get_viewable_staff()) == 2
 
-    def test_get_modifiable_staff_without_permission(self):
+    def test_get_viewable_staff_without_permission(self):
         # Django _aggressively_ caches permissions, so even `refresh_from_db` doesn't
         # work. We have to fetch the whole object again in order to clean the cache.
         User.objects.get(card_number=1234).delete()  # nuke the default admin account
@@ -243,13 +243,13 @@ class TestUserFunctions:
         user = get_default_staff_user(update_permissions=False)
         assert not user.has_perm(perm_str)
         # there's a staff member here, we just can't see them
-        assert user.get_modifiable_staff() == []
+        assert user.get_viewable_staff() == []
 
         # modify the permissions one more time and refetch
         user.user_permissions.add(perm_to_permission(perm_str))
         user.save()
         user = get_default_staff_user(update_permissions=False)
-        assert len(user.get_modifiable_staff()) == 1
+        assert len(user.get_viewable_staff()) == 1
 
     def test_get_viewable_permissions_groups(self):
         # default: manager permissions

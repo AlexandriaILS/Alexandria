@@ -1,18 +1,13 @@
 {% extends 'staff_base.partial' %}
 {% load mathfilters %}
 {% load i18n %}
+{% load humanize %}
 
 {% block title %}
     <h1>{{ title }}</h1>
 {% endblock %}
 
 {% block content %}
-    CURRENTLY BROKEN:
-    * this page
-    * saving patrons
-    * saving staff
-    * saving account types
-
     {% if search_text or page %}
         <form method="post" id="searchForm">
             <div class="mb-3">
@@ -35,16 +30,16 @@
     {% if page %}
         {% for a in page %}
             <hr>
-            {{ a }}
             <div class="row">
                 <div class="col-sm-6 col-md-4 col-lg-4 text-center text-lg-start">
-                    STUFF
+                    {{ a.name }}
                 </div>
                 <div class="col-sm-6 col-md-4 col-lg-3 text-center text-lg-start">
-                    STUFF
+                    {% include 'partials/details/account_type_staff_or_patron.partial' with item=a %}
                 </div>
                 <div class="col-sm-12 col-md-4 col-lg-3 text-center text-lg-start">
-                    STUFF
+                    {# Translators: there is a date or time immediately after this, like "4 hours ago" #}
+                    {% translate "Last updated"%} {{ a.updated_at|naturaltime }}
                 </div>
                 <div class="col-sm-12 col-md-12 col-lg-2 mt-3 mt-lg-0 text-center">
                     <div class="row">

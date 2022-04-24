@@ -6,18 +6,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0007_alter_user_account_type'),
+        ("users", "0007_alter_user_account_type"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='accounttype',
-            name='host',
-            field=models.CharField(default='default', max_length=100),
+            model_name="accounttype",
+            name="host",
+            field=models.CharField(default="default", max_length=100),
         ),
         migrations.AlterField(
-            model_name='accounttype',
-            name='hold_limit',
-            field=models.IntegerField(blank=True, default=50, help_text='How many active holds is this account type allowed to have?', null=True, verbose_name='hold limit'),
+            model_name="accounttype",
+            name="hold_limit",
+            field=models.IntegerField(
+                blank=True,
+                default=50,
+                help_text="How many active holds is this account type allowed to have?",
+                null=True,
+                verbose_name="hold limit",
+            ),
         ),
     ]

@@ -110,7 +110,7 @@ def search(request: WSGIRequest) -> HttpResponse:
     )
 
     if search_term:
-        context.update({"search_term": search_term, "page": page_obj})
+        context.update({"search_term": search_term, "page": page_obj, "paginator": paginator})
     context = add_patron_acted_as(request, context)
     return render(request, "catalog/search.html", context)
 

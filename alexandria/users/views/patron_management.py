@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models.expressions import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, reverse
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
@@ -19,7 +19,7 @@ from alexandria.users.models import User, USLocation
 @csrf_exempt
 @permission_required("users.read_patron_account")
 def patron_management(request):
-    results = request.user.get_modifiable_patrons()
+    results = request.user.get_viewable_patrons()
     if search_text := request.POST.get("search_text"):
         search_text = clean_text(search_text)
         for word in search_text.split():
@@ -40,6 +40,7 @@ def patron_management(request):
         "results_per_page": results_per_page,
         "search_text": search_text,
         "page": page_obj,
+        "paginator": paginator,
         "title": _("Patron Management"),
         "patron_mode": True,
     }
@@ -80,6 +81,7 @@ def end_act_as_user(request):
 
 @permission_required("users.create_patron_account")
 def create_patron(request):
+    breakpoint()
     if request.method == "POST":
         form = PatronForm(request.POST)
         if form.is_valid():
@@ -195,6 +197,9 @@ class EditPatronUser(PermissionRequiredMixin, View):
 @permission_required("users.read_patron_account")
 def view_patron_account(request, user_id):
     user = get_object_or_404(User, card_number=user_id)
+    if user.is_staff:
+        if not request.user.has_perm("users.read_staff_account"):
+            raise Http404
     checkouts = user.checkouts.all()
     holds = Hold.objects.filter(placed_for=user)
 

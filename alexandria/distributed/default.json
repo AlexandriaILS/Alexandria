@@ -22,7 +22,7 @@
     "default_results_per_page": 25,
     "default_max_renews": 5,
     "default_checkout_duration_days": 21,
-    "default_location_id": 1,
+    "default_location_id": 5,
     "default_renewal_delay_days": 7,
     "navbar": {
       "link_1_title": "Example!",

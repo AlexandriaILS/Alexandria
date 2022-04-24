@@ -130,10 +130,7 @@ class BranchLocation(TimeStampMixin):
             "address__address_1": self.address.address_1 if self.address else None,
         }
 
-# add_accounttype
-# change_accounttype
-# delete_accounttype
-# view_accounttype
+
 class AccountType(TimeStampMixin, PermissionsMixin):
     name = models.CharField(max_length=150)
     is_active = models.BooleanField(default=True)
@@ -250,6 +247,7 @@ class AccountType(TimeStampMixin, PermissionsMixin):
                 continue
             if hasattr(self, key):
                 setattr(self, key, form.cleaned_data[key])
+        self.save()
 
     def get_viewable_permissions_groups(self):
         if not self.is_staff:
@@ -285,9 +283,7 @@ class AccountType(TimeStampMixin, PermissionsMixin):
         # currently have assigned to the permissions available for each group.
         # We'll use that list of groups to show the buttons on the Staff Edit page
         # to set those permission group defaults.
-        user_permissions = [
-            perm_to_permission(p) for p in self.get_all_permissions()
-        ]
+        user_permissions = [perm_to_permission(p) for p in self.get_all_permissions()]
         groups = Group.objects.filter(name__in=options)
         for group in groups:
             group_permissions = group.permissions.all()
@@ -440,7 +436,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
             return None
         if not self.work_branch:
             self.work_branch = BranchLocation.objects.get(
-                id=load_site_config(self.host)["default_location_id"], host=self.host
+                id=load_site_config(self.host)["default_location_id"]
             )
             self.save()
         return self.work_branch
@@ -496,15 +492,15 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         self.address.save()
         self.save()
 
-    def get_modifiable_staff(self):
+    def get_viewable_staff(self):
         # used to populate user management page
-        if self.account_type.has_perm("users.change_staff_account"):
+        if self.account_type.has_perm("users.read_staff_account"):
             return self._get_users(is_staff=True)
         return []
 
-    def get_modifiable_patrons(self):
-        # Similar to self.get_modifiable_users, but for patrons only.
-        if self.account_type.has_perm("users.change_patron_account"):
+    def get_viewable_patrons(self):
+        # Similar to self.get_viewable_staff, but for patrons only.
+        if self.account_type.has_perm("users.read_patron_account"):
             return self._get_users(is_staff=False)
         return []
 

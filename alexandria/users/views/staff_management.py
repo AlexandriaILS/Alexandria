@@ -20,7 +20,7 @@ from alexandria.utils.permissions import permission_to_perm
 @csrf_exempt
 @permission_required("users.read_staff_account")
 def staff_management(request):
-    results = request.user.get_modifiable_staff()
+    results = request.user.get_viewable_staff()
     if search_text := request.POST.get("search_text"):
         search_text = clean_text(search_text)
         for word in search_text.split():
@@ -40,6 +40,7 @@ def staff_management(request):
         "result_count": paginator.count,
         "results_per_page": results_per_page,
         "search_text": search_text,
+        "paginator": paginator,
         "page": page_obj,
         "title": _("Staff Management"),
     }
@@ -51,8 +52,7 @@ class EditStaffUser(PermissionRequiredMixin, View):
     permission_required = "users.change_staff_account"
 
     def get(self, request, user_id):
-
-        if user_id == request.user.card_number:
+        if user_id == request.user.card_number and not request.user.is_superuser:
             messages.error(request, _("Sorry, you can't edit your own account."))
             raise Http404
 
@@ -92,6 +92,7 @@ class EditStaffUser(PermissionRequiredMixin, View):
         )
 
     def post(self, request, user_id):
+        breakpoint()
         # this shouldn't matter but if they send a bogus request against this
         # endpoint, this will protect us
         if request.user.account_type.is_superuser:
@@ -111,15 +112,22 @@ class EditStaffUser(PermissionRequiredMixin, View):
             messages.success(request, _("Updated account!"))
         else:
             messages.error(request, _("Something went wrong. Please try again."))
+            return render(
+                request,
+                "staff/staff_form.html",
+                {
+                    "form": form,
+                    "header": _("Edit Staff User"),
+                },
+            )
         # no matter what happens, return to the same page.
         return redirect("edit_staff_user", user_id=user_id)
-
 
 
 @csrf_exempt
 @permission_required("users.change_accounttype")
 def account_type_management(request):
-    results = request.user.get_account_types()
+    results = request.user.get_account_types().order_by("name")
     if search_text := request.POST.get("search_text"):
         search_text = clean_text(search_text)
         for word in search_text.split():
@@ -134,6 +142,7 @@ def account_type_management(request):
         "result_count": paginator.count,
         "results_per_page": results_per_page,
         "search_text": search_text,
+        "paginator": paginator,
         "page": page_obj,
         "title": _("Account Types"),
     }
@@ -145,7 +154,9 @@ class EditAccountType(PermissionRequiredMixin, View):
     permission_required = "users.change_accounttype"
 
     def get(self, request, account_type_id):
-        account_type = get_object_or_404(AccountType, id=account_type_id, host=request.host)
+        account_type = get_object_or_404(
+            AccountType, id=account_type_id, host=request.host
+        )
 
         form = AccountTypeForm(
             request=request,
@@ -155,7 +166,7 @@ class EditAccountType(PermissionRequiredMixin, View):
                 "checkout_limit": account_type.checkout_limit,
                 "hold_limit": account_type.hold_limit,
                 "can_checkout_materials": account_type.can_checkout_materials,
-                "is_staff": account_type.is_staff
+                "is_staff": account_type.is_staff,
             },
         )
         perm_groups = request.user.account_type.get_viewable_permissions_groups()
@@ -175,7 +186,9 @@ class EditAccountType(PermissionRequiredMixin, View):
 
     def post(self, request, account_type_id):
 
-        account_type = get_object_or_404(AccountType, id=account_type_id, host=request.host)
+        account_type = get_object_or_404(
+            AccountType, id=account_type_id, host=request.host
+        )
 
         form = AccountTypeForm(request.POST)
 
@@ -205,10 +218,8 @@ class EditAccountType(PermissionRequiredMixin, View):
 
             account_type.update_from_form(form)
 
-            messages.success(request, _("Updated account!"))
+            messages.success(request, _("Updated information!"))
         else:
             messages.error(request, _("Something went wrong. Please try again."))
         # no matter what happens, return to the same page.
         return redirect("edit_account_type", account_type_id=account_type_id)
-
-
