@@ -24,10 +24,12 @@ docs:
 # copy of Postgres through docker. Note: this does expect that you've set up the
 # `docker` command to not require the use of `sudo`.
 db_up:
+	docker volume create pgdata
 	docker run -d \
 		--name dev-postgres \
 		-e POSTGRES_PASSWORD=alexandria \
-		-v $(PWD)/postgres_data/:/var/lib/postgresql/data -p 5432:5432 postgres
+		-v pgdata:/var/lib/postgresql/data \
+		-p 5432:5432 postgres
 
 db_down:
 	docker stop dev-postgres
@@ -45,7 +47,7 @@ db_setup:
 psql_shell:
 	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres"
 
-psql_clean:
+db_clean:
 	sudo rm -rf postgres_data
 
 test:
