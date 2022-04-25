@@ -1,1 +1,10 @@
-{% include 'error_base.html' with error_code=500 %}
+{% extends 'error_base.html' %}
+{% load i18n %}
+
+{% block error_code %}
+    500
+{% endblock %}
+
+{% block additional_information %}
+    <p>{% translate "Something went wrong. Please try again in a minute or two." %}</p>
+{% endblock %}

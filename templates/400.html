@@ -1,5 +1,10 @@
 {% extends 'error_base.html' %}
+{% load i18n %}
 
 {% block error_code %}
-    {{ exception }}
+    400
+{% endblock %}
+
+{% block additional_information %}
+    <p>{% translate "Something went wrong with that request. Try again?" %}</p>
 {% endblock %}

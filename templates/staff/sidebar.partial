@@ -145,7 +145,7 @@
                                 </a>
                             </li>
                         {% endif %}
-                        {% if 'users.read_accounttype' in perms %}
+                        {% if 'users.change_accounttype' in perms %}
                             <li>
                                 <a href="{% url 'account_type_management' %}" class="link-dark rounded">
                                     {% translate "Account Types" %}

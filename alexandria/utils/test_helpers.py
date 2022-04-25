@@ -117,6 +117,8 @@ def _get_user(base_data: Dict, **kwargs) -> User:
         **base_data,
         **{key: kwargs[key] for key in kwargs if key in dir(User)},
     }
+    if "account_type" not in user_info:
+        user_info.update({"account_type": get_default_accounttype()})
     if not User.objects.filter(card_number=user_info["card_number"]).exists():
         user = User.objects.create(**user_info)
     else:
@@ -135,7 +137,7 @@ def get_default_staff_user(update_permissions=True, **kwargs):
     """Set update_permissions as false to just pull the staff user."""
     user = _get_user(DEFAULT_STAFF_USER, **kwargs)
     if update_permissions:
-        user.user_permissions.set(Group.objects.get(name="Manager").permissions.all())
+        user.account_type = AccountType.objects.get(name="Manager")
     return user
 
 

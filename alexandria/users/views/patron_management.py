@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models.expressions import Q
 from django.http import HttpResponseRedirect, Http404
@@ -13,7 +14,7 @@ from alexandria.catalog.helpers import get_results_per_page
 from alexandria.records.models import Hold
 from alexandria.searchablefields.strings import clean_text
 from alexandria.users.forms import PatronEditForm, PatronForm
-from alexandria.users.models import User, USLocation
+from alexandria.users.models import User, USLocation, AccountType
 
 
 @csrf_exempt
@@ -152,27 +153,35 @@ class EditPatronUser(PermissionRequiredMixin, View):
     permission_required = "users.change_patron_account"
 
     def get(self, request, user_id):
-        user = get_object_or_404(User, card_number=user_id, host=request.get_host())
+        user = get_object_or_404(User, card_number=user_id, host=request.host)
 
-        form = PatronEditForm(
-            initial={
-                "card_number": user.card_number,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "email": user.email,
-                "is_minor": user.is_minor,
-                "birth_year": user.birth_year,
-                "notes": user.notes,
-                "default_branch": user.get_default_branch(),
-                "default_branch_queryset": user.get_branches(),
-                "address_1": user.address.address_1,
-                "address_2": user.address.address_2,
-                "city": user.address.city,
-                "state": user.address.state,
-                "zip_code": user.address.zip_code,
-                "is_active": user.is_active,
-            },
-        )
+        initial_data = {
+            "card_number": user.card_number,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "is_minor": user.is_minor,
+            "birth_year": user.birth_year,
+            "notes": user.notes,
+            "default_branch": user.get_default_branch(),
+            "default_branch_queryset": user.get_branches(),
+            "address_1": user.address.address_1,
+            "address_2": user.address.address_2,
+            "city": user.address.city,
+            "state": user.address.state,
+            "zip_code": user.address.zip_code,
+            "is_active": user.is_active,
+        }
+
+        if request.user.has_perm("users.change_accounttype"):
+            initial_data.update(
+                {
+                    "account_type": user.account_type,
+                    "default_account_type_queryset": user.get_account_types(),
+                }
+            )
+
+        form = PatronEditForm(initial=initial_data)
         return render(
             request,
             "staff/staff_form.html",
@@ -187,6 +196,19 @@ class EditPatronUser(PermissionRequiredMixin, View):
 
         form = PatronEditForm(request.POST)
         if form.is_valid():
+            # because we add account_type conditionally, it won't be here in the form
+            if "account_type" in request.POST:
+                # do they have the right permission?
+                if request.user.has_perm("users.change_accounttype"):
+                    # does the account type exist?
+                    acc_type = AccountType.objects.filter(
+                        id=request.POST.get("account_type")
+                    ).first()
+                    # is it valid for this library?
+                    if acc_type in request.user.get_account_types():
+                        # Add it. they'll save in update_from_form
+                        user.account_type = acc_type
+
             user.update_from_form(form)
             messages.success(request, _("User updated!"))
 
@@ -197,9 +219,6 @@ class EditPatronUser(PermissionRequiredMixin, View):
 @permission_required("users.read_patron_account")
 def view_patron_account(request, user_id):
     user = get_object_or_404(User, card_number=user_id)
-    if user.is_staff:
-        if not request.user.has_perm("users.read_staff_account"):
-            raise Http404
     checkouts = user.checkouts.all()
     holds = Hold.objects.filter(placed_for=user)
 

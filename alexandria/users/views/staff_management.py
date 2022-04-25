@@ -58,29 +58,37 @@ class EditStaffUser(PermissionRequiredMixin, View):
 
         user = get_object_or_404(User, card_number=user_id, host=request.host)
 
+        initial_data = {
+            "card_number": user.card_number,
+            "title": user.title,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "is_minor": user.is_minor,
+            "birth_year": user.birth_year,
+            "notes": user.notes,
+            "default_branch": user.get_default_branch(),
+            "default_branch_queryset": user.get_branches(),
+            "work_branch": user.get_work_branch(),
+            "address_1": user.address.address_1,
+            "address_2": user.address.address_2,
+            "city": user.address.city,
+            "state": user.address.state,
+            "zip_code": user.address.zip_code,
+            "is_active": user.is_active,
+        }
+
+        if request.user.has_perm("users.change_accounttype"):
+            initial_data.update(
+                {
+                    "account_type": user.account_type,
+                    "default_account_type_queryset": user.get_account_types(),
+                }
+            )
+
         form = StaffSettingsForm(
             request=request,
-            initial={
-                "card_number": user.card_number,
-                "title": user.title,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "email": user.email,
-                "is_minor": user.is_minor,
-                "birth_year": user.birth_year,
-                "account_type": user.account_type,
-                "default_account_type_queryset": user.get_account_types(),
-                "notes": user.notes,
-                "default_branch": user.get_default_branch(),
-                "default_branch_queryset": user.get_branches(),
-                "work_branch": user.get_work_branch(),
-                "address_1": user.address.address_1,
-                "address_2": user.address.address_2,
-                "city": user.address.city,
-                "state": user.address.state,
-                "zip_code": user.address.zip_code,
-                "is_active": user.is_active,
-            },
+            initial=initial_data,
         )
         return render(
             request,
@@ -92,7 +100,6 @@ class EditStaffUser(PermissionRequiredMixin, View):
         )
 
     def post(self, request, user_id):
-        breakpoint()
         # this shouldn't matter but if they send a bogus request against this
         # endpoint, this will protect us
         if request.user.account_type.is_superuser:
@@ -108,6 +115,18 @@ class EditStaffUser(PermissionRequiredMixin, View):
         form = StaffSettingsForm(request.POST)
 
         if form.is_valid():
+            # because we add account_type conditionally, it won't be here in the form
+            if "account_type" in request.POST:
+                # do they have the right permission?
+                if request.user.has_perm("users.change_accounttype"):
+                    # does the account type exist?
+                    acc_type = AccountType.objects.filter(
+                        id=request.POST.get("account_type")
+                    ).first()
+                    # is it valid for this library?
+                    if acc_type in request.user.get_account_types():
+                        # Add it. they'll save in update_from_form
+                        user.account_type = acc_type
             user.update_from_form(form)
             messages.success(request, _("Updated account!"))
         else:

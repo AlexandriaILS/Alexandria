@@ -14,15 +14,41 @@ class PatronForm(forms.Form):
             self.fields["default_branch"].queryset = self.initial[
                 "default_branch_queryset"
             ]
-            self.fields["account_type"].queryset = self.initial[
+            if default_account_type_qs := self.initial.get(
                 "default_account_type_queryset"
+            ):
+                # only create the account_type field if the person requesting the form
+                # has permissions to see it.
+                self.fields["account_type"] = forms.ModelChoiceField(
+                    queryset=default_account_type_qs
+                )
+
+        # force specific field order
+        self.order_fields(
+            [
+                "card_number",
+                "first_name",
+                "last_name",
+                "title",
+                "account_type",
+                "email",
+                "is_minor",
+                "birth_year",
+                "notes",
+                "default_branch",
+                "work_branch",
+                "address_1",
+                "address_2",
+                "city",
+                "state",
+                "zip_code",
             ]
+        )
 
     card_number = forms.CharField()
     first_name = forms.CharField()
     last_name = forms.CharField()
     email = forms.EmailField()
-    account_type = forms.ModelChoiceField(queryset=AccountType.objects.all())
     is_minor = forms.BooleanField(label=_("Person is legally a minor"), required=False)
     birth_year = forms.IntegerField(
         label=_("Year of birth"),
@@ -33,7 +59,7 @@ class PatronForm(forms.Form):
     )
     notes = forms.CharField(widget=forms.Textarea, required=False)
     # this queryset is replaced
-    default_branch = forms.ModelChoiceField(queryset=BranchLocation.objects.all())
+    default_branch = forms.ModelChoiceField(queryset=BranchLocation.objects.all(), help_text=_("Where does this person want their holds to default to?"))
 
     address_1 = forms.CharField()
     address_2 = forms.CharField(required=False)
@@ -63,7 +89,7 @@ class StaffSettingsForm(PatronForm):
             self.fields["work_branch"].initial = self.initial["work_branch"]
 
     title = forms.CharField()
-    work_branch = forms.ModelChoiceField(queryset=BranchLocation.objects.all())
+    work_branch = forms.ModelChoiceField(queryset=BranchLocation.objects.all(), help_text=_("Which branch is this person based out of?"))
 
 
 class AccountTypeForm(forms.Form):
