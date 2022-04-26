@@ -40,6 +40,16 @@ urlpatterns = [
         name="view_user",
     ),
     path(
+        "account_type/",
+        staff_management.account_type_management,
+        name="account_type_management",
+    ),
+    path(
+        "account_type/<str:account_type_id>/",
+        staff_management.EditAccountType.as_view(),
+        name="edit_account_type",
+    ),
+    path(
         "act_as_user/<str:user_id>/", patron_management.act_as_user, name="act_as_user"
     ),
     path("end_act_as_user/", patron_management.end_act_as_user, name="end_act_as_user"),

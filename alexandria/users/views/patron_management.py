@@ -1,9 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator
 from django.db.models.expressions import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render, reverse
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
@@ -13,13 +14,13 @@ from alexandria.catalog.helpers import get_results_per_page
 from alexandria.records.models import Hold
 from alexandria.searchablefields.strings import clean_text
 from alexandria.users.forms import PatronEditForm, PatronForm
-from alexandria.users.models import User, USLocation
+from alexandria.users.models import User, USLocation, AccountType
 
 
 @csrf_exempt
 @permission_required("users.read_patron_account")
 def patron_management(request):
-    results = request.user.get_modifiable_patrons()
+    results = request.user.get_viewable_patrons()
     if search_text := request.POST.get("search_text"):
         search_text = clean_text(search_text)
         for word in search_text.split():
@@ -40,6 +41,7 @@ def patron_management(request):
         "results_per_page": results_per_page,
         "search_text": search_text,
         "page": page_obj,
+        "paginator": paginator,
         "title": _("Patron Management"),
         "patron_mode": True,
     }
@@ -53,9 +55,6 @@ def act_as_user(request, user_id: str):
     # to the catalog so that we can put things on hold for the user
 
     args = {"card_number": user_id}
-    if not request.user.is_superuser:
-        # superusers can act as any user
-        args.update({"host": request.host})
 
     patron = get_object_or_404(User, **args)
     request.session["acting_as_patron"] = patron.card_number
@@ -73,11 +72,8 @@ def end_act_as_user(request):
         pass
 
     args = {"card_number": user_id}
-    if not request.user.is_superuser:
-        # superusers can pull any user
-        args.update({"host": request.host})
 
-    user_exists = bool(User.objects.filter(**args).first())
+    user_exists = bool(User.objects.filter(**args, host=request.host).first())
     if user_exists:
         return HttpResponseRedirect(reverse("view_user", args=[user_id]))
     else:
@@ -90,6 +86,12 @@ def create_patron(request):
         form = PatronForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
+
+            # check to make sure we have a valid account type before creating any data
+            account_type = AccountType.objects.filter(id=form.data.get('account_type'), host=request.host).first()
+            if not account_type:
+                raise ValidationError
+
             # Don't worry about duplicates. We need one address per person, even if
             # multiple people live at the same place. They won't live there forever.
             newuserlocation = USLocation.objects.create(
@@ -100,6 +102,7 @@ def create_patron(request):
                 zip_code=data["zip_code"],
                 host=request.get_host(),
             )
+
             newuser = User.objects.create_user(
                 address=newuserlocation,
                 card_number=data["card_number"],
@@ -110,7 +113,7 @@ def create_patron(request):
                 birth_year=data["birth_year"],
                 notes=data["notes"],
                 default_branch=data["default_branch"],
-                is_staff=data["is_staff"],
+                account_type=account_type,
             )
             # Todo: send an email to the newly created user welcoming them to the system!
             return HttpResponseRedirect(
@@ -119,7 +122,7 @@ def create_patron(request):
         else:
             return render(
                 request,
-                "staff/userform.html",
+                "staff/staff_form.html",
                 {
                     "form": form,
                     "header": _("Register Patron"),
@@ -140,11 +143,13 @@ def create_patron(request):
             "default_branch": request.user.get_work_branch(),
             "city": city,
             "state": state,
+            "account_type": None,
+            "default_account_type_queryset": request.user.get_account_types().filter(is_staff=False),
         }
     )
     return render(
         request,
-        "staff/userform.html",
+        "staff/staff_form.html",
         {
             "form": form,
             "header": _("Register Patron"),
@@ -156,34 +161,39 @@ class EditPatronUser(PermissionRequiredMixin, View):
     permission_required = "users.change_patron_account"
 
     def get(self, request, user_id):
-        if request.user.is_superuser:
-            user = get_object_or_404(User, card_number=user_id)
-        else:
-            user = get_object_or_404(User, card_number=user_id, host=request.get_host())
+        user = get_object_or_404(User, card_number=user_id, host=request.host)
 
-        form = PatronEditForm(
-            initial={
-                "card_number": user.card_number,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "email": user.email,
-                "is_minor": user.is_minor,
-                "birth_year": user.birth_year,
-                "notes": user.notes,
-                "default_branch": user.get_default_branch(),
-                "default_branch_queryset": user.get_branches(),
-                "address_1": user.address.address_1,
-                "address_2": user.address.address_2,
-                "city": user.address.city,
-                "state": user.address.state,
-                "zip_code": user.address.zip_code,
-                "is_staff": user.is_staff,
-                "is_active": user.is_active,
-            },
-        )
+        initial_data = {
+            "card_number": user.card_number,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "is_minor": user.is_minor,
+            "birth_year": user.birth_year,
+            "notes": user.notes,
+            "default_branch": user.get_default_branch(),
+            "default_branch_queryset": user.get_branches(),
+            "address_1": user.address.address_1,
+            "address_2": user.address.address_2,
+            "city": user.address.city,
+            "state": user.address.state,
+            "zip_code": user.address.zip_code,
+            "is_active": user.is_active,
+            "account_type": user.account_type,
+        }
+
+        acc_type_qs = user.get_account_types()
+        if not request.user.has_perm("users.change_accounttype"):
+            # staff members who have access to modify patron accounts but not change
+            # staff account types can flip between different patron account types
+            acc_type_qs = acc_type_qs.filter(is_staff=False)
+
+        initial_data.update({"default_account_type_queryset": acc_type_qs})
+
+        form = PatronEditForm(initial=initial_data)
         return render(
             request,
-            "staff/userform.html",
+            "staff/staff_form.html",
             {
                 "form": form,
                 "header": _("Edit Patron"),
@@ -191,14 +201,23 @@ class EditPatronUser(PermissionRequiredMixin, View):
         )
 
     def post(self, request, user_id):
-        if request.user.is_superuser:
-            user = get_object_or_404(User, card_number=user_id)
-        else:
-            # A non-superuser can only edit users belonging to their own host
-            user = get_object_or_404(User, card_number=user_id, host=request.host)
+        user = get_object_or_404(User, card_number=user_id, host=request.host)
 
         form = PatronEditForm(request.POST)
         if form.is_valid():
+            # because we add account_type conditionally, it won't be here in the form
+            if "account_type" in request.POST:
+                # do they have the right permission?
+                if request.user.has_perm("users.change_accounttype"):
+                    # does the account type exist?
+                    acc_type = AccountType.objects.filter(
+                        id=request.POST.get("account_type")
+                    ).first()
+                    # is it valid for this library?
+                    if acc_type in request.user.get_account_types():
+                        # Add it. they'll save in update_from_form
+                        user.account_type = acc_type
+
             user.update_from_form(form)
             messages.success(request, _("User updated!"))
 

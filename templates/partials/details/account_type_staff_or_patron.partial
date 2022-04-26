@@ -1,0 +1,5 @@
+{% if item.is_staff %}
+    {% icon name="badge" description="Account type: Staff" %}
+{% else %}
+    {% icon name="person" description="Account type: Patron" %}
+{% endif %}

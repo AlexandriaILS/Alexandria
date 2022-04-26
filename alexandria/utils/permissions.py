@@ -56,7 +56,7 @@ def permission_or_none(perm):
             else:
                 perms = perm
             # First check if the user has the permission (even anon users)
-            if request.user.has_perms(perms):
+            if request.user.account_type.has_perms(perms):
                 return view_func(request, *args, **kwargs)
             return None
 

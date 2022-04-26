@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.utils.translation import gettext as _
 
 from alexandria.catalog.authentication.views import LoginView
-from alexandria.users.models import BranchLocation, User, USLocation
+from alexandria.users.models import AccountType, BranchLocation, User, USLocation
 
 admin.autodiscover()
 admin.site.login = LoginView.as_view()
@@ -13,7 +13,7 @@ admin.site.login = LoginView.as_view()
 
 def has_superuser_permission(request):
     # https://stackoverflow.com/a/65955373
-    return request.user.is_active and request.user.is_superuser
+    return request.user.is_active and request.user.account_type.is_superuser
 
 
 # Only active superuser can access root admin site (default)
@@ -37,23 +37,13 @@ class CustomUserAdmin(UserAdmin):
                     "first_name",
                     "last_name",
                     "title",
+                    "account_type",
                     "email",
                     "default_branch",
                     "address",
                     "notes",
-                )
-            },
-        ),
-        (
-            _("Permissions"),
-            {
-                "fields": (
                     "is_active",
-                    "is_staff",
-                    "is_superuser",
-                    "groups",
-                    "user_permissions",
-                ),
+                )
             },
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
@@ -67,13 +57,30 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
-    list_display = ("card_number", "email", "first_name", "last_name", "is_staff")
+    list_display = ("card_number", "email", "first_name", "last_name")
     search_fields = ("card_number", "first_name", "last_name", "email")
+    list_filter = ("is_active",)
+    filter_horizontal = ()
     ordering = ("card_number",)
     add_form = CustomUserCreationForm
     exclude = User().get_searchable_field_names()
 
 
+class AccountTypeAdmin(admin.ModelAdmin):
+    add_fieldsets = (
+        _("Permissions"),
+        {
+            "fields": (
+                "is_staff",
+                "is_superuser",
+                "groups",
+                "user_permissions",
+            ),
+        },
+    )
+
+
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(AccountType, AccountTypeAdmin)
 admin.site.register(BranchLocation)
 admin.site.register(USLocation)

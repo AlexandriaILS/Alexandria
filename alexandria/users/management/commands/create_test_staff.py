@@ -2,10 +2,9 @@ import random
 import string
 
 from django.conf import settings
-from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
 
-from alexandria.users.models import BranchLocation, User, USLocation
+from alexandria.users.models import AccountType, BranchLocation, User, USLocation
 from alexandria.utils import us_state_to_abbrev
 
 
@@ -44,20 +43,18 @@ class Command(BaseCommand):
                 zip_code=address.zip_code(),
             )
             title = random.choice(position)
-            perms = Group.objects.get(name=title)
             newbie = User.objects.create(
                 card_number="".join([random.choice(string.digits) for _ in range(14)]),
                 address=location,
                 title=title,
+                account_type=AccountType.objects.get(name=title),
                 first_name=person.first_name(),
                 last_name=person.last_name(),
                 email=person.email(),
                 birth_year=2021 - person.age(minimum=20),
-                is_staff=True,
                 default_branch=random.choice(valid_branches),
                 work_branch=random.choice(valid_branches),
             )
-            newbie.user_permissions.set(perms.permissions.all())
             newbie.set_password("asdf")
             newbie.save()
 

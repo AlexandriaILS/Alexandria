@@ -25,6 +25,11 @@ if TYPE_CHECKING:
 BRANCH_SERIALIZER_SHORT_FIELDS = ["id", "name", "address__address_1"]
 
 
+def get_default_accounttype():
+    model = apps.get_model("users", "AccountType")
+    return model.objects.get_or_create(name="Disabled")[0]
+
+
 class UserManager(DjangoUserManager):
     use_in_migrations = True
 
@@ -58,8 +63,7 @@ class UserManager(DjangoUserManager):
         return user
 
     def create_user(self, card_number, email=None, password=None, **extra_fields):
-        extra_fields.setdefault("is_staff", False)
-        extra_fields.setdefault("is_superuser", False)
+        extra_fields['account_type'] = AccountType.objects.get_or_create(name="Default")[0]
         return self._create_user(card_number, email, password, **extra_fields)
 
     def create_superuser(self, card_number, email=None, password=None, **extra_fields):
@@ -70,6 +74,10 @@ class UserManager(DjangoUserManager):
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
+
+        extra_fields['account_type'] = AccountType.objects.get_or_create(name="Superuser", is_staff=True, is_superuser=True)[0]
+        del extra_fields['is_staff']
+        del extra_fields['is_superuser']
 
         return self._create_user(card_number, email, password, **extra_fields)
 
@@ -126,8 +134,9 @@ class BranchLocation(TimeStampMixin):
         }
 
 
-class AccountType(TimeStampMixin):
+class AccountType(TimeStampMixin, PermissionsMixin):
     name = models.CharField(max_length=150)
+    is_active = models.BooleanField(default=True)
     # stored in the format of {itemtype_id (int) : limit (int)}
     _itemtype_checkout_limits = models.JSONField(
         _("itemtype checkout limits"), default=dict
@@ -146,7 +155,7 @@ class AccountType(TimeStampMixin):
         _("hold limit"),
         null=True,
         blank=True,
-        default=10,
+        default=50,
         help_text=_("How many active holds is this account type allowed to have?"),
     )
     allowed_item_types = models.ManyToManyField(
@@ -159,6 +168,27 @@ class AccountType(TimeStampMixin):
         default=True,
         help_text=_("Allow this account type to check out materials at all."),
     )
+
+    is_staff = models.BooleanField(
+        _("staff status"),
+        default=False,
+        help_text=_(
+            "Designates whether users with this role are library staff members."
+        ),
+    )
+    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+
+    class Meta:
+        verbose_name = _("account type")
+        verbose_name_plural = _("account types")
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def is_anonymous(self):
+        # abstraction to make django happy when looking at permissions.
+        return False
 
     def get_all_itemtype_checkout_limits(self) -> dict:
         """
@@ -214,8 +244,66 @@ class AccountType(TimeStampMixin):
         self._itemtype_hold_limits.update({obj.id: limit})
         self.save()
 
+    def update_from_form(self, form):
+        for key in form.cleaned_data.keys():
+            if key == "permissions":
+                continue
+            if hasattr(self, key):
+                setattr(self, key, form.cleaned_data[key])
+        self.save()
 
-class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMixin):
+    def get_viewable_permissions_groups(self):
+        if not self.is_staff:
+            return []
+
+        # these strings are the names of the groups in the db
+        superuser = "Superuser"
+        manager = "Manager"
+        in_charge = "In Charge"
+        librarian = "Librarian"
+        circ_sup = "Circ Supervisor"
+        circ_gen = "Circ General"
+        page = "Page"
+
+        # these are the order in which they should appear
+        options = [superuser, manager, in_charge, librarian, circ_sup, circ_gen, page]
+
+        tree = {
+            superuser: options,  # everything
+            manager: [o for o in options if o != superuser],
+            in_charge: [in_charge, librarian, page],
+            librarian: [librarian, page],
+            circ_sup: [circ_sup, in_charge, librarian, circ_gen, page],
+            circ_gen: [circ_gen, librarian, page],
+            page: [],
+        }
+
+        perm_groups = []
+        # Because all permissions are available on a singular level, we only use
+        # permissions groups to keep track of default lists of permissions, not as
+        # something that's assigned wholesale. Therefore, we need to approximate
+        # what kinds of groups a user has by comparing the permissions that they
+        # currently have assigned to the permissions available for each group.
+        # We'll use that list of groups to show the buttons on the Staff Edit page
+        # to set those permission group defaults.
+        user_permissions = [perm_to_permission(p) for p in self.get_all_permissions()]
+        groups = Group.objects.filter(name__in=options)
+        for group in groups:
+            group_permissions = group.permissions.all()
+            if all([el in user_permissions for el in group_permissions]):
+                perm_groups += tree[group.name]
+
+        groups = groups.filter(name__in=list(set(perm_groups)))
+        sorted_groups = []
+        # run through the options list and put everything into the right order
+        for group in options:
+            sorted_groups.append(groups.filter(name=group).first())
+
+        # clean the list
+        return [group for group in sorted_groups if group is not None]
+
+
+class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
     # http://www.ala.org/advocacy/privacy/checklists/library-management-systems
     # Even though this should be an integer, there are too many edge cases
     # where it might not be, so we'll store it as a string with the expectation
@@ -252,12 +340,6 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
 
     notes = models.TextField(_("notes"), blank=True, null=True)
 
-    is_staff = models.BooleanField(
-        _("staff status"),
-        default=False,
-        help_text=_("Designates whether the user is a library staff member."),
-    )
-
     is_active = models.BooleanField(
         _("active"),
         default=True,
@@ -290,7 +372,7 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
     )
 
     account_type = models.ForeignKey(
-        AccountType, on_delete=models.SET_NULL, null=True, blank=True
+        AccountType, on_delete=models.SET(get_default_accounttype)
     )
 
     EMAIL_FIELD = "email"
@@ -353,11 +435,11 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
 
     def get_work_branch(self):
         # Return the default working branch for a staff user.
-        if not self.is_staff:
+        if not self.account_type.is_staff:
             return None
         if not self.work_branch:
             self.work_branch = BranchLocation.objects.get(
-                id=load_site_config(self.host)["default_location_id"], host=self.host
+                id=load_site_config(self.host)["default_location_id"]
             )
             self.save()
         return self.work_branch
@@ -373,13 +455,12 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
         }
         return data
 
-    def _get_users(self, is_staff):
-        if self.is_superuser:
-            qs = User.objects.filter(is_staff=is_staff)
-        else:
-            qs = User.objects.filter(is_staff=is_staff, host=self.host).exclude(
-                card_number=self
-            )
+    def _get_users(self, is_staff: bool):
+        qs = User.objects.filter(account_type__is_staff=is_staff, host=self.host)
+        if not self.account_type.is_superuser:
+            # superusers can edit themselves
+            qs = qs.exclude(card_number=self)
+
         return qs.order_by("last_name", "first_name")
 
     def get_shortened_name(self):
@@ -400,8 +481,6 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
     def update_from_form(self, form: Form) -> None:
         """Grab all the form data, split out the address info, and save it all."""
         for key in form.cleaned_data.keys():
-            if key == "permissions":
-                continue
             if hasattr(self, key):
                 setattr(self, key, form.cleaned_data[key])
 
@@ -414,70 +493,49 @@ class User(AbstractBaseUser, PermissionsMixin, SearchableFieldMixin, TimeStampMi
         self.address.save()
         self.save()
 
-    def get_modifiable_staff(self):
+    def get_viewable_staff(self):
         # used to populate user management page
-        if self.has_perm("users.change_staff_account"):
+        if self.account_type.has_perm("users.read_staff_account"):
             return self._get_users(is_staff=True)
         return []
 
-    def get_modifiable_patrons(self):
-        # Similar to self.get_modifiable_users, but for patrons only.
-        if self.has_perm("users.change_patron_account"):
+    def get_viewable_patrons(self):
+        # Similar to self.get_viewable_staff, but for patrons only.
+        if self.account_type.has_perm("users.read_patron_account"):
             return self._get_users(is_staff=False)
         return []
 
-    def get_viewable_permissions_groups(self):
-        if not self.is_staff:
-            return []
-
-        # these strings are the names of the groups in the db
-        superuser = "Superuser"
-        manager = "Manager"
-        in_charge = "In Charge"
-        librarian = "Librarian"
-        circ_sup = "Circ Supervisor"
-        circ_gen = "Circ General"
-        page = "Page"
-
-        # these are the order in which they should appear
-        options = [superuser, manager, in_charge, librarian, circ_sup, circ_gen, page]
-
-        tree = {
-            superuser: options,  # everything
-            manager: [o for o in options if o != superuser],
-            in_charge: [in_charge, librarian, page],
-            librarian: [librarian, page],
-            circ_sup: [circ_sup, in_charge, librarian, circ_gen, page],
-            circ_gen: [circ_gen, librarian, page],
-            page: [],
-        }
-
-        perm_groups = []
-        # Because all permissions are available on a singular level, we only use
-        # permissions groups to keep track of default lists of permissions, not as
-        # something that's assigned wholesale. Therefore, we need to approximate
-        # what kinds of groups a user has by comparing the permissions that they
-        # currently have assigned to the permissions available for each group.
-        # We'll use that list of groups to show the buttons on the Staff Edit page
-        # to set those permission group defaults.
-        user_permissions = [perm_to_permission(p) for p in self.get_all_permissions()]
-        groups = Group.objects.filter(name__in=options)
-        for group in groups:
-            group_permissions = group.permissions.all()
-            # todo: can this allow a staff member to escalate someone's permissions
-            #  to the next level up if they have even one of the permissions assigned
-            #  manually? Need to test.
-            if all([el in user_permissions for el in group_permissions]):
-                perm_groups += tree[group.name]
-
-        groups = groups.filter(name__in=list(set(perm_groups)))
-        sorted_groups = []
-        # run through the options list and put everything into the right order
-        for group in options:
-            sorted_groups.append(groups.filter(name=group).first())
-
-        # clean the list
-        return [group for group in sorted_groups if group is not None]
+    def get_account_types(self):
+        return AccountType.objects.filter(host=self.host)
 
     def get_checkouts(self):
         return self.checkouts.all()
+
+    ###
+    # Abstractions
+    ###
+
+    @property
+    def is_staff(self):
+        return self.account_type.is_staff
+
+    @property
+    def is_superuser(self):
+        return self.account_type.is_superuser
+
+    @property
+    def groups(self):
+        return self.account_type.groups
+
+    @property
+    def user_permissions(self):
+        return self.account_type.user_permissions
+
+    def has_perm(self, *args, **kwargs):
+        return self.account_type.has_perm(*args, **kwargs)
+
+    def has_perms(self, *args, **kwargs):
+        return self.account_type.has_perms(*args, **kwargs)
+
+    def has_module_perms(self, *args, **kwargs):
+        return self.account_type.has_module_perms(*args, **kwargs)

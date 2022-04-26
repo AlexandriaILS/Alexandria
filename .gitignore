@@ -1,6 +1,5 @@
 .venv/*
 *.pyc
-migrations/*
 .idea
 db.sqlite3
 local_settings.py
