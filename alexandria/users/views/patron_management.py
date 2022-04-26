@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator
 from django.db.models.expressions import Q
 from django.http import HttpResponseRedirect, Http404
@@ -82,11 +82,16 @@ def end_act_as_user(request):
 
 @permission_required("users.create_patron_account")
 def create_patron(request):
-    breakpoint()
     if request.method == "POST":
         form = PatronForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
+
+            # check to make sure we have a valid account type before creating any data
+            account_type = AccountType.objects.filter(id=form.data.get('account_type'), host=request.host).first()
+            if not account_type:
+                raise ValidationError
+
             # Don't worry about duplicates. We need one address per person, even if
             # multiple people live at the same place. They won't live there forever.
             newuserlocation = USLocation.objects.create(
@@ -97,6 +102,7 @@ def create_patron(request):
                 zip_code=data["zip_code"],
                 host=request.get_host(),
             )
+
             newuser = User.objects.create_user(
                 address=newuserlocation,
                 card_number=data["card_number"],
@@ -107,7 +113,7 @@ def create_patron(request):
                 birth_year=data["birth_year"],
                 notes=data["notes"],
                 default_branch=data["default_branch"],
-                is_staff=data["is_staff"],
+                account_type=account_type,
             )
             # Todo: send an email to the newly created user welcoming them to the system!
             return HttpResponseRedirect(
@@ -137,6 +143,8 @@ def create_patron(request):
             "default_branch": request.user.get_work_branch(),
             "city": city,
             "state": state,
+            "account_type": None,
+            "default_account_type_queryset": request.user.get_account_types().filter(is_staff=False),
         }
     )
     return render(
@@ -171,15 +179,16 @@ class EditPatronUser(PermissionRequiredMixin, View):
             "state": user.address.state,
             "zip_code": user.address.zip_code,
             "is_active": user.is_active,
+            "account_type": user.account_type,
         }
 
-        if request.user.has_perm("users.change_accounttype"):
-            initial_data.update(
-                {
-                    "account_type": user.account_type,
-                    "default_account_type_queryset": user.get_account_types(),
-                }
-            )
+        acc_type_qs = user.get_account_types()
+        if not request.user.has_perm("users.change_accounttype"):
+            # staff members who have access to modify patron accounts but not change
+            # staff account types can flip between different patron account types
+            acc_type_qs = acc_type_qs.filter(is_staff=False)
+
+        initial_data.update({"default_account_type_queryset": acc_type_qs})
 
         form = PatronEditForm(initial=initial_data)
         return render(

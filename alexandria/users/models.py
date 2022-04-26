@@ -63,8 +63,7 @@ class UserManager(DjangoUserManager):
         return user
 
     def create_user(self, card_number, email=None, password=None, **extra_fields):
-        extra_fields.setdefault("is_staff", False)
-        extra_fields.setdefault("is_superuser", False)
+        extra_fields['account_type'] = AccountType.objects.get_or_create(name="Default")[0]
         return self._create_user(card_number, email, password, **extra_fields)
 
     def create_superuser(self, card_number, email=None, password=None, **extra_fields):
@@ -75,6 +74,10 @@ class UserManager(DjangoUserManager):
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
+
+        extra_fields['account_type'] = AccountType.objects.get_or_create(name="Superuser", is_staff=True, is_superuser=True)[0]
+        del extra_fields['is_staff']
+        del extra_fields['is_superuser']
 
         return self._create_user(card_number, email, password, **extra_fields)
 
@@ -452,13 +455,11 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         }
         return data
 
-    def _get_users(self, is_staff):
+    def _get_users(self, is_staff: bool):
         qs = User.objects.filter(account_type__is_staff=is_staff, host=self.host)
         if not self.account_type.is_superuser:
             # superusers can edit themselves
-            qs = User.objects.filter(account_type__is_staff=is_staff).exclude(
-                card_number=self
-            )
+            qs = qs.exclude(card_number=self)
 
         return qs.order_by("last_name", "first_name")
 

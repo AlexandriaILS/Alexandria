@@ -22,8 +22,6 @@ class TestCreateUser:
         assert new_user.card_number == "aaaa"
         assert new_user.first_name == "A"
         assert new_user.get_shortened_name() == "A"
-        assert new_user.is_staff is False
-        assert new_user.is_superuser is False
 
     @pytest.mark.parametrize(
         "values",
@@ -177,29 +175,24 @@ class TestUserFunctions:
         patron.host = "aaaa"
         patron.save()
         assert len(user.get_viewable_patrons()) == 0
-        # superusers can see users from other hosts
-        user.is_superuser = True
-        user.save()
-        assert len(user.get_viewable_patrons()) == 1
 
     def test_get_viewable_patrons_without_permission(self):
-        # Django _aggressively_ caches permissions, so even `refresh_from_db` doesn't
-        # work. We have to fetch the whole object again in order to clean the cache.
-        perm_str = "users.change_patron_account"
+        perm_str = "users.read_patron_account"
         user = get_default_staff_user()
         get_default_patron_user()
         assert user.has_perm(perm_str)
-        user.user_permissions.remove(perm_to_permission(perm_str))
-        user.save()
-        # we've modified the permissions, so completely get the object again from the db
-        user = get_default_staff_user(update_permissions=False)
+        user.account_type.user_permissions.remove(perm_to_permission(perm_str))
+        user.account_type.save()
+
+        user.refresh_from_db()
         assert not user.has_perm(perm_str)
         # there's a patron here, we just can't see them
         assert user.get_viewable_patrons() == []
 
         # modify the permissions one more time and refetch
-        user.user_permissions.add(perm_to_permission(perm_str))
-        user.save()
+        user.account_type.user_permissions.add(perm_to_permission(perm_str))
+        user.account_type.save()
+        user.refresh_from_db()
         user = get_default_staff_user(update_permissions=False)
         assert len(user.get_viewable_patrons()) == 1
 
@@ -208,45 +201,49 @@ class TestUserFunctions:
         user = get_default_staff_user()
         # Staff can't see themselves, but superusers can
         assert len(user.get_viewable_staff()) == 0
-        get_default_patron_user(is_staff=True)
+        patron = get_default_patron_user()
+        patron.account_type = AccountType.objects.get(name="Librarian")
+        patron.save()
         assert len(user.get_viewable_staff()) == 1
         # superusers can see themselves
-        user.is_superuser = True
-        user.save()
+        user.account_type.is_superuser = True
+        user.account_type.save()
         assert len(user.get_viewable_staff()) == 2
 
     def test_get_viewable_staff_from_different_hosts(self):
         """Verify that patrons from different hosts are not visible."""
         User.objects.get(card_number=1234).delete()  # nuke the default admin account
         user = get_default_staff_user()
-        patron = get_default_patron_user(is_staff=True)
+        patron = get_default_patron_user()
+        patron.account_type = AccountType.objects.get(name="Librarian")
         patron.host = "aaaa"
         patron.save()
         assert len(user.get_viewable_staff()) == 0
-        # superusers can see users from other hosts
-        user.is_superuser = True
-        user.save()
-        # superusers can also see themselves here, so 2 == self + other host staff member
-        assert len(user.get_viewable_staff()) == 2
+        user.account_type.is_superuser = True
+        user.account_type.save()
+        # superusers can see themselves here
+        assert len(user.get_viewable_staff()) == 1
 
     def test_get_viewable_staff_without_permission(self):
         # Django _aggressively_ caches permissions, so even `refresh_from_db` doesn't
         # work. We have to fetch the whole object again in order to clean the cache.
         User.objects.get(card_number=1234).delete()  # nuke the default admin account
-        perm_str = "users.change_staff_account"
+        perm_str = "users.read_staff_account"
         user = get_default_staff_user()
-        get_default_patron_user(is_staff=True)
+        patron = get_default_patron_user()
+        patron.account_type = AccountType.objects.get(name="Librarian")
+        patron.save()
         assert user.has_perm(perm_str)
-        user.user_permissions.remove(perm_to_permission(perm_str))
-        user.save()
-        # we've modified the permissions, so completely get the object again from the db
-        user = get_default_staff_user(update_permissions=False)
+        user.account_type.user_permissions.remove(perm_to_permission(perm_str))
+        user.account_type.save()
+
+        user.refresh_from_db()
         assert not user.has_perm(perm_str)
         # there's a staff member here, we just can't see them
         assert user.get_viewable_staff() == []
 
         # modify the permissions one more time and refetch
-        user.user_permissions.add(perm_to_permission(perm_str))
+        user.account_type.user_permissions.add(perm_to_permission(perm_str))
         user.save()
         user = get_default_staff_user(update_permissions=False)
         assert len(user.get_viewable_staff()) == 1
@@ -260,7 +257,7 @@ class TestUserFunctions:
         circ_sup = Group.objects.get(name="Circ Supervisor")
         circ_gen = Group.objects.get(name="Circ General")
         page = Group.objects.get(name="Page")
-        assert user.get_viewable_permissions_groups() == [
+        assert user.account_type.get_viewable_permissions_groups() == [
             manager,
             in_charge,
             librarian,
@@ -269,14 +266,13 @@ class TestUserFunctions:
             page,
         ]
 
-        user.user_permissions.set(librarian.permissions.all())
-        # pull object again to refresh permissions caching
-        user = get_default_staff_user(update_permissions=False)
-        assert user.get_viewable_permissions_groups() == [librarian, page]
+        user.account_type=AccountType.objects.get(name="Librarian")
+        user.save()
+        assert user.account_type.get_viewable_permissions_groups() == [librarian, page]
 
-        user.user_permissions.set(circ_sup.permissions.all())
-        user = get_default_staff_user(update_permissions=False)
-        assert user.get_viewable_permissions_groups() == [
+        user.account_type=AccountType.objects.get(name="Circ Supervisor")
+        user.save()
+        assert user.account_type.get_viewable_permissions_groups() == [
             in_charge,
             librarian,
             circ_sup,
@@ -284,13 +280,13 @@ class TestUserFunctions:
             page,
         ]
 
-        user.user_permissions.set(page.permissions.all())
-        user = get_default_staff_user(update_permissions=False)
-        assert user.get_viewable_permissions_groups() == []
+        user.account_type=AccountType.objects.get(name="Page")
+        user.save()
+        assert user.account_type.get_viewable_permissions_groups() == []
 
     def test_get_viewable_permissions_groups_without_staff(self):
         user = get_default_patron_user()
-        assert user.get_viewable_permissions_groups() == []
+        assert user.account_type.get_viewable_permissions_groups() == []
 
     def test_get_all_itemtype_checkout_limits(self):
         user = get_default_patron_user()

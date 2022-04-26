@@ -1,7 +1,5 @@
 from typing import Dict
 
-from django.contrib.auth.models import Group
-
 from alexandria.records.models import Hold, Item, ItemType, ItemTypeBase, Record
 from alexandria.users.models import AccountType, BranchLocation, User
 
@@ -9,15 +7,12 @@ DEFAULT_SUPERUSER = {
     "card_number": "123444",
     "first_name": "Atticus",
     "last_name": "Finch",
-    "is_staff": True,
-    "is_superuser": True,
     "password": "headhighfistsdown",
 }
 DEFAULT_STAFF_USER = {
     "card_number": "2345",  # existing Admin user is 1234
     "first_name": "Guy",
     "last_name": "Montag",
-    "is_staff": True,
     "password": "l1ght1tup",
 }
 DEFAULT_PATRON_USER = {
@@ -133,11 +128,11 @@ def _get_user(base_data: Dict, **kwargs) -> User:
     return user
 
 
-def get_default_staff_user(update_permissions=True, **kwargs):
+def get_default_staff_user(**kwargs):
     """Set update_permissions as false to just pull the staff user."""
     user = _get_user(DEFAULT_STAFF_USER, **kwargs)
-    if update_permissions:
-        user.account_type = AccountType.objects.get(name="Manager")
+    user.account_type = AccountType.objects.get(name="Manager")
+    user.save()
     return user
 
 
@@ -150,4 +145,7 @@ def get_default_underage_patron_user(**kwargs):
 
 
 def get_superuser(**kwargs):
-    return _get_user(DEFAULT_SUPERUSER, **kwargs)
+    user = _get_user(DEFAULT_SUPERUSER, **kwargs)
+    user.account_type = AccountType.objects.get(name="Superuser")
+    user.save()
+    return user
