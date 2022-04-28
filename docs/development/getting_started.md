@@ -173,7 +173,7 @@ If you need to completely reset your database, run `make clean`. :warning: THIS 
 
 ### Install PostgreSQL on your local machine
 
-We recommend the docker method over this one, as this will leave Postgres running locally on your machine after you're finished working with Alexandria, and you may not want or need that. If you still want to run Postgres locally (and not involve Docker), then read on.
+As a reminder, you don't need to do this if you take the Docker route; we recommend the docker method over this one, as this will leave Postgres running locally on your machine after you're finished working with Alexandria and you may not want or need that. If you still want to run Postgres locally (and not involve Docker), then read on.
 
 The first thing you'll need to do is install a new version of PostgreSQL that works for your operating system. After that's done, there's a little bit of setup that needs to happen:
 
