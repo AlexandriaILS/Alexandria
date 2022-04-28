@@ -28,12 +28,12 @@
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/Alexandria/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="/Alexandria/resources/css/retype.css?v=2.2.704330970507" rel="stylesheet" data-turbo-track="reload" />
+    <link href="/Alexandria/resources/css/retype.css?v=2.2.704470075710" rel="stylesheet" data-turbo-track="reload" />
 
-    <script type="text/javascript" src="/Alexandria/resources/js/config.js?v=2.2.704330970507" defer data-turbo-track="reload"></script>
+    <script type="text/javascript" src="/Alexandria/resources/js/config.js?v=2.2.704470075710" defer data-turbo-track="reload"></script>
     <script type="text/javascript" src="/Alexandria/resources/js/retype.js?v=2.2" defer data-turbo-track="reload"></script>
-    <script id="lunr-js" type="text/javascript" src="/Alexandria/resources/js/lunr.js?v=2.2.704330970507" defer></script>
-    <script id="prism-js" type="text/javascript" src="/Alexandria/resources/js/prism.js?v=2.2.704330970507" defer></script>
+    <script id="lunr-js" type="text/javascript" src="/Alexandria/resources/js/lunr.js?v=2.2.704470075710" defer></script>
+    <script id="prism-js" type="text/javascript" src="/Alexandria/resources/js/prism.js?v=2.2.704470075710" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -396,7 +396,7 @@ password: asdf</p>
         <span>Install PostgreSQL on your local machine</span>
     </h3>
 </doc-anchor-target>
-<p>We recommend the docker method over this one, as this will leave Postgres running locally on your machine after you&#x27;re finished working with Alexandria, and you may not want or need that. If you still want to run Postgres locally (and not involve Docker), then read on.</p>
+<p>As a reminder, you don&#x27;t need to do this if you take the Docker route; we recommend the docker method over this one, as this will leave Postgres running locally on your machine after you&#x27;re finished working with Alexandria and you may not want or need that. If you still want to run Postgres locally (and not involve Docker), then read on.</p>
 <p>The first thing you&#x27;ll need to do is install a new version of PostgreSQL that works for your operating system. After that&#x27;s done, there&#x27;s a little bit of setup that needs to happen:</p>
 <p>Activate the Postgres shell using <code v-pre>psql</code>:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
