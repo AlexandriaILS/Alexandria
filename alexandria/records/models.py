@@ -588,7 +588,7 @@ class Hold(TimeStampMixin):
 
     def is_ready_for_pickup(self):
         return self.item.checked_out_to == BranchLocation.objects.get(
-            name="ready_for_pickup"
+            name="Ready for Pickup"
         )
 
     def get_status_for_patron(self):

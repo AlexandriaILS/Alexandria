@@ -1,0 +1,3 @@
+# exclude all files under static_dev/vendored from Github's language statistics
+static_dev/vendored/** linguist-vendored
+
