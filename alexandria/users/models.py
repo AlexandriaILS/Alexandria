@@ -63,7 +63,9 @@ class UserManager(DjangoUserManager):
         return user
 
     def create_user(self, card_number, email=None, password=None, **extra_fields):
-        extra_fields['account_type'] = AccountType.objects.get_or_create(name="Default")[0]
+        extra_fields["account_type"] = AccountType.objects.get_or_create(
+            name="Default"
+        )[0]
         return self._create_user(card_number, email, password, **extra_fields)
 
     def create_superuser(self, card_number, email=None, password=None, **extra_fields):
@@ -75,9 +77,11 @@ class UserManager(DjangoUserManager):
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
 
-        extra_fields['account_type'] = AccountType.objects.get_or_create(name="Superuser", is_staff=True, is_superuser=True)[0]
-        del extra_fields['is_staff']
-        del extra_fields['is_superuser']
+        extra_fields["account_type"] = AccountType.objects.get_or_create(
+            name="Superuser", is_staff=True, is_superuser=True
+        )[0]
+        del extra_fields["is_staff"]
+        del extra_fields["is_superuser"]
 
         return self._create_user(card_number, email, password, **extra_fields)
 

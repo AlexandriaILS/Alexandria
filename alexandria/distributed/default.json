@@ -31,6 +31,7 @@
       "link_2_url": "https://example.com",
       "link_3_title": "Overdrive",
       "link_3_url": "https://example.com"
-    }
+    },
+    "enable_openlibrary_cover_downloads": true
   }
 }

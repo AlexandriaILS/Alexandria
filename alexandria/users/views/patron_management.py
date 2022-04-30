@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator
 from django.db.models.expressions import Q
-from django.http import HttpResponseRedirect, Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, reverse
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
@@ -14,7 +14,7 @@ from alexandria.catalog.helpers import get_results_per_page
 from alexandria.records.models import Hold
 from alexandria.searchablefields.strings import clean_text
 from alexandria.users.forms import PatronEditForm, PatronForm
-from alexandria.users.models import User, USLocation, AccountType
+from alexandria.users.models import AccountType, User, USLocation
 
 
 @csrf_exempt
@@ -88,7 +88,9 @@ def create_patron(request):
             data = form.cleaned_data
 
             # check to make sure we have a valid account type before creating any data
-            account_type = AccountType.objects.filter(id=form.data.get('account_type'), host=request.host).first()
+            account_type = AccountType.objects.filter(
+                id=form.data.get("account_type"), host=request.host
+            ).first()
             if not account_type:
                 raise ValidationError
 
@@ -144,7 +146,9 @@ def create_patron(request):
             "city": city,
             "state": state,
             "account_type": None,
-            "default_account_type_queryset": request.user.get_account_types().filter(is_staff=False),
+            "default_account_type_queryset": request.user.get_account_types().filter(
+                is_staff=False
+            ),
         }
     )
     return render(

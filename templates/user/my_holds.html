@@ -22,7 +22,7 @@
         <div class="mt-3 text-center alert alert-secondary">
         {# need a `with` assignment because you can't access variables inside of a blocktranslate. #}
         {% with request.context.phone_number as phonenumber %}
-            {# Translators: there is a phone number at the end of this <line></line> #}
+            {# Translators: there is a phone number at the end of this line #}
             {% blocktranslate %}
                 Need help? Give us a call at <a class="text-dark" href="tel:{{ phonenumber }}">{{ phonenumber }}</a>!
             {% endblocktranslate %}

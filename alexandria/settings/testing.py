@@ -79,5 +79,6 @@ SITE_DATA = {
             "link_3_title": "Overdrive",
             "link_3_url": "https://example.com",
         },
+        "enable_openlibrary_cover_downloads": False,
     }
 }
