@@ -1,6 +1,6 @@
+from django.apps import apps
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import Permission
-from django.apps import apps
 
 
 class Authentication(ModelBackend):

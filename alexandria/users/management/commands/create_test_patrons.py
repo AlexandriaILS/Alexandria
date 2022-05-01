@@ -5,7 +5,7 @@ from datetime import datetime
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from alexandria.users.models import BranchLocation, User, USLocation, AccountType
+from alexandria.users.models import AccountType, BranchLocation, User, USLocation
 from alexandria.utils import us_state_to_abbrev
 
 try:

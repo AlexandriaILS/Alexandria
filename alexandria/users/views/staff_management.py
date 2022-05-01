@@ -12,8 +12,8 @@ from django.views.generic import View
 
 from alexandria.catalog.helpers import get_results_per_page
 from alexandria.searchablefields.strings import clean_text
-from alexandria.users.forms import StaffSettingsForm, AccountTypeForm
-from alexandria.users.models import User, AccountType
+from alexandria.users.forms import AccountTypeForm, StaffSettingsForm
+from alexandria.users.models import AccountType, User
 from alexandria.utils.permissions import permission_to_perm
 
 

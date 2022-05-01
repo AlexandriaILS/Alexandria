@@ -20,7 +20,7 @@ class Command(BaseCommand):
             time.sleep(0.1)
             try:
                 get_and_save_image(url.format(book.notes.split(":")[1]), book)
-                book.save(skip_extras=True)
+                book.save()
             except:
                 self.stdout.write(f"Error on {book.id} -- continuing.")
             counter += 1

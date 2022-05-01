@@ -14,6 +14,7 @@ from django.utils.translation import gettext as _
 from taggit.managers import TaggableManager
 
 from alexandria.records import openlibrary
+from alexandria.records.mixins import CoverUtilitiesMixin
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 from alexandria.users.models import BranchLocation, User
 from alexandria.utils.models import TimeStampMixin
@@ -179,7 +180,7 @@ class ItemType(TimeStampMixin):
         super().save(*args, **kwargs)
 
 
-class Record(TimeStampMixin, SearchableFieldMixin):
+class Record(TimeStampMixin, SearchableFieldMixin, CoverUtilitiesMixin):
     """
     Information that should not change between different types of the same media.
     For example, an audiobook vs the original text.
@@ -236,13 +237,6 @@ class Record(TimeStampMixin, SearchableFieldMixin):
 
     def save(self, *args, **kwargs):
         self.update_searchable_fields()
-        if kwargs.get("skip_extras", False) is False:
-            if self.type:
-                if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
-                    try:
-                        openlibrary.download_cover(self)
-                    except requests.exceptions.HTTPError:
-                        pass
         super(Record, self).save(*args, **kwargs)
 
     def get_available_types(self):
@@ -277,7 +271,7 @@ class Record(TimeStampMixin, SearchableFieldMixin):
         }
 
 
-class Item(TimeStampMixin):
+class Item(TimeStampMixin, CoverUtilitiesMixin):
     NEW = "new"
     FINE = "fine"
     VERY_GOOD = "vygd"
@@ -407,15 +401,6 @@ class Item(TimeStampMixin):
     )
     renewal_count = models.IntegerField(default=0)
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
-
-    def save(self, *args, **kwargs) -> None:
-        if self.type:
-            if self.type.base.name == ItemTypeBase.LANGUAGE_MATERIAL:
-                try:
-                    openlibrary.download_cover(self)
-                except requests.exceptions.HTTPError:
-                    pass
-        super(Item, self).save(*args, **kwargs)
 
     def _convert_isbn10_to_isbn13(self) -> str:
         # this process is so ridiculous.

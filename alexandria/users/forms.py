@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import Permission
 from django.utils.translation import gettext as _
 
-from alexandria.users.models import BranchLocation, AccountType
+from alexandria.users.models import AccountType, BranchLocation
 
 
 class PatronForm(forms.Form):
@@ -59,7 +59,10 @@ class PatronForm(forms.Form):
     )
     notes = forms.CharField(widget=forms.Textarea, required=False)
     # this queryset is replaced
-    default_branch = forms.ModelChoiceField(queryset=BranchLocation.objects.all(), help_text=_("Where does this person want their holds to default to?"))
+    default_branch = forms.ModelChoiceField(
+        queryset=BranchLocation.objects.all(),
+        help_text=_("Where does this person want their holds to default to?"),
+    )
 
     address_1 = forms.CharField()
     address_2 = forms.CharField(required=False)
@@ -89,7 +92,10 @@ class StaffSettingsForm(PatronForm):
             self.fields["work_branch"].initial = self.initial["work_branch"]
 
     title = forms.CharField()
-    work_branch = forms.ModelChoiceField(queryset=BranchLocation.objects.all(), help_text=_("Which branch is this person based out of?"))
+    work_branch = forms.ModelChoiceField(
+        queryset=BranchLocation.objects.all(),
+        help_text=_("Which branch is this person based out of?"),
+    )
 
 
 class AccountTypeForm(forms.Form):

@@ -266,11 +266,11 @@ class TestUserFunctions:
             page,
         ]
 
-        user.account_type=AccountType.objects.get(name="Librarian")
+        user.account_type = AccountType.objects.get(name="Librarian")
         user.save()
         assert user.account_type.get_viewable_permissions_groups() == [librarian, page]
 
-        user.account_type=AccountType.objects.get(name="Circ Supervisor")
+        user.account_type = AccountType.objects.get(name="Circ Supervisor")
         user.save()
         assert user.account_type.get_viewable_permissions_groups() == [
             in_charge,
@@ -280,7 +280,7 @@ class TestUserFunctions:
             page,
         ]
 
-        user.account_type=AccountType.objects.get(name="Page")
+        user.account_type = AccountType.objects.get(name="Page")
         user.save()
         assert user.account_type.get_viewable_permissions_groups() == []
 
