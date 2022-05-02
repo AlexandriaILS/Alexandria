@@ -58,7 +58,7 @@ omit = [
     "*/static/*",
     "*/static_dev/*",
     "*/media/*",
-    "local_settings.py,",
+    "local_settings.py",
     "*/urls.py",
     "*/wsgi.py",
     "alexandria/settings/*",

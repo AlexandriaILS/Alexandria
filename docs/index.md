@@ -14,11 +14,11 @@ Alexandria is an Integrated Library System (ILS) that aims to be a free and open
 Click on each of the below sections to get more details.
 
 ==- User-facing Catalog
-The catalog is the heart and soul of any ILS - making sure that your patrons can access it and easily obtain the materials they need is critical. Patrons also have access to see their checkouts, limited account settings, due dates, holds, and fines & fees. (In case you're wondering, yes, you can disable fines for your library.)
+The catalog is the heart and soul of any ILS - making sure that your patrons can access it and easily obtain the materials they need is critical. Patrons also have access to see their checkouts, limited account settings, due dates, holds, and fines & fees. (In case you're wondering, yes, you can disable fines for your library!)
 ===
 
 ==- Mobile (and Tablet!) Friendly
-Desktops and laptops aren't the only devices that can access the internet, and so it's not much of a logical leap to say "let's make it all work on mobile"! The catalog, management, and business sides of the app are all mobile friendly, so you can so whatever you need to do on the go.
+Desktops and laptops aren't the only devices that can access the internet, and so it's not much of a logical leap to say "let's make it all work on mobile"! The catalog, management, and business sides of the app are all mobile friendly, so you can do whatever you need to do on the go.
 ===
 
 ==- Catalog Management
