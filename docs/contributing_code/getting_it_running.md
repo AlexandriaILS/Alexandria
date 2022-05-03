@@ -11,6 +11,8 @@ In this page, you will use the tooling you installed [from the previous page](en
 
 ## Prerequisites
 
+[!ref](environment_setup.md)
+
 * SSH authentication configured with GitHub ([See here for instructions.](https://docs.github.com/en/authentication/connecting-to-github-with-ssh))
 * A text / code editor (don't have one? [VS Code is a great place to start!](https://code.visualstudio.com/download))
 

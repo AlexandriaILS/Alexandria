@@ -6,7 +6,7 @@ tags: [dev, development]
 # Environment Setup
 
 ## Introduction
-In order to work on Alexandria, you will need to set up your local environment. In this page, you will install and configure `pyenv`, Python, and `poetry`, the three tools you need to work on Alexandria on your computer.
+In order to work on Alexandria, you will need to set up your local environment. In this page, you will install and configure `pyenv`, Python, and Poetry, the three tools you need to work on Alexandria on your computer.
 
 !!!danger For Microsoft Windows Users
 Alexandria uses several features that are not available on Windows. If you are using a Windows computer, you will need to [install and configure WSL2](https://docs.microsoft.com/en-us/windows/wsl/install) to get a version of Ubuntu Linux working on your machine. You won't be able to work on / use Alexandria normally without it, so go ahead and get that installed and working before continuing. All commands shown will need to be run inside WSL2.
@@ -17,8 +17,10 @@ If your computer is running MacOS or Linux as its operating system (these docs a
 ## Prerequisites
 
 * A computer running MacOS, Ubuntu, or Windows with WSL2 (Ubuntu)
-* Docker as configured by [following steps 1 and 2 from this tutorial for Ubuntu 22.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04) or by [following this tutorial for MacOS](https://docs.docker.com/desktop/mac/install/). If you cannot use Docker, take a look at [Local PostgreSQL Install](install_psql_locally.md).
+* Docker as configured by [following steps one and two from this tutorial for Ubuntu 22.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04) or by [following this tutorial for MacOS](https://docs.docker.com/desktop/mac/install/)
 * If you're on MacOS, you will need [homebrew](https://brew.sh/) to install some of the dependencies
+
+Can't use Docker? [!ref](install_psql_locally.md)
 
 ## Installing Pyenv and Python
 
@@ -26,15 +28,18 @@ If your computer is running MacOS or Linux as its operating system (these docs a
 
 Most computers already have Python installed, but we want to make sure that we're using the proper version and modifying the version that comes with your computer can cause serious unexpected problems. To get around that, we recommend using `pyenv`, a version manager for Python.
 
-In your terminal application, start by installing some prerequisite packages which will allow the next steps to run:
+In your terminal application, start by installing some prerequisite packages which will allow the next steps to run.
+
+#### Ubuntu / WSL2
 
 ```shell
-# Ubuntu / WSL2
 sudo apt update; sudo apt install git make build-essential libssl-dev zlib1g-dev \
 libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
 libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+```
 
-# MacOS
+#### MacOS
+```shell
 xcode-select --install  # installs the command line tools for Mac
 brew install openssl readline sqlite3 xz zlib
 ```
@@ -141,13 +146,13 @@ Python 3.10.4
 
 ## Poetry
 
-Alexandria (and the other applications that surround it) uses `poetry` as its dependency manager. We'll install it now.
+Alexandria (and the other applications that surround it) uses Poetry as its dependency manager. We'll install it now.
 
 ```shell
 curl -sSL https://install.python-poetry.org | python -
 ```
 
-Because we installed the latest version of Python 3 above and set it to the global version with `pyenv`, `poetry` will install automatically using the version we just installed.
+Because we installed the latest version of Python 3 above and set it to the global version with `pyenv`, Poetry will install automatically using the version we just installed.
 
 Now we need to tell your shell how to find it. Because there many different terminal shells that you might be running, the shell that you have determines how we do the next step. To find out what shell you have, run:
 
@@ -162,7 +167,7 @@ It should print out the name of the shell you're using now. Mine may be differen
 zsh
 ```
 
-...so the shell that I'm running (and, most likely, you as well) is `zsh`. Once you've identified your shell, you can tell it where to find `poetry`:
+...so the shell that I'm running (and, most likely, you as well) is `zsh`. Once you've identified your shell, you can tell it where to find Poetry:
 
 ```shell
 # zsh
@@ -180,7 +185,7 @@ Restart your shell again by running:
 exec $SHELL
 ```
 
-Verify that `poetry` can be found by asking for its version:
+Verify that Poetry can be found by asking for its version:
 
 ```shell
 poetry --version
@@ -193,4 +198,4 @@ Though the version number may be different, you should see something like the fo
 Poetry version 1.1.13
 ```
 
-Congrats, you've installed `pyenv`, the latest version of Python, and `poetry`; you're ready to set up Alexandria!
+Congrats, you've installed `pyenv`, the latest version of Python, and Poetry; you're ready to set up Alexandria!

@@ -11,8 +11,8 @@ Now that you have everything installed and working, in this page we'll cover how
 
 ## Prerequisites
 
-* completed [Environment Setup](environment_setup.md)
-* completed [Getting It Running](getting_started.md)
+[!ref](environment_setup.md)
+[!ref](getting_it_running.md)
 
 ## Interacting with Alexandria
 
@@ -89,7 +89,9 @@ make test
 
 ## Launching the Docs Server
 
-If you want to work on the documentation (these pages!) then [you will need to install Retype](https://retype.com/) -- more information [in the Documentation page](documentation.md).
+If you want to work on the documentation (these pages!) then [you will need to install Retype](https://retype.com/) -- more information at the below link.
+
+[!ref](../contributing_docs/readme.md)
 
 After Retype is installed, run the Retype server by running the following:
 

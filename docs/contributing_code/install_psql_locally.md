@@ -13,8 +13,9 @@ You don't need to do this if you take the recommended Docker route.
 
 :arrow_right: **This method is not supported.** :arrow_left: 
 
-Unless you really need this or cannot use Docker, please use the method outlined in [Environment Setup](environment_setup.md).
+Unless you really need this or cannot use Docker, please use the method outlined in the regular Environment Setup.
 
+[!ref](environment_setup.md)
 !!!
 
 We recommend the docker method over this one, as this will leave Postgres running locally on your machine after you're finished working with Alexandria and you may not want or need that. If you still want to run Postgres locally (and not involve Docker), then read on.
