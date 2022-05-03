@@ -1,2 +1,0 @@
-export PATH=/home/joe/.poetry/bin:/home/joe/.pyenv/shims:/home/joe/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/home/joe/.antigen/bundles/agkozak/zsh-z:/home/joe/.antigen/bundles/zsh-users/zsh-autosuggestions:/home/joe/.antigen/bundles/zsh-users/zsh-syntax-highlighting
-export PATH=$HOME/.poetry/bin:$PATH
