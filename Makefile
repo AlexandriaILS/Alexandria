@@ -47,8 +47,5 @@ db_setup:
 psql_shell:
 	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres"
 
-db_clean:
-	sudo rm -rf postgres_data
-
 test:
 	poetry run pytest -n auto
