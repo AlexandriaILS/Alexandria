@@ -18,7 +18,6 @@ from alexandria.records.models import (
 from alexandria.users.models import BranchLocation
 from alexandria.utils.gutenberg import decompressBytesToString
 
-from rich.spinner import Spinner
 
 class Command(BaseCommand):
     help = "Imports data from Project Gutenberg for testing data."
