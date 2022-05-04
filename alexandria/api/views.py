@@ -164,3 +164,9 @@ class RecordViewSet(ModelViewSet):
             # TODO: Add handling for this in holdbuttons.js
             return Response(status=412)  # 412 precondition failed
         return create_hold(request, item, location)
+
+
+class CheckoutViewSet(GenericViewSet):
+    @action(methods=["post"], detail=False)
+    def start_checkout_session(self):
+        ...

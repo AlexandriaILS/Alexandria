@@ -22,6 +22,7 @@ django-taggit = { git = "https://github.com/jazzband/django-taggit.git" }
 django-debug-toolbar = "^3.2.4"
 djangorestframework = "^3.13.1"
 psycopg2-binary = "^2.9.3"
+rich = "^12.3.0"
 
 [tool.poetry.dev-dependencies]
 better_exceptions = "^0.2.2"
@@ -65,6 +66,7 @@ omit = [
     "alexandria/conftest.py",
     "*/management/commands/*",
     "alexandria/middleware.py",
+    "alexandria/shell_plus_extras.py",
     "alexandria/records/zenodotus_utils.py",
     "alexandria/utils/abebooks.py",
     "alexandria/utils/gutenberg.py"
