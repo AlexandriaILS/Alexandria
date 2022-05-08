@@ -15,11 +15,12 @@ from alexandria.records.models import Hold
 from alexandria.searchablefields.strings import clean_text
 from alexandria.users.forms import PatronEditForm, PatronForm
 from alexandria.users.models import AccountType, User, USLocation
+from alexandria.utils.type_hints import Request
 
 
 @csrf_exempt
 @permission_required("users.read_patron_account")
-def patron_management(request):
+def patron_management(request: Request):
     results = request.user.get_viewable_patrons()
     if search_text := request.POST.get("search_text"):
         search_text = clean_text(search_text)

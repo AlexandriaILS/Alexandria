@@ -2,7 +2,7 @@ import json
 import random
 
 from django.core.management.base import BaseCommand
-from rich.progress import track, Progress, SpinnerColumn, TimeElapsedColumn
+from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn, track
 
 from alexandria.catalog.management.commands.import_from_z import (
     PUBLISHERS,
@@ -64,7 +64,6 @@ class Command(BaseCommand):
             subject_links = []
             subjects = {s.name: s.id for s in Subject.objects.all()}
 
-
             for index, obj in enumerate(
                 track(data["results"], description="[green]Generating subject links...")
             ):
@@ -72,9 +71,7 @@ class Command(BaseCommand):
                     Record.subjects.through(
                         subject_id=sub_id, record_id=record_db_objects[index].id
                     )
-                    for sub_id in [
-                        subjects[s] for s in obj["subjects"]
-                    ]
+                    for sub_id in [subjects[s] for s in obj["subjects"]]
                 ]
 
             Record.subjects.through.objects.bulk_create(subject_links)

@@ -10,6 +10,8 @@ from alexandria.utils.test_helpers import (
     get_default_item_type,
     get_default_patron_user,
     get_default_staff_user,
+    get_test_item,
+    get_default_collection,
 )
 
 
@@ -307,3 +309,71 @@ class TestUserFunctions:
         user.save()
 
         assert user.account_type.get_all_itemtype_hold_limits() == {itemtype: 1000}
+
+    def test_can_checkout_item(self):
+        user = get_default_patron_user()
+        item = get_test_item()
+        # this is a clean item. This should work.
+        assert user.can_checkout_item(item)[0]
+
+    def test_can_checkout_item_inactive_item(self):
+        user = get_default_patron_user()
+        item = get_test_item()
+
+        item.is_active = False
+        item.save()
+
+        assert not user.can_checkout_item(item)[0]
+
+    def test_can_checkout_item_noncirculating_item(self):
+        user = get_default_patron_user()
+        item = get_test_item()
+
+        item.can_circulate = False
+        item.save()
+
+        assert not user.can_checkout_item(item)[0]
+
+    def test_can_checkout_item_noncirculating_collection_item(self):
+        user = get_default_patron_user()
+        collection = get_default_collection()
+        item = get_test_item(collection=collection)
+        item.collection.can_circulate = False
+        item.save()
+
+        assert not user.can_checkout_item(item)[0]
+
+    def test_can_checkout_item_blocked_account(self):
+        user = get_default_patron_user()
+        item = get_test_item()
+
+        user.account_type.can_checkout_materials = False
+        user.save()
+
+        assert not user.can_checkout_item(item)[0]
+
+    def test_can_checkout_item_blocked_itemtype(self):
+        user = get_default_patron_user()
+        item = get_test_item()
+
+        user.account_type.allowed_item_types.set([])
+        user.save()
+
+        assert not user.can_checkout_item(item)[0]
+
+    def test_can_checkout_item_at_limits(self):
+        user = get_default_patron_user()
+        item = get_test_item()
+
+        user.account_type.set_itemtype_checkout_limit(item.type, 0)
+        assert user.account_type.get_itemtype_checkout_limit(item.type) == 0
+
+        assert not user.can_checkout_item(item)[0]
+
+    def test_can_checkout_item_wrong_host(self):
+        user = get_default_patron_user()
+        item = get_test_item()
+        item.host = "asdf.com"
+        item.save()
+
+        assert not user.can_checkout_item(item)[0]

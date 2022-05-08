@@ -15,6 +15,7 @@
     ],
     "zenodotus_url": "https://zenodotus.alexandrialibrary.dev/api/",
     "zenodotus_auto_upload": true,
+    "zenodotus_auto_check_for_updates": true,
     "default_address_state_or_region": "IN",
     "default_address_city": "Indianapolis",
     "default_address_zip_code": "46227",
@@ -32,6 +33,7 @@
       "link_3_title": "Overdrive",
       "link_3_url": "https://example.com"
     },
-    "enable_openlibrary_cover_downloads": true
+    "enable_openlibrary_cover_downloads": true,
+    "max_checkout_session_hours": 24
   }
 }

@@ -1,23 +1,32 @@
-from django.http import HttpResponse
+from django.utils import timezone
 from rest_framework import status
-from rest_framework.decorators import action, authentication_classes
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from alexandria.api.authentication import (
-    CsrfExemptSessionAuthentication,
-    SessionAuthentication,
-)
+from alexandria.api.authentication import CsrfExemptSessionAuthentication
 from alexandria.api.serializers import HoldSerializer, ItemSerializer, RecordSerializer
-from alexandria.records.models import Hold, Item, ItemType, Record
+from alexandria.records.models import Hold, Item, ItemType, Record, CheckoutSession
 from alexandria.users.models import BranchLocation, User
 
-SUCCESS = 201
-HOLD_ALREADY_EXISTS = 409
-YOU_ALREADY_HAVE_THIS_CHECKED_OUT = 406
+# holds
+SUCCESS = status.HTTP_201_CREATED
+HOLD_ALREADY_EXISTS = status.HTTP_409_CONFLICT
+YOU_ALREADY_HAVE_THIS_CHECKED_OUT = status.HTTP_406_NOT_ACCEPTABLE
+MISSING_ITEM = status.HTTP_412_PRECONDITION_FAILED
+
+# checkout
+CHECKOUT_ERROR = status.HTTP_406_NOT_ACCEPTABLE
+NO_ACTIVE_SESSION = status.HTTP_410_GONE
+EXPIRED_SESSION = status.HTTP_423_LOCKED
+
+
+def message_response(message: str, status: int) -> Response:
+    # Helper function so I don't have to format it every time.
+    return Response(data={"message": str}, status=status)
 
 
 def create_hold(request, item, location, specific_copy=False) -> Response:
@@ -105,10 +114,10 @@ class HoldViewSet(GenericViewSet):
         if hold.placed_for != request.user:
             # Only staff or the person who placed the hold should be able to remove it.
             if not request.user.account_type.is_staff:
-                return Response(status=403)
+                return Response(status=status.HTTP_403_FORBIDDEN)
 
         hold.delete()
-        return Response(status=200)
+        return Response(status=status.HTTP_200_OK)
 
 
 class RecordViewSet(ModelViewSet):
@@ -162,11 +171,34 @@ class RecordViewSet(ModelViewSet):
             # be a valid target for the hold. But just in case there isn't... we should
             # handle it.
             # TODO: Add handling for this in holdbuttons.js
-            return Response(status=412)  # 412 precondition failed
+            return Response(status=MISSING_ITEM)
         return create_hold(request, item, location)
 
 
 class CheckoutViewSet(GenericViewSet):
     @action(methods=["post"], detail=False)
-    def start_checkout_session(self):
+    def checkout_item(self, request):
+        session: CheckoutSession = request.user.get_active_checkout_session()
+        if not session:
+            return message_response(
+                _("There is no checkout session currently active."), NO_ACTIVE_SESSION
+            )
+
+        # By default, a session is valid for 24 hours. Don't leave the browser tab open
+        # for more than a day.
+        if (
+            session.updated_at
+            + timezone.timedelta(
+                hours=request.context.get("max_checkout_session_hours", 24)
+            )
+            < timezone.now()
+        ):
+            session.delete()
+            return message_response(
+                _("The checkout session has expired."), EXPIRED_SESSION
+            )
+
+        item_id = request.data.get("item_id")
+        # Make sure we check for host!
+        item = get_object_or_404(Item, id=item_id)
         ...

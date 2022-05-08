@@ -11,6 +11,7 @@ Our documentation is [powered by Retype](https://retype.com), a Javascript-based
 ## Prerequisites
 
 * A desire to write great documentation!
+* A computer running MacOS or Ubuntu Linux
 
 ## Installing NodeJS + NPM
 

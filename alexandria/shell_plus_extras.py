@@ -3,6 +3,6 @@ This file is loaded automatically when you run `make shell`. Treat this as a scr
 runs in its entirety.
 """
 
-from rich import pretty, inspect
+from rich import inspect, pretty
 
 pretty.install()

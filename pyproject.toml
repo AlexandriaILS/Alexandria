@@ -69,5 +69,6 @@ omit = [
     "alexandria/shell_plus_extras.py",
     "alexandria/records/zenodotus_utils.py",
     "alexandria/utils/abebooks.py",
-    "alexandria/utils/gutenberg.py"
+    "alexandria/utils/gutenberg.py",
+    "alexandria/utils/type_hints.py",
 ]

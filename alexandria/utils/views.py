@@ -1,12 +1,12 @@
 from django.conf import settings
-from django.http import HttpRequest
 from django.shortcuts import HttpResponseRedirect, redirect, reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 
 from alexandria.distributed.configs import get_domains_from_configs
+from alexandria.utils.type_hints import Request
 
 
-def next_or_reverse(request: HttpRequest, view_name: str) -> str:
+def next_or_reverse(request: Request, view_name: str) -> str:
     # After typoing this too many times, it's now a helper function.
     # noinspection PyTypeChecker
     next = request.GET.get("next")
@@ -24,7 +24,7 @@ def next_or_reverse(request: HttpRequest, view_name: str) -> str:
         return reverse(view_name)
 
 
-def redirect_with_qsps(request: HttpRequest, view_name: str) -> HttpResponseRedirect:
+def redirect_with_qsps(request: Request, view_name: str) -> HttpResponseRedirect:
     return redirect(
         reverse(view_name)
         + "?"
