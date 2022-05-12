@@ -627,3 +627,6 @@ class CheckoutSession(TimeStampMixin):
     # e.g. request.user.get_active_checkout_session().
     checked_out_to = GenericForeignKey("content_type", "object_id")
     items = models.ManyToManyField(Item)
+
+    def get_receipt(self) -> str:
+        ...

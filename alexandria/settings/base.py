@@ -113,6 +113,7 @@ INSTALLED_APPS = [
     "alexandria.users",
     "alexandria.records",
     "alexandria.catalog",
+    "alexandria.receipts",
     "alexandria.money",
 ]
 

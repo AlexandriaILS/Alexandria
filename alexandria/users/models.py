@@ -541,6 +541,12 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         return checkout_model.objects.filter(session_user=self).first()
 
     def can_checkout_item(self, item: Item) -> tuple[bool, str]:
+        """
+        Check to see if the user can check out this particular item.
+
+        The messages contained here are passed directly to the staff front end
+        in the event of a failure.
+        """
         if item.host != self.host:
             # We know about this item, but it's not part of this system.
             # How did it even get here?
@@ -577,11 +583,9 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
                 " some."
             )
 
-        # guess you're good to go!
-        return (
-            True,
-            "Woo!",
-        )  # we don't actually need the message here, only if it fails
+        # Guess you're good to go!
+        # We don't actually need the message here, only if it fails
+        return True, "Woohoo!"
 
     ###
     # Abstractions

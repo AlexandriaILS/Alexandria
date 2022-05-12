@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -177,11 +178,12 @@ class RecordViewSet(ModelViewSet):
 
 class CheckoutViewSet(GenericViewSet):
     @action(methods=["post"], detail=False)
-    def checkout_item(self, request):
+    def checkout_item(self, request: Request) -> Response:
         session: CheckoutSession = request.user.get_active_checkout_session()
         if not session:
             return message_response(
-                _("There is no checkout session currently active."), NO_ACTIVE_SESSION
+                message=_("There is no checkout session currently active."),
+                status=NO_ACTIVE_SESSION,
             )
 
         # By default, a session is valid for 24 hours. Don't leave the browser tab open
@@ -195,10 +197,47 @@ class CheckoutViewSet(GenericViewSet):
         ):
             session.delete()
             return message_response(
-                _("The checkout session has expired."), EXPIRED_SESSION
+                message=_("The checkout session has expired."), status=EXPIRED_SESSION
             )
 
         item_id = request.data.get("item_id")
-        # Make sure we check for host!
+        patron_id = request.data.get("patron_id")
+
+        if not item_id:
+            return message_response(
+                message=_("Missing item ID... please try again."),
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not patron_id:
+            return message_response(
+                message=_("Missing patron ID... please try again."),
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         item = get_object_or_404(Item, id=item_id)
+        patron = get_object_or_404(User, card_number=patron_id)
+
+        check, message = patron.can_checkout_item(item)
+
+        if not check:
+            return message_response(message=message, status=CHECKOUT_ERROR)
+
+        # We got this far, so we can actually do the checkout thing now.
+        session.items.add(item)
+        return message_response(message=message, status=SUCCESS)
+
+    @action(methods=["post"], detail=False)
+    def get_receipt(self, request: Request) -> Response:
+        session: CheckoutSession = request.user.get_active_checkout_session()
+        if not session:
+            return message_response(
+                message=_("There is no checkout session currently active."),
+                status=NO_ACTIVE_SESSION,
+            )
+
+        # Even if the session is expired, we should be able to get the receipt and
+        # finish the session.
+
+        receipt_data = session.get_receipt()
         ...
