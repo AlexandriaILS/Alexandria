@@ -1,6 +1,13 @@
 from typing import Dict
 
-from alexandria.records.models import Hold, Item, ItemType, ItemTypeBase, Record
+from alexandria.records.models import (
+    Collection,
+    Hold,
+    Item,
+    ItemType,
+    ItemTypeBase,
+    Record,
+)
 from alexandria.users.models import AccountType, BranchLocation, User
 
 DEFAULT_SUPERUSER = {
@@ -37,6 +44,7 @@ DEFAULT_US_LOCATION = {
     "zip_code": "00000",
 }
 DEFAULT_BRANCH_LOCATION = {"name": "Central Library"}
+DEFAULT_COLLECTION = {"name": "Coolest Books"}
 DEFAULT_ACCOUNT_TYPE = {"name": "Default"}
 DEFAULT_RECORD = {"title": "Test Record"}
 DEFAULT_ITEM_TYPE = {"name": "Book"}
@@ -85,11 +93,26 @@ def get_default_branch_location(**kwargs):
 
 
 def get_default_accounttype(**kwargs):
+    allowed_item_types: list[ItemType] = kwargs.pop(
+        "allowed_item_types", [get_default_item_type()]
+    )
     data = {
         **DEFAULT_ACCOUNT_TYPE,
         **{key: kwargs[key] for key in kwargs if key in dir(AccountType)},
     }
     obj, _ = AccountType.objects.get_or_create(**data)
+    obj.allowed_item_types.set(allowed_item_types)
+    obj.save()
+
+    return obj
+
+
+def get_default_collection(**kwargs):
+    data = {
+        **DEFAULT_COLLECTION,
+        **{key: kwargs[key] for key in kwargs if key in dir(Collection)},
+    }
+    obj, _ = Collection.objects.get_or_create(**data)
     return obj
 
 

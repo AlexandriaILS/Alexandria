@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from datetime import datetime
+from typing import TYPE_CHECKING, Any, List
 
 from django.apps import apps
 from django.conf import settings
@@ -9,6 +10,7 @@ from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.mail import send_mail
 from django.db import models
+from django.db.models import QuerySet
 from django.forms import Form
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -18,14 +20,16 @@ from alexandria.distributed.configs import load_site_config
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 from alexandria.utils.models import TimeStampMixin
 from alexandria.utils.permissions import perm_to_permission
+from alexandria.utils.type_hints import Manager
 
 if TYPE_CHECKING:
-    from alexandria.records.models import ItemType
+    from alexandria.records.models import CheckoutSession, Item, ItemType
 
 BRANCH_SERIALIZER_SHORT_FIELDS = ["id", "name", "address__address_1"]
+CHECKOUT_SUCCESS = _("Checkout successful!")
 
 
-def get_default_accounttype():
+def get_default_accounttype() -> User:
     model = apps.get_model("users", "AccountType")
     return model.objects.get_or_create(name="Disabled")[0]
 
@@ -40,7 +44,7 @@ class UserManager(DjangoUserManager):
         password=None,
         first_name=None,
         **extra_fields,
-    ):
+    ) -> User:
         """
         Create and save a user with the given username, email, and password.
 
@@ -62,13 +66,25 @@ class UserManager(DjangoUserManager):
         user.save(using=self._db)
         return user
 
-    def create_user(self, card_number, email=None, password=None, **extra_fields):
+    def create_user(
+        self,
+        card_number: str,
+        email: str = None,
+        password: str = None,
+        **extra_fields: dict,
+    ) -> User:
         extra_fields["account_type"] = AccountType.objects.get_or_create(
             name="Default"
         )[0]
         return self._create_user(card_number, email, password, **extra_fields)
 
-    def create_superuser(self, card_number, email=None, password=None, **extra_fields):
+    def create_superuser(
+        self,
+        card_number: str,
+        email: str = None,
+        password: str = None,
+        **extra_fields: dict,
+    ) -> User:
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -100,7 +116,7 @@ class USLocation(TimeStampMixin):
         verbose_name = "US Location"
         verbose_name_plural = "US Locations"
 
-    def __str__(self):
+    def __str__(self) -> str:
         addy = f"{self.address_1}"
         if self.address_2:
             addy += f" {self.address_2}"
@@ -125,17 +141,26 @@ class BranchLocation(TimeStampMixin):
     )
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.address:
             return f"{self.name} - {self.address.address_1}"
         return f"{self.name}"
 
-    def get_serialized_short_fields(self):
+    def get_serialized_short_fields(self) -> dict[str, str]:
         return {
             "id": self.id,
             "name": self.name,
             "address__address_1": self.address.address_1 if self.address else None,
         }
+
+    def can_checkout_item(self, *args) -> tuple[bool, str]:
+        # This is only called when checking out an item to a branchlocation; as
+        # buildings have far less restrictions than patrons, you can always check
+        # out something to a branchlocation.
+        return True, CHECKOUT_SUCCESS
+
+    def get_display_name(self) -> str:
+        return f"{self.name}"
 
 
 class AccountType(TimeStampMixin, PermissionsMixin):
@@ -162,10 +187,12 @@ class AccountType(TimeStampMixin, PermissionsMixin):
         default=50,
         help_text=_("How many active holds is this account type allowed to have?"),
     )
-    allowed_item_types = models.ManyToManyField(
+    allowed_item_types: Manager[ItemType] = models.ManyToManyField(
         "records.ItemType",
         help_text=_(
-            'This account type will only be allowed to check out the listed item types here. If this is empty, all item types will be allowed. Use the "Can Checkout Materials" toggle to disable all checkouts.'
+            "This account type will only be allowed to check out the listed item types"
+            ' here. If this is empty, all item types will be allowed. Use the "Can'
+            ' Checkout Materials" toggle to disable all checkouts.'
         ),
     )
     can_checkout_materials = models.BooleanField(
@@ -186,17 +213,17 @@ class AccountType(TimeStampMixin, PermissionsMixin):
         verbose_name = _("account type")
         verbose_name_plural = _("account types")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     @property
-    def is_anonymous(self):
+    def is_anonymous(self) -> bool:
         # abstraction to make django happy when looking at permissions.
         return False
 
-    def get_all_itemtype_checkout_limits(self) -> dict:
+    def get_all_itemtype_checkout_limits(self) -> dict[ItemType, int]:
         """
-        Retrieve a formatted dict with all the checkout limits by itemtype.
+        Retrieve a formatted dict with all the checkout limits by ItemType.
 
         Warning: this has the possibility to be fairly heavy, so use the other
         helpers to request / set single objects at a time if you can.
@@ -205,7 +232,7 @@ class AccountType(TimeStampMixin, PermissionsMixin):
         limits = {}
         # grab all the objects we need in one call and load them into memory
         type_objects = item_type.objects.filter(
-            id__in=self._itemtype_checkout_limits.keys()
+            id__in=self._itemtype_checkout_limits.keys(), host=self.host
         )
 
         for model_id, value in self._itemtype_checkout_limits.items():
@@ -213,9 +240,9 @@ class AccountType(TimeStampMixin, PermissionsMixin):
 
         return limits
 
-    def get_all_itemtype_hold_limits(self) -> dict:
+    def get_all_itemtype_hold_limits(self) -> dict[ItemType, int]:
         """
-        Retrieve a formatted dict with all the hold limits by itemtype.
+        Retrieve a formatted dict with all the hold limits by ItemType.
 
         Same warning as above applies here.
         """
@@ -231,8 +258,9 @@ class AccountType(TimeStampMixin, PermissionsMixin):
         return limits
 
     def get_itemtype_checkout_limit(self, obj: ItemType) -> int:
+        """Override how many of a particular item type can we check out at once?"""
         return self._itemtype_checkout_limits.get(
-            obj.id, default=obj.number_of_days_per_checkout
+            obj.id, obj.number_of_concurrent_checkouts
         )
 
     def set_itemtype_checkout_limit(self, obj: ItemType, limit: int) -> None:
@@ -240,15 +268,14 @@ class AccountType(TimeStampMixin, PermissionsMixin):
         self.save()
 
     def get_itemtype_hold_limit(self, obj: ItemType) -> int:
-        return self._itemtype_hold_limits.get(
-            obj.id, default=obj.number_of_allowed_renews
-        )
+        """Override how many of this item type can we have on hold at once."""
+        return self._itemtype_hold_limits.get(obj.id, obj.number_of_concurrent_holds)
 
     def set_itemtype_hold_limit(self, obj: ItemType, limit: int) -> None:
         self._itemtype_hold_limits.update({obj.id: limit})
         self.save()
 
-    def update_from_form(self, form):
+    def update_from_form(self, form) -> None:
         for key in form.cleaned_data.keys():
             if key == "permissions":
                 continue
@@ -315,24 +342,26 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
 
     SEARCHABLE_FIELDS = ["first_name", "last_name"]
 
-    card_number = models.CharField(primary_key=True, max_length=50)
+    card_number: str = models.CharField(primary_key=True, max_length=50)
     # We only need one address; no need to keep their history.
-    address = models.ForeignKey(
+    address: USLocation = models.ForeignKey(
         USLocation, on_delete=models.CASCADE, null=True, blank=True
     )
-    title = models.CharField(_("title"), max_length=50, null=True, blank=True)
+    title: str = models.CharField(_("title"), max_length=50, null=True, blank=True)
 
     # first name is mandatory, last name is optional
-    first_name = models.CharField(_("first name"), max_length=255)
-    last_name = models.CharField(_("last name"), max_length=255, null=True, blank=True)
-    email = models.EmailField(_("email address"), blank=True)
-    is_minor = models.BooleanField(
+    first_name: str = models.CharField(_("first name"), max_length=255)
+    last_name: str = models.CharField(
+        _("last name"), max_length=255, null=True, blank=True
+    )
+    email: str = models.EmailField(_("email address"), blank=True)
+    is_minor: bool = models.BooleanField(
         default=False,
         help_text=_(
             "Check if the person this account belongs to is legally considered a minor."
         ),
     )
-    birth_year = models.IntegerField(
+    birth_year: int = models.IntegerField(
         _("birth year"),
         blank=True,
         null=True,
@@ -342,9 +371,9 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         ),
     )
 
-    notes = models.TextField(_("notes"), blank=True, null=True)
+    notes: str = models.TextField(_("notes"), blank=True, null=True)
 
-    is_active = models.BooleanField(
+    is_active: bool = models.BooleanField(
         _("active"),
         default=True,
         help_text=_(
@@ -352,14 +381,17 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
             "Unselect this instead of deleting accounts."
         ),
     )
-    date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
+    date_joined: datetime = models.DateTimeField(_("date joined"), default=timezone.now)
 
-    checkouts = GenericRelation(
+    checkouts: Manager[Item] = GenericRelation(
         "records.Item", related_query_name="user_checked_out_to"
     )
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    checkout_session: Manager[CheckoutSession] = GenericRelation(
+        "records.CheckoutSession", related_query_name="user_session_target"
+    )
+    host: str = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
     # for setting holds
-    default_branch = models.ForeignKey(
+    default_branch: BranchLocation = models.ForeignKey(
         BranchLocation,
         on_delete=models.SET_NULL,
         null=True,
@@ -367,7 +399,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         related_name="default_branch",
     )
     # employees need a default branch to be assigned to
-    work_branch = models.ForeignKey(
+    work_branch: BranchLocation = models.ForeignKey(
         BranchLocation,
         on_delete=models.SET_NULL,
         null=True,
@@ -375,7 +407,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         related_name="work_location",
     )
 
-    account_type = models.ForeignKey(
+    account_type: AccountType = models.ForeignKey(
         AccountType, on_delete=models.SET(get_default_accounttype)
     )
 
@@ -385,10 +417,10 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
 
     objects = UserManager()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.card_number)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.update_searchable_fields()
         super().save(*args, **kwargs)
 
@@ -420,15 +452,17 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
-    def get_branches(self):
-        return BranchLocation.objects.filter(
-            host=self.host, open_to_public=True
-        ).order_by("name")
+    def get_branches(self, get_all: bool = False) -> QuerySet[BranchLocation]:
+        args = {"host": self.host}
+        if not get_all:
+            args |= {"open_to_public": True}
+
+        return BranchLocation.objects.filter(**args).order_by("name")
 
     def get_serializable_branches(self) -> list:
         return list(self.get_branches().values(*BRANCH_SERIALIZER_SHORT_FIELDS))
 
-    def get_default_branch(self):
+    def get_default_branch(self) -> BranchLocation:
         if not self.default_branch:
             # this shouldn't really happen, but we can at least correct for it if it does
             self.default_branch = BranchLocation.objects.get(
@@ -437,7 +471,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
             self.save()
         return self.default_branch
 
-    def get_work_branch(self):
+    def get_work_branch(self) -> BranchLocation | None:
         # Return the default working branch for a staff user.
         if not self.account_type.is_staff:
             return None
@@ -448,18 +482,40 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
             self.save()
         return self.work_branch
 
-    def get_branches_for_holds(self):
+    def get_branches_for_holds(
+        self,
+    ) -> dict[str, BranchLocation | list[BranchLocation]]:
         # Return a dict where the user default is directly available.
         # wrap default in queryset
         default_branch = BranchLocation.objects.filter(id=self.get_default_branch().id)
         branches = self.get_branches().exclude(pk__in=default_branch).order_by("name")
-        data = {
+        return {
             "default": default_branch.first().get_serialized_short_fields(),
             "others": [branch.get_serialized_short_fields() for branch in branches],
         }
-        return data
 
-    def _get_users(self, is_staff: bool):
+    def get_branches_for_checkout(
+        self,
+    ) -> dict[str, BranchLocation | list[BranchLocation]]:
+        default_branch = BranchLocation.objects.filter(id=self.get_default_branch().id)
+        branches = (
+            self.get_branches(get_all=True)
+            .exclude(pk__in=default_branch)
+            .order_by("name")
+        )
+        return {
+            "default": default_branch.first().get_serialized_short_fields(),
+            "others": [branch.get_serialized_short_fields() for branch in branches],
+        }
+
+    def get_system_branches(self) -> QuerySet[BranchLocation]:
+        # formats system branches using the `branch_dropdown_with_default_on_top`
+        # template.
+        return BranchLocation.objects.filter(
+            host=settings.DEFAULT_SYSTEM_HOST_KEY
+        ).order_by("name")
+
+    def _get_users(self, is_staff: bool) -> QuerySet[User]:
         qs = User.objects.filter(account_type__is_staff=is_staff, host=self.host)
         if not self.account_type.is_superuser:
             # superusers can edit themselves
@@ -467,7 +523,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
 
         return qs.order_by("last_name", "first_name")
 
-    def get_shortened_name(self):
+    def get_shortened_name(self) -> str:
         """
         Return first name and initial of last name.
 
@@ -497,23 +553,79 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         self.address.save()
         self.save()
 
-    def get_viewable_staff(self):
+    def get_viewable_staff(self) -> QuerySet[User] | list:
         # used to populate user management page
         if self.account_type.has_perm("users.read_staff_account"):
             return self._get_users(is_staff=True)
         return []
 
-    def get_viewable_patrons(self):
+    def get_viewable_patrons(self) -> QuerySet[User] | list:
         # Similar to self.get_viewable_staff, but for patrons only.
         if self.account_type.has_perm("users.read_patron_account"):
             return self._get_users(is_staff=False)
         return []
 
-    def get_account_types(self):
+    def get_account_types(self) -> QuerySet[AccountType]:
         return AccountType.objects.filter(host=self.host)
 
-    def get_checkouts(self):
+    def get_checkouts(self) -> QuerySet[Item]:
         return self.checkouts.all()
+
+    def get_active_checkout_session(self) -> CheckoutSession | None:
+        checkout_model = apps.get_model("records.CheckoutSession")
+        return checkout_model.objects.filter(session_user=self).first()
+
+    def can_checkout_item(self, item: Item) -> tuple[bool, str]:
+        """
+        Check to see if the user can check out this particular item.
+
+        The messages contained here are passed directly to the staff front end
+        in the event of a failure.
+        """
+        if item.host != self.host:
+            # We know about this item, but it's not part of this system.
+            # How did it even get here?
+            # TODO: Adjust this check for federated library systems
+            return False, _("This item belongs to a different library.")
+
+        if not self.account_type.can_checkout_materials:
+            # They aren't allowed to check out anything at all. Abort!
+            return False, _("This user is not allowed to check out materials.")
+
+        if not item.is_active or not item.can_circulate:
+            # How did they even get this thing?
+            return False, _("This item is not allowed to circulate.")
+
+        if item.collection:
+            if not item.collection.can_circulate:
+                # this is part of a special group. No circulating for you.
+                return False, _(
+                    "This item is part of a special collection that is not allowed to"
+                    " circulate."
+                )
+
+        itemtype = item.type
+
+        if itemtype not in self.account_type.allowed_item_types.all():
+            # whoops. They can check out some things, but not this thing!
+            return False, _("This user is not allowed to check out this type of item.")
+
+        itemtype_count = self.get_checkouts().filter(type=itemtype).count()
+        if itemtype_count >= self.account_type.get_itemtype_checkout_limit(itemtype):
+            # Sorry, at the limit for what you can check out for this type.
+            return False, _(
+                "This user cannot check out more of this type of item until they return"
+                " some."
+            )
+
+        # Guess you're good to go!
+        # We don't actually need the message here, only if it fails
+        return True, CHECKOUT_SUCCESS
+
+    def get_display_name(self) -> str:
+        if self.last_name:
+            return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name}"
 
     ###
     # Abstractions

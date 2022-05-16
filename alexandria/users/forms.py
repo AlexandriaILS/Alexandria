@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import Permission
 from django.utils.translation import gettext as _
 
-from alexandria.users.models import AccountType, BranchLocation
+from alexandria.users.models import BranchLocation
 
 
 class PatronForm(forms.Form):

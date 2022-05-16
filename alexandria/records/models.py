@@ -3,7 +3,6 @@ import zoneinfo
 from datetime import date, timedelta
 
 import pymarc
-import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -13,7 +12,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from taggit.managers import TaggableManager
 
-from alexandria.records import openlibrary
+from alexandria.receipts.models import Receipt, ReceiptContainer
 from alexandria.records.mixins import CoverUtilitiesMixin
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 from alexandria.users.models import BranchLocation, User
@@ -132,10 +131,25 @@ class ItemType(TimeStampMixin):
     name = models.CharField(max_length=40)
     base = models.ForeignKey(ItemTypeBase, on_delete=models.CASCADE)
     # Movies might be only checkout-able for three days, but books might get 21.
-    number_of_days_per_checkout = models.IntegerField(null=True, blank=True)
+    number_of_days_per_checkout = models.IntegerField(
+        default=21,
+        help_text=_("How many days can this item type be checked out for?"),
+    )
     # Movies might only have one renew, but books might have five.
-    number_of_allowed_renews = models.IntegerField(null=True, blank=True)
-    number_of_concurrent_checkouts = models.IntegerField(null=True, blank=True)
+    number_of_allowed_renews = models.IntegerField(
+        default=5,
+        help_text=_("How many times can this item type be renewed?"),
+    )
+    number_of_concurrent_checkouts = models.IntegerField(
+        default=100,
+        help_text=_("How many of this item type can be checked out at the same time?"),
+    )
+    number_of_concurrent_holds = models.IntegerField(
+        default=25,
+        help_text=_(
+            "How many of this item type can be placed on hold at the same time?"
+        ),
+    )
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
     icon_name = models.CharField(
         _("icon name"),
@@ -156,7 +170,7 @@ class ItemType(TimeStampMixin):
             " SVG html here to display that instead. WARNING: must be fully formed SVG"
             " element; it will not be saved otherwise. Make sure that your `path`"
             ' tag has `fill="currentColor"` in it so that colors work correctly and'
-            " ensure that it displays well as 36px by 36px."
+            " ensure that it displays well at 36px by 36px."
         ),
     )
 
@@ -350,8 +364,8 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
             )
         },
     )
-    object_id = models.PositiveIntegerField(null=True, blank=True)
-    # Note: do not try to access this directly -- the database doesn't like that.
+    object_id = models.CharField(max_length=50, null=True, blank=True)
+    # Note: do not try to filter on this -- the database doesn't like that.
     # Go through the object on the other side, e.g. request.user.get_checkouts().
     checked_out_to = GenericForeignKey("content_type", "object_id")
 
@@ -590,3 +604,32 @@ class Hold(TimeStampMixin):
 
     def get_status_for_staff(self):
         ...
+
+
+class CheckoutSession(TimeStampMixin):
+    session_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(
+        DjangoContentType,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        limit_choices_to={
+            "model__in": (
+                "branchlocation",
+                "alexandriauser",
+            )
+        },
+    )
+    object_id = models.CharField(max_length=50, null=True, blank=True)
+    # Note: do not try to filter on this directly -- the database doesn't like that.
+    # Go through the object on the other side.
+    session_target = GenericForeignKey("content_type", "object_id")
+    items = models.ManyToManyField(Item)
+
+    def get_receipt(self) -> str:
+        container = ReceiptContainer.objects.get(host=self.session_user.host)
+        return container.checkout_receipt.body
+
+    def is_expired(self) -> bool:
+        """Checkout sessions can only last for 24 hours without being updated."""
+        return self.updated_at + timezone.timedelta(hours=24) < timezone.now()

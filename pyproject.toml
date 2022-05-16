@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "alexandria"
-version = "0.51.0"
+version = "0.52.0"
 description = "Bespoke. Books. Battlestar Galactica."
 authors = ["Joe Kaufeld <alexandria@joekaufeld.com>"]
 
@@ -22,6 +22,8 @@ django-taggit = { git = "https://github.com/jazzband/django-taggit.git" }
 django-debug-toolbar = "^3.2.4"
 djangorestframework = "^3.13.1"
 psycopg2-binary = "^2.9.3"
+rich = "^12.3.0"
+django-htmx = "^1.11.0"
 
 [tool.poetry.dev-dependencies]
 better_exceptions = "^0.2.2"
@@ -65,7 +67,9 @@ omit = [
     "alexandria/conftest.py",
     "*/management/commands/*",
     "alexandria/middleware.py",
+    "alexandria/shell_plus_extras.py",
     "alexandria/records/zenodotus_utils.py",
     "alexandria/utils/abebooks.py",
-    "alexandria/utils/gutenberg.py"
+    "alexandria/utils/gutenberg.py",
+    "alexandria/utils/type_hints.py",
 ]

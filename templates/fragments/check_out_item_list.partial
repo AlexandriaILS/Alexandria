@@ -1,0 +1,42 @@
+{% load i18n %}
+
+<div id="checkoutList">
+    {% for item in items reversed %}
+        {% if not forloop.first %}
+            <div class="container">
+                <hr>
+            </div>{% endif %}
+        <div class="row mt-3">
+            <div class="col-md-1 text-center">
+                <div class="col mt-3">
+                    {% include 'partials/details/itemtype_icon.partial' %}
+                </div>
+            </div>
+            <div class="col-md-8 mt-3">
+                <div class="row">
+                    <div class="col d-flex align-items-center fs-5">
+                        {% icon name="info" description="Item information" %}
+                        {{ item.record.title|truncatechars:78 }}
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col d-flex align-items-center fs-5">
+                        {% include 'partials/details/barcode.partial' %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row mt-3">
+                    <div class="col-2 col-md-0 col-lg-2"></div>
+                    <div class="col-8 col-md-12 col-lg-8 text-center mt-2" style="height:100%">
+                        <div class="d-flex align-items-center">
+                            {% icon name="access_alarms" description="Item due date" %}
+                            <div class="badge bg-{{ item.get_due_date_color_class }} fs-5">{{ item.calculate_due_date }}</div>
+                        </div>
+                    </div>
+                    <div class="col-2 col-md-0 col-lg-2"></div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

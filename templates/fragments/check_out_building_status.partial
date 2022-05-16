@@ -1,0 +1,55 @@
+{% load i18n %}
+
+<div class="mt-5" data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkoutContainer">
+    <div class="row mb-4">
+        <div class="col-12 col-md-8 mb-2">
+            {% include 'partials/branch_dropdown_with_default_on_top.partial' with branches=request.user.get_branches_for_checkout %}
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="d-grid">
+                <button class="btn btn-primary"
+                        data-hx-post="{% url 'check_out_set_target_htmx' %}"
+                        data-hx-trigger="click"
+                        data-hx-include="[name='branch_select']"
+                        data-hx-swap="outerHTML"
+                        data-hx-target="#checkoutContainer"
+                >{% translate "Check out to branch" %}</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-md-8 mb-2">
+            <select class="form-select" id="branchDropdown" name="system_branch_select"
+                    aria-label="Pick your branch!">
+                {% for branch in request.user.get_system_branches %}
+                    <option
+                            {% if forloop.first %}selected{% endif %}
+                            value="{{ branch.id }}">{{ branch.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary"
+                        data-hx-post="{% url 'check_out_set_target_htmx' %}"
+                        data-hx-trigger="click"
+                        data-hx-include="[name='system_branch_select']"
+                        data-hx-swap="outerHTML"
+                        data-hx-target="#checkoutContainer"
+                >{% translate "Check out to system status" %}</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button class="btn btn-secondary btn-lg mt-5"
+                data-hx-get="{% url 'check_out_htmx' %}"
+                data-hx-trigger="click"
+                data-hx-swap="outerHTML"
+                data-hx-target="#checkoutContainer"
+        >
+            {% translate "Back" %}
+        </button>
+    </div>
+</div>

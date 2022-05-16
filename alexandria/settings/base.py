@@ -104,6 +104,7 @@ INSTALLED_APPS = [
     "slippers",
     "taggit",
     "rest_framework",
+    "django_htmx",
     # first party
     "alexandria.api",
     "alexandria.searchablefields",
@@ -113,6 +114,7 @@ INSTALLED_APPS = [
     "alexandria.users",
     "alexandria.records",
     "alexandria.catalog",
+    "alexandria.receipts",
     "alexandria.money",
 ]
 
@@ -128,6 +130,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
     "alexandria.distributed.middleware.ContextUpdateMiddleware",
 ]
 
@@ -222,6 +225,8 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
 DEFAULT_FROM_EMAIL = "no-reply@alexandrialibraries.dev"
 SERVER_EMAIL = "thefabled@alexandrialibraries.dev"
+
+SHELL_PLUS_IMPORTS = ["from alexandria.shell_plus_extras import *"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",

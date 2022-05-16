@@ -3,6 +3,7 @@ import string
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from rich.progress import track
 
 from alexandria.users.models import AccountType, BranchLocation, User, USLocation
 from alexandria.utils import us_state_to_abbrev
@@ -35,7 +36,7 @@ class Command(BaseCommand):
             )
         )
 
-        for _ in range(count):
+        for _ in track(range(count), description="[green]Generating staff..."):
             location = USLocation.objects.create(
                 address_1=address.address(),
                 city=address.city(),
@@ -58,6 +59,4 @@ class Command(BaseCommand):
             newbie.set_password("asdf")
             newbie.save()
 
-        self.stdout.write(
-            self.style.SUCCESS(f"Created {str(count)} new staff members!")
-        )
+        self.stdout.write(self.style.NOTICE(f"Created {str(count)} new staff members."))

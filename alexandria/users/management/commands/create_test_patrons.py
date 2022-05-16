@@ -4,6 +4,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from rich.progress import track
 
 from alexandria.users.models import AccountType, BranchLocation, User, USLocation
 from alexandria.utils import us_state_to_abbrev
@@ -35,9 +36,7 @@ class Command(BaseCommand):
             open_to_public=True, host=settings.DEFAULT_HOST_KEY
         )
 
-        self.stdout.write("Generating locations...")
-
-        for x in range(count):
+        for x in track(range(count), description="[green]Generating locations..."):
             addresses.append(
                 USLocation(
                     address_1=address.address(),
@@ -55,8 +54,7 @@ class Command(BaseCommand):
             hold_limit=25,
         )
 
-        self.stdout.write("Generating patrons...")
-        for x in range(count):
+        for x in track(range(count), description="[green]Generating patrons..."):
             age = person.age(minimum=0)
 
             people.append(
@@ -79,4 +77,4 @@ class Command(BaseCommand):
 
         User.objects.bulk_create(people)
 
-        self.stdout.write(self.style.SUCCESS(f"Created {str(count)} new patrons!"))
+        self.stdout.write(self.style.NOTICE(f"Created {str(count)} new patrons."))
