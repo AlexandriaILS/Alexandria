@@ -3,7 +3,6 @@ import zoneinfo
 from datetime import date, timedelta
 
 import pymarc
-import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -13,7 +12,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from taggit.managers import TaggableManager
 
-from alexandria.records import openlibrary
+from alexandria.receipts.models import Receipt, ReceiptContainer
 from alexandria.records.mixins import CoverUtilitiesMixin
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 from alexandria.users.models import BranchLocation, User
@@ -365,8 +364,8 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
             )
         },
     )
-    object_id = models.PositiveIntegerField(null=True, blank=True)
-    # Note: do not try to access this directly -- the database doesn't like that.
+    object_id = models.CharField(max_length=50, null=True, blank=True)
+    # Note: do not try to filter on this -- the database doesn't like that.
     # Go through the object on the other side, e.g. request.user.get_checkouts().
     checked_out_to = GenericForeignKey("content_type", "object_id")
 
@@ -621,12 +620,16 @@ class CheckoutSession(TimeStampMixin):
             )
         },
     )
-    object_id = models.PositiveIntegerField(null=True, blank=True)
-    # Note: do not try to access this directly -- the database doesn't like that.
-    # Go through the object on the other side,
-    # e.g. request.user.get_active_checkout_session().
-    checked_out_to = GenericForeignKey("content_type", "object_id")
+    object_id = models.CharField(max_length=50, null=True, blank=True)
+    # Note: do not try to filter on this directly -- the database doesn't like that.
+    # Go through the object on the other side.
+    session_target = GenericForeignKey("content_type", "object_id")
     items = models.ManyToManyField(Item)
 
     def get_receipt(self) -> str:
-        ...
+        container = ReceiptContainer.objects.get(host=self.session_user.host)
+        return container.checkout_receipt.body
+
+    def is_expired(self) -> bool:
+        """Checkout sessions can only last for 24 hours without being updated."""
+        return self.updated_at + timezone.timedelta(hours=24) < timezone.now()

@@ -1,0 +1,18 @@
+{% if messages %}
+    <div class="d-grid">
+        {% for message in messages %}
+            <div
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                        class="alert alert-danger alert-dismissible fade show"
+                    {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                        class="alert alert-success alert-dismissible fade show"
+                    {% else %}
+                        class="alert alert-dark alert-dismissible fade show"
+                    {% endif %}
+                        role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

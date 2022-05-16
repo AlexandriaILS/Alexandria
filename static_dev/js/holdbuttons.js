@@ -65,7 +65,7 @@ function processHold() {
         url = url.replace("THING", "records")
     }
 
-    let locationId = document.getElementById('holdBranchSelector').value;
+    let locationId = document.getElementById('branchDropdownWithDefaultOnTop').value;
     let postData = {"item_type_id": parseInt(window.holdContext['subitemId']), "location_id": parseInt(locationId)}
 
     const toastId = `toast${window.holdContext['itemId']}-${window.holdContext['subitemId']}`;

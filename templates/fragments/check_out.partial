@@ -1,0 +1,76 @@
+{% load i18n %}
+
+<div class="mt-5" data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkoutContainer">
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            <p>Currently checking out to <span
+                    class="badge bg-secondary fs-6">{{ checkout_session.session_target.get_display_name }}</span></p>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="row">
+                <div class="col-8 d-grid gap-2">
+                    <div class="btn btn-success"
+                         data-hx-get="{% url 'check_out_session_finish_htmx' %}"
+                         data-hx-trigger="click"
+                         data-hx-swap="outerHTML"
+                         data-hx-target="#checkoutContainer"
+                    >{% translate "Finish" %}</div>
+                </div>
+                <div class="col-4 d-grid">
+                    <div class="btn btn-outline-danger"
+                         data-hx-get="{% url 'check_out_session_cancel_htmx' %}"
+                         data-hx-trigger="click"
+                         data-hx-swap="outerHTML"
+                         data-hx-target="#checkoutContainer"
+                    >{% translate "Cancel" %}</div>
+                </div>
+            </div>
+        </div>
+
+        <form
+                data-hx-post="{% url 'check_out_item_htmx' %}"
+                data-hx-target="#checkoutList"
+                data-hx-swap="innerHTML"
+        >
+            <div class="mb-4">
+                <label for="itemInput" class="form-label">{% translate "Scan item barcode" %}:</label>
+                <input type="text" class="form-control shadow form-control-lg" id="itemInput" name="item_id"
+                       placeholder="123">
+            </div>
+        </form>
+        <hr>
+
+        {% include 'fragments/check_out_item_list.partial' with items=checkout_session.items.all %}
+    </div>
+
+    <script>
+        document.body.addEventListener('htmx:beforeSwap', function (evt) {
+            // clear the input before handling errors
+            const barcode_field = document.getElementById('itemInput');
+            barcode_field.value = "";
+
+            const toastId = 'checkoutError';
+            let newtoast = null;
+
+            if (evt.detail.xhr.status === 200) {
+                return;
+            } else {
+                let message = JSON.parse(evt.detail.xhr.response)['message'];
+                if (toastAlreadyExists(`toast-${toastId}`)) {
+                    return
+                }
+                newtoast = createToastHTML(message, 'bg-danger', '', toastId, false);
+                evt.detail.isError = false;
+            }
+
+            document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
+
+            let toastEl = document.getElementById(`toast-${toastId}`);
+            let toast = new bootstrap.Toast(toastEl, {'delay': 8000});
+            toast.show();
+
+            toastEl.addEventListener('hidden.bs.toast', function (event) {
+                toastEl.remove();
+            });
+        });
+    </script>

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Any
+from typing import TYPE_CHECKING, Any, List
 
 from django.apps import apps
 from django.conf import settings
@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from alexandria.records.models import CheckoutSession, Item, ItemType
 
 BRANCH_SERIALIZER_SHORT_FIELDS = ["id", "name", "address__address_1"]
+CHECKOUT_SUCCESS = _("Checkout successful!")
 
 
 def get_default_accounttype() -> User:
@@ -151,6 +152,15 @@ class BranchLocation(TimeStampMixin):
             "name": self.name,
             "address__address_1": self.address.address_1 if self.address else None,
         }
+
+    def can_checkout_item(self, *args) -> tuple[bool, str]:
+        # This is only called when checking out an item to a branchlocation; as
+        # buildings have far less restrictions than patrons, you can always check
+        # out something to a branchlocation.
+        return True, CHECKOUT_SUCCESS
+
+    def get_display_name(self) -> str:
+        return f"{self.name}"
 
 
 class AccountType(TimeStampMixin, PermissionsMixin):
@@ -376,6 +386,9 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
     checkouts: Manager[Item] = GenericRelation(
         "records.Item", related_query_name="user_checked_out_to"
     )
+    checkout_session: Manager[CheckoutSession] = GenericRelation(
+        "records.CheckoutSession", related_query_name="user_session_target"
+    )
     host: str = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
     # for setting holds
     default_branch: BranchLocation = models.ForeignKey(
@@ -439,10 +452,12 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
-    def get_branches(self) -> QuerySet[BranchLocation]:
-        return BranchLocation.objects.filter(
-            host=self.host, open_to_public=True
-        ).order_by("name")
+    def get_branches(self, get_all: bool = False) -> QuerySet[BranchLocation]:
+        args = {"host": self.host}
+        if not get_all:
+            args |= {"open_to_public": True}
+
+        return BranchLocation.objects.filter(**args).order_by("name")
 
     def get_serializable_branches(self) -> list:
         return list(self.get_branches().values(*BRANCH_SERIALIZER_SHORT_FIELDS))
@@ -474,11 +489,31 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         # wrap default in queryset
         default_branch = BranchLocation.objects.filter(id=self.get_default_branch().id)
         branches = self.get_branches().exclude(pk__in=default_branch).order_by("name")
-        data = {
+        return {
             "default": default_branch.first().get_serialized_short_fields(),
             "others": [branch.get_serialized_short_fields() for branch in branches],
         }
-        return data
+
+    def get_branches_for_checkout(
+        self,
+    ) -> dict[str, BranchLocation | list[BranchLocation]]:
+        default_branch = BranchLocation.objects.filter(id=self.get_default_branch().id)
+        branches = (
+            self.get_branches(get_all=True)
+            .exclude(pk__in=default_branch)
+            .order_by("name")
+        )
+        return {
+            "default": default_branch.first().get_serialized_short_fields(),
+            "others": [branch.get_serialized_short_fields() for branch in branches],
+        }
+
+    def get_system_branches(self) -> QuerySet[BranchLocation]:
+        # formats system branches using the `branch_dropdown_with_default_on_top`
+        # template.
+        return BranchLocation.objects.filter(
+            host=settings.DEFAULT_SYSTEM_HOST_KEY
+        ).order_by("name")
 
     def _get_users(self, is_staff: bool) -> QuerySet[User]:
         qs = User.objects.filter(account_type__is_staff=is_staff, host=self.host)
@@ -585,7 +620,12 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
 
         # Guess you're good to go!
         # We don't actually need the message here, only if it fails
-        return True, "Woohoo!"
+        return True, CHECKOUT_SUCCESS
+
+    def get_display_name(self) -> str:
+        if self.last_name:
+            return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name}"
 
     ###
     # Abstractions

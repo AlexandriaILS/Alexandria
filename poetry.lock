@@ -204,6 +204,17 @@ python-versions = ">=3.6"
 Django = ">=2.2"
 
 [[package]]
+name = "django-htmx"
+version = "1.11.0"
+description = "Extensions for using Django with htmx."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+Django = ">=3.2"
+
+[[package]]
 name = "django-localflavor"
 version = "3.1"
 description = "Country-specific Django helpers"
@@ -701,7 +712,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "8676d882271c26f4ef099455c0d000752dc608509f316fe46c5a4d384a96c9dd"
+content-hash = "3e022dc0a2dc4e21eeca40a3d6a0d56a7f937725c06fa0b2ff8be964b45dd795"
 
 [metadata.files]
 appdirs = [
@@ -820,6 +831,10 @@ django-decorator-include = [
 django-extensions = [
     {file = "django-extensions-3.1.5.tar.gz", hash = "sha256:28e1e1bf49f0e00307ba574d645b0af3564c981a6dfc87209d48cb98f77d0b1a"},
     {file = "django_extensions-3.1.5-py3-none-any.whl", hash = "sha256:9238b9e016bb0009d621e05cf56ea8ce5cce9b32e91ad2026996a7377ca28069"},
+]
+django-htmx = [
+    {file = "django-htmx-1.11.0.tar.gz", hash = "sha256:aab226778ba409d0cf019c549b9fc6881b8a7b10555cd535fba6499c2cef707c"},
+    {file = "django_htmx-1.11.0-py3-none-any.whl", hash = "sha256:9e6403869f41d3a86d356a01aee852e0de03ccfe64c8dab836324d473fb3caf8"},
 ]
 django-localflavor = [
     {file = "django-localflavor-3.1.tar.gz", hash = "sha256:ac2fa377bbcba4cae95e97077d9e77c7f22b3d93e4845e2e133ba7e664043a44"},

@@ -1,12 +1,12 @@
 from typing import Dict
 
 from alexandria.records.models import (
+    Collection,
     Hold,
     Item,
     ItemType,
     ItemTypeBase,
     Record,
-    Collection,
 )
 from alexandria.users.models import AccountType, BranchLocation, User
 

@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand
 
 from alexandria.receipts.models import Receipt, ReceiptContainer
 
-
 # TODO: finish replacing placeholder data with actual variable references
 CHECKOUT_RECEIPT = """
 ^^^Checkouts^^^
@@ -108,22 +107,20 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         checkout, _ = Receipt.objects.get_or_create(
-            name="Default Checkout Receipt",
-            body=CHECKOUT_RECEIPT
+            name="Default Checkout Receipt", body=CHECKOUT_RECEIPT
         )
         hold, _ = Receipt.objects.get_or_create(
-            name="Default Hold Receipt",
-            body=HOLD_RECEIPT
+            name="Default Hold Receipt", body=HOLD_RECEIPT
         )
         monetary, _ = Receipt.objects.get_or_create(
-            name="Default Monetary Receipt",
-            body=MONETARY_RECEIPT
+            name="Default Monetary Receipt", body=MONETARY_RECEIPT
         )
         transport, _ = Receipt.objects.get_or_create(
-            name="Default Transport Receipt",
-            body=TRANSPORT_RECEIPT
+            name="Default Transport Receipt", body=TRANSPORT_RECEIPT
         )
-        container, _ = ReceiptContainer.objects.get_or_create(host=settings.DEFAULT_HOST_KEY)
+        container, _ = ReceiptContainer.objects.get_or_create(
+            host=settings.DEFAULT_HOST_KEY
+        )
         container.checkout_receipt = checkout
         container.hold_receipt = hold
         container.money_receipt = monetary
@@ -131,4 +128,3 @@ class Command(BaseCommand):
         container.save()
 
         self.stdout.write("Default system receipts created!")
-

@@ -26,8 +26,9 @@ from django.db.models.query import RawQuerySet
 from django.http import HttpRequest
 
 if typing.TYPE_CHECKING:
-    from alexandria.users.models import User
     from django.db.models.query import _T, _QuerySet, _Row
+
+    from alexandria.users.models import User
 
     ValuesQuerySet = _QuerySet[_T, _Row]
 
@@ -43,6 +44,7 @@ class Request(HttpRequest):
     user: User
     context: dict
     host: str
+    htmx: bool
 
 
 # Ripped wholesale from https://github.com/typeddjango/django-stubs because all I need

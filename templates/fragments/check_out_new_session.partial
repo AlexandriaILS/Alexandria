@@ -1,0 +1,62 @@
+{% load i18n %}
+
+<div class="mt-5" data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkoutContainer">
+    {% include 'partials/messages.partial' %}
+    {% #centered_column center_width=6 %}
+    <form>
+        <div class="mb-4">
+            <label for="cardNumberInput" class="form-label">{% translate "Scan patron card" %}:</label>
+            <input type="text" class="form-control shadow form-control-lg" id="cardNumberInput" name="card_number"
+                   placeholder="123456789">
+        </div>
+        <div class="text-center mt-4 mt-sm-5">
+            <button class="btn btn-primary btn-lg mt-2 mt-sm-0"
+                    data-hx-post="{% url 'check_out_set_target_htmx' %}"
+                    data-hx-trigger="click"
+                    data-hx-include="[name='card_number'], [name='branch_select']"
+                    data-hx-swap="outerHTML"
+                    data-hx-target="#checkoutContainer"
+            >{% translate "Start check out session" %}</button>
+            <button class="btn btn-secondary btn-lg mt-2 mt-sm-0"
+                    data-hx-get="{% url 'check_out_additional_options_htmx' %}"
+                    data-hx-trigger="click"
+                    data-hx-swap="outerHTML"
+                    data-hx-target="#checkoutContainer"
+            >
+                <div class="d-flex justify-content-center">
+                    {% translate "Additional check out options" as checkout_text %}
+                    {% icon name="more" description=checkout_text extrastyle="font-size: 30px;"%}
+                </div>
+            </button>
+        </div>
+    </form>
+    {% /centered_column %}
+</div>
+
+<script>
+    document.body.addEventListener('htmx:beforeSwap', function (evt) {
+        const toastId = 'checkoutError';
+        let newtoast = null;
+
+        if (evt.detail.xhr.status === 200) {
+            return;
+        } else {
+            let message = JSON.parse(evt.detail.xhr.response)['message'];
+            if (toastAlreadyExists(`toast-${toastId}`)) {
+                return
+            }
+            newtoast = createToastHTML(message, 'bg-danger', '', toastId, false);
+            evt.detail.isError = false;
+        }
+
+        document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
+
+        let toastEl = document.getElementById(`toast-${toastId}`);
+        let toast = new bootstrap.Toast(toastEl, {'delay': 8000});
+        toast.show();
+
+        toastEl.addEventListener('hidden.bs.toast', function (event) {
+            toastEl.remove();
+        });
+    });
+</script>

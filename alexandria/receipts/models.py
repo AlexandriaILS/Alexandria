@@ -10,8 +10,7 @@ class Receipt(TimeStampMixin):
 
     Each receipt is designed in https://receiptline.github.io/designer/
     (https://github.com/receiptline/receiptline) and they use the odd text
-    formatting shown there. 
-
+    formatting shown there.
     """
 
     name = models.CharField(max_length=255)
@@ -33,6 +32,7 @@ class ReceiptContainer(TimeStampMixin):
       - for example, a hold or entering a new item where the home location
           is not the work location of the person entering it
     """
+
     checkout_receipt = models.ForeignKey(
         Receipt,
         on_delete=models.SET_NULL,

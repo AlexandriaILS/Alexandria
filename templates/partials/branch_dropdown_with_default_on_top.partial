@@ -1,0 +1,12 @@
+{% load i18n %}
+
+{# Requires passing in a variable called `branches` that is either `get_branches_for_holds` or `get_branches_for_checkout` #}
+<select class="form-select" id="branchDropdownWithDefaultOnTop" name="branch_select" aria-label="Pick your branch!">
+    <option selected
+            value="{{ branches.default.id }}">{{ branches.default.name }}, {{ branches.default.address__address_1 }}
+        {% translate "(Default)" %}
+    </option>
+    {% for different_branch in branches.others %}
+        <option value="{{ different_branch.id }}">{{ different_branch.name }}, {{ different_branch.address__address_1 }}</option>
+    {% endfor %}
+</select>

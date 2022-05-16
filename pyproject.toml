@@ -23,6 +23,7 @@ django-debug-toolbar = "^3.2.4"
 djangorestframework = "^3.13.1"
 psycopg2-binary = "^2.9.3"
 rich = "^12.3.0"
+django-htmx = "^1.11.0"
 
 [tool.poetry.dev-dependencies]
 better_exceptions = "^0.2.2"

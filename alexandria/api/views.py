@@ -10,7 +10,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from alexandria.api.authentication import CsrfExemptSessionAuthentication
 from alexandria.api.serializers import HoldSerializer, ItemSerializer, RecordSerializer
-from alexandria.records.models import Hold, Item, ItemType, Record, CheckoutSession
+from alexandria.records.models import CheckoutSession, Hold, Item, ItemType, Record
 from alexandria.users.models import BranchLocation, User
 
 # holds
@@ -27,7 +27,7 @@ EXPIRED_SESSION = status.HTTP_423_LOCKED
 
 def message_response(message: str, status: int) -> Response:
     # Helper function so I don't have to format it every time.
-    return Response(data={"message": str}, status=status)
+    return Response(data={"message": message}, status=status)
 
 
 def create_hold(request, item, location, specific_copy=False) -> Response:
@@ -178,56 +178,6 @@ class RecordViewSet(ModelViewSet):
 
 class CheckoutViewSet(GenericViewSet):
     @action(methods=["post"], detail=False)
-    def checkout_item(self, request: Request) -> Response:
-        session: CheckoutSession = request.user.get_active_checkout_session()
-        if not session:
-            return message_response(
-                message=_("There is no checkout session currently active."),
-                status=NO_ACTIVE_SESSION,
-            )
-
-        # By default, a session is valid for 24 hours. Don't leave the browser tab open
-        # for more than a day.
-        if (
-            session.updated_at
-            + timezone.timedelta(
-                hours=request.context.get("max_checkout_session_hours", 24)
-            )
-            < timezone.now()
-        ):
-            session.delete()
-            return message_response(
-                message=_("The checkout session has expired."), status=EXPIRED_SESSION
-            )
-
-        item_id = request.data.get("item_id")
-        patron_id = request.data.get("patron_id")
-
-        if not item_id:
-            return message_response(
-                message=_("Missing item ID... please try again."),
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if not patron_id:
-            return message_response(
-                message=_("Missing patron ID... please try again."),
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        item = get_object_or_404(Item, id=item_id)
-        patron = get_object_or_404(User, card_number=patron_id)
-
-        check, message = patron.can_checkout_item(item)
-
-        if not check:
-            return message_response(message=message, status=CHECKOUT_ERROR)
-
-        # We got this far, so we can actually do the checkout thing now.
-        session.items.add(item)
-        return message_response(message=message, status=SUCCESS)
-
-    @action(methods=["post"], detail=False)
     def get_receipt(self, request: Request) -> Response:
         session: CheckoutSession = request.user.get_active_checkout_session()
         if not session:
@@ -239,5 +189,4 @@ class CheckoutViewSet(GenericViewSet):
         # Even if the session is expired, we should be able to get the receipt and
         # finish the session.
 
-        receipt_data = session.get_receipt()
-        ...
+        return Response({"receipt": session.get_receipt()})

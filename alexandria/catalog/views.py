@@ -1,13 +1,11 @@
 from urllib.parse import quote_plus
 
-from django.conf import settings
 from django.contrib.postgres.search import (
     SearchQuery,
     SearchRank,
     SearchVector,
     TrigramSimilarity,
 )
-from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator
 from django.db.models.aggregates import Count
 from django.db.models.expressions import F, Q
@@ -19,10 +17,11 @@ from alexandria.catalog.helpers import get_results_per_page
 from alexandria.records.models import Record
 from alexandria.users.helpers import add_patron_acted_as
 from alexandria.utils.db import query_debugger
+from alexandria.utils.type_hints import Request
 
 
 @csrf_exempt
-def index(request: WSGIRequest) -> HttpResponse:
+def index(request: Request) -> HttpResponse:
     if request.method == "POST":
         search_text = request.POST.get("search_text")
         return HttpResponseRedirect(
@@ -35,7 +34,7 @@ def index(request: WSGIRequest) -> HttpResponse:
 
 
 @query_debugger
-def search(request: WSGIRequest) -> HttpResponse:
+def search(request: Request) -> HttpResponse:
     context = dict()
     search_term = request.GET.get("q")
     if not search_term:

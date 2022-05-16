@@ -4,7 +4,6 @@ from urllib.parse import quote_plus
 import pymarc
 import requests
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, reverse
 from django.views.generic import View
@@ -12,9 +11,10 @@ from django.views.generic import View
 from alexandria.records.forms import CombinedRecordItemEditForm, LoCSearchForm
 from alexandria.records.marc import import_from_marc
 from alexandria.records.models import Item
+from alexandria.utils.type_hints import Request
 
 
-def add_from_loc(request: WSGIRequest) -> HttpResponse:
+def add_from_loc(request: Request) -> HttpResponse:
     context = dict()
 
     if request.method == "POST":
@@ -40,7 +40,7 @@ def add_from_loc(request: WSGIRequest) -> HttpResponse:
     return render(request, "catalog/add_from_loc.html", context)
 
 
-def import_marc_record_from_loc(request):
+def import_marc_record_from_loc(request: Request) -> HttpResponseRedirect:
     loc_id = request.GET.get("loc")
     record = pymarc.parse_xml_to_array(
         io.BytesIO(requests.get("https:" + loc_id + "/marcxml").content)
@@ -53,7 +53,7 @@ def import_marc_record_from_loc(request):
 class ItemEdit(PermissionRequiredMixin, View):
     permission_required = "change_item"
 
-    def get(self, request, item_id):
+    def get(self, request: Request, item_id: int) -> HttpResponse:
         item = get_object_or_404(Item, id=item_id)
         data = {
             "title": item.record.title,
@@ -76,7 +76,7 @@ class ItemEdit(PermissionRequiredMixin, View):
         form = CombinedRecordItemEditForm(initial=data)
         return render(request, "generic_form.html", {"form": form})
 
-    def post(self, request, item_id):
+    def post(self, request: Request, item_id: int) -> HttpResponse:
         item = get_object_or_404(Item, id=item_id)
         record = item.record
         form = CombinedRecordItemEditForm(request.POST)
@@ -103,3 +103,4 @@ class ItemEdit(PermissionRequiredMixin, View):
             record.save()
             item.save()
             return HttpResponseRedirect(reverse("item_detail", args=(item.id,)))
+        # todo: what happens if it falls through?

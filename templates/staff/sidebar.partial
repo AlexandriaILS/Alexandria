@@ -96,10 +96,10 @@
                 <div class="collapse" id="circ-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         {% if 'records.check_in' in perms %}
-                            <li><a href="#" class="link-dark rounded">{% translate "Check In" %}</a></li>
+                            <li><a href="{% url 'check_in' %}" class="link-dark rounded">{% translate "Check In" %}</a></li>
                         {% endif %}
                         {% if "records.check_out" in perms %}
-                            <li><a href="#" class="link-dark rounded">{% translate "Check Out" %}</a></li>
+                            <li><a href="{% url 'check_out' %}" class="link-dark rounded">{% translate "Check Out" %}</a></li>
                         {% endif %}
                         {% if 'users.create_patron_account' in perms %}
                             <li><a href="{% url 'create_patron' %}"

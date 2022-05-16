@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Permission
 from django.core.paginator import Paginator
 from django.db.models.expressions import Q
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
@@ -15,11 +15,12 @@ from alexandria.searchablefields.strings import clean_text
 from alexandria.users.forms import AccountTypeForm, StaffSettingsForm
 from alexandria.users.models import AccountType, User
 from alexandria.utils.permissions import permission_to_perm
+from alexandria.utils.type_hints import Request
 
 
 @csrf_exempt
 @permission_required("users.read_staff_account")
-def staff_management(request):
+def staff_management(request: Request):
     results = request.user.get_viewable_staff()
     if search_text := request.POST.get("search_text"):
         search_text = clean_text(search_text)
@@ -51,7 +52,7 @@ def staff_management(request):
 class EditStaffUser(PermissionRequiredMixin, View):
     permission_required = "users.change_staff_account"
 
-    def get(self, request, user_id):
+    def get(self, request: Request, user_id: str) -> HttpResponse:
         if user_id == request.user.card_number and not request.user.is_superuser:
             messages.error(request, _("Sorry, you can't edit your own account."))
             raise Http404
@@ -99,7 +100,7 @@ class EditStaffUser(PermissionRequiredMixin, View):
             },
         )
 
-    def post(self, request, user_id):
+    def post(self, request: Request, user_id: str) -> HttpResponse:
         # this shouldn't matter but if they send a bogus request against this
         # endpoint, this will protect us
         if request.user.account_type.is_superuser:
@@ -145,7 +146,7 @@ class EditStaffUser(PermissionRequiredMixin, View):
 
 @csrf_exempt
 @permission_required("users.change_accounttype")
-def account_type_management(request):
+def account_type_management(request: Request) -> HttpResponse:
     results = request.user.get_account_types().order_by("name")
     if search_text := request.POST.get("search_text"):
         search_text = clean_text(search_text)
@@ -172,7 +173,7 @@ def account_type_management(request):
 class EditAccountType(PermissionRequiredMixin, View):
     permission_required = "users.change_accounttype"
 
-    def get(self, request, account_type_id):
+    def get(self, request: Request, account_type_id: int) -> HttpResponse:
         account_type = get_object_or_404(
             AccountType, id=account_type_id, host=request.host
         )
@@ -203,7 +204,7 @@ class EditAccountType(PermissionRequiredMixin, View):
             },
         )
 
-    def post(self, request, account_type_id):
+    def post(self, request: Request, account_type_id: int) -> HttpResponse:
 
         account_type = get_object_or_404(
             AccountType, id=account_type_id, host=request.host
