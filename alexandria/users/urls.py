@@ -81,6 +81,11 @@ urlpatterns = [
         checkin_checkout.check_out_session_finish_htmx,
         name="check_out_session_finish_htmx",
     ),
+    path(
+        "check_out_remove_item_htmx/<str:item_id>/",
+        checkin_checkout.check_out_remove_item_htmx,
+        name="check_out_remove_item_htmx",
+    ),
     # path(
     #     "patron_edit/<int:user_id>/",
     #     general.EditPatronUser.as_view(),

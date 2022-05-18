@@ -493,16 +493,22 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
     def calculate_renewal_due_date(self) -> date:
         return self.calculate_due_date(start_date=self.due_date)
 
-    def get_due_date_color_class(self) -> str:
+    def get_due_date_color_class(self, alt_due_date=None) -> str:
         # Return a bootstrap theme color based on how much time is left until the
         # item is due.
         now = timezone.now().date()
-        if self.due_date < now:
+        due_date = alt_due_date if alt_due_date else self.due_date
+        if due_date < now:
             # that sucker's overdue
             return "danger text-light"  # red
-        if self.due_date < now + timedelta(days=3):
+        if due_date < now + timedelta(days=3):
             return "warning text-dark"  # orange
         return "secondary"  # grey
+
+    def get_prospective_due_date_color_class(self):
+        # During checkout, we want to get a different color if, for example,
+        # something is due in the next three days.
+        return self.get_due_date_color_class(alt_due_date=self.calculate_due_date())
 
     def can_renew(self):
         # easy to access general "hey is this possible" function.

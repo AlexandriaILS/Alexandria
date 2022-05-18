@@ -44,14 +44,9 @@ def check_out_htmx(request: Request) -> HttpResponse:
     return render(request, "fragments/check_out_new_session.partial")
 
 
-@permission_required("records.check_out")
-@htmx_guard_redirect("check_out")
-def check_out_set_target_htmx(request: Request) -> HttpResponse:
-    # After a new checkout session has been created, we need to identify
-    # who we are checking things out to. Checkout targets can be users
-    # or they can be branchlocations.
-    session = request.user.get_active_checkout_session()
-
+def session_validity_check(
+    session: CheckoutSession, session_check_only=False
+) -> JsonResponse | None:
     if not session:
         return JsonResponse(
             data={
@@ -65,16 +60,28 @@ def check_out_set_target_htmx(request: Request) -> HttpResponse:
 
     # By default, a session is valid for 24 hours. Don't leave the browser tab open
     # for more than a day.
-    if session.is_expired():
-        session.delete()
-        return JsonResponse(
-            data={
-                "message": _(
-                    "The checkout session has expired. Please refresh the page."
-                )
-            },
-            status=EXPIRED_SESSION,
-        )
+    if not session_check_only:
+        if session.is_expired():
+            session.delete()
+            return JsonResponse(
+                data={
+                    "message": _(
+                        "The checkout session has expired. Please refresh the page."
+                    )
+                },
+                status=EXPIRED_SESSION,
+            )
+
+
+@permission_required("records.check_out")
+@htmx_guard_redirect("check_out")
+def check_out_set_target_htmx(request: Request) -> HttpResponse:
+    # After a new checkout session has been created, we need to identify
+    # who we are checking things out to. Checkout targets can be users
+    # or they can be branchlocations.
+    session = request.user.get_active_checkout_session()
+    if resp := session_validity_check(session):
+        return resp
 
     patron_id = request.POST.get("card_number")
     building_id = request.POST.get("branch_select")
@@ -110,22 +117,8 @@ def check_out_additional_options_htmx(request: Request) -> HttpResponse:
 @htmx_guard_redirect("check_out")
 def check_out_item_htmx(request: Request) -> HttpResponse:
     session: CheckoutSession = request.user.get_active_checkout_session()
-    if not session:
-        return JsonResponse(
-            data={
-                "message": _("There is no checkout session currently active."),
-            },
-            status=NO_ACTIVE_SESSION,
-        )
-
-    # By default, a session is valid for 24 hours. Don't leave the browser tab open
-    # for more than a day.
-    if session.is_expired():
-        session.delete()
-        return JsonResponse(
-            data={"message": _("The checkout session has expired.")},
-            status=EXPIRED_SESSION,
-        )
+    if resp := session_validity_check(session):
+        return resp
 
     item_id = request.POST.get("item_id")
 
@@ -162,13 +155,8 @@ def check_out_item_htmx(request: Request) -> HttpResponse:
 @htmx_guard_redirect("check_out")
 def check_out_session_finish_htmx(request: Request) -> HttpResponse:
     session: CheckoutSession = request.user.get_active_checkout_session()
-    if not session:
-        return JsonResponse(
-            data={
-                "message": _("There is no checkout session currently active."),
-            },
-            status=NO_ACTIVE_SESSION,
-        )
+    if resp := session_validity_check(session, session_check_only=True):
+        return resp
 
     for item in session.items.all():
         item.check_out_to(session.session_target)
@@ -177,6 +165,21 @@ def check_out_session_finish_htmx(request: Request) -> HttpResponse:
     session.delete()
     messages.success(request, _("All done!"))
     return check_out_htmx(request)
+
+
+@permission_required("records.check_out")
+@htmx_guard_redirect("check_out")
+def check_out_remove_item_htmx(request: Request, item_id: str) -> HttpResponse:
+    session: CheckoutSession = request.user.get_active_checkout_session()
+    if resp := session_validity_check(session, session_check_only=True):
+        return resp
+
+    item = Item.objects.filter(host=request.host, barcode=item_id).first()
+
+    session.items.remove(item)
+    return render(
+        request, "fragments/check_out_item_list.partial", {"items": session.items.all()}
+    )
 
 
 @permission_required("records.check_out")
