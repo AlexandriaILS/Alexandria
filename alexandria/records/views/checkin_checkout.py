@@ -193,3 +193,72 @@ def check_out_session_cancel_htmx(request: Request) -> HttpResponse:
     messages.info(request, _("Check out session has been cancelled."))
 
     return check_out_htmx(request)
+
+
+@permission_required("records.check_in")
+def check_in(request: Request) -> HttpResponse:
+    return render(request, "staff/checkin.html", {"title": _("Check In")})
+
+
+@permission_required("records.check_in")
+@htmx_guard_redirect("check_in")
+def check_in_htmx(request: Request) -> HttpResponse | JsonResponse:
+    branch_id = request.POST.get("branch_select")
+    # Make sure the building exists and that we have access to it.
+    # Obviously this should never get hit because it's a dropdown but never
+    # underestimate users
+    branch = BranchLocation.objects.filter(id=branch_id, host=request.host).first()
+    if not branch:
+        return JsonResponse(
+            data={
+                "message": _(
+                    "How did you select that??"
+                    " Pick a building you have access to, please!"
+                )
+            },
+            status=400,
+        )
+    # can't serialize the object; tack the ID onto the session for later
+    request.session["checkin_building_id"] = branch_id
+    return render(request, "fragments/check_in.partial", {"branch_name": branch.name})
+
+
+@permission_required("records.check_in")
+@htmx_guard_redirect("check_in")
+def check_in_session_finish_htmx(request: Request) -> HttpResponseRedirect:
+    del request.session["checkin_building_id"]
+    return HttpResponseRedirect(reverse("check_in"))
+
+
+@permission_required("records.check_in")
+@htmx_guard_redirect("check_in")
+def check_in_item_htmx(request: Request) -> HttpResponse:
+    item_id = request.POST.get("item_id")
+
+    if not item_id:
+        return JsonResponse(
+            data={"message": _("Missing item ID... please try again.")}, status=400
+        )
+
+    item = Item.objects.filter(host=request.host, barcode=item_id).first()
+    if not item:
+        return JsonResponse(
+            data={"message": _("No item found with that ID.")}, status=400
+        )
+
+    # Process:
+    #
+    # * Check in the item (by making it not checked out to anyone)
+    # * See if it's part of a requested hold
+    #   * check out to In Transit
+    #   * print hold receipt
+    #   * end
+    # * Verify floating collection status
+    #   * if floating collection, end
+    #   * if not floating collection:
+    #     * if current checkin location == item.home_location, end
+    #     * else checkout to In Transit, print receipt, end
+
+    return render(
+        request, "fragments/check_out_item_list.partial", {"items": session.items.all()}
+    )

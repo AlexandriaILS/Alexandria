@@ -494,7 +494,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
             "others": [branch.get_serialized_short_fields() for branch in branches],
         }
 
-    def get_branches_for_checkout(
+    def get_branches_for_checkin_checkout(
         self,
     ) -> dict[str, BranchLocation | list[BranchLocation]]:
         default_branch = BranchLocation.objects.filter(id=self.get_default_branch().id)
