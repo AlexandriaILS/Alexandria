@@ -14,7 +14,11 @@
                          data-hx-trigger="click"
                          data-hx-target="#checkoutList"
                          data-hx-swap="innerHTML"
-                    >{% translate "Undo" %}</div>
+                    >
+                        <div class="d-flex align-content-center mx-auto">
+                            {% icon name="cancel" description="Delete" override_classes="material-icons" %}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-md-2 col-xl-1 text-center">
