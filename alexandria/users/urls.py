@@ -89,9 +89,9 @@ urlpatterns = [
         name="check_out_session_finish_htmx",
     ),
     path(
-        "check_in_session_finish_htmx/",
-        checkin_checkout.check_in_session_finish_htmx,
-        name="check_in_session_finish_htmx",
+        "check_in_session_finish/",
+        checkin_checkout.check_in_session_finish,
+        name="check_in_session_finish",
     ),
     path(
         "check_out_remove_item_htmx/<str:item_id>/",

@@ -25,7 +25,7 @@
             >
                 <div class="d-flex justify-content-center">
                     {% translate "Additional check out options" as checkout_text %}
-                    {% icon name="more" description=checkout_text extrastyle="font-size: 30px;"%}
+                    {% icon name="more" description=checkout_text extrastyle="font-size: 30px;" %}
                 </div>
             </button>
         </div>
@@ -60,3 +60,7 @@
         });
     });
 </script>
+
+{% if receipt %}
+    {{ receipt|json_script:"receipt" }}
+{% endif %}

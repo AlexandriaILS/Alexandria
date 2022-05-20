@@ -1,7 +1,16 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from django.conf import settings
 from django.db import models
+from django.db.models import QuerySet
 
 from alexandria.utils.models import TimeStampMixin
+
+
+if TYPE_CHECKING:
+    from alexandria.records.models import Item
 
 
 class Receipt(TimeStampMixin):
@@ -62,3 +71,17 @@ class ReceiptContainer(TimeStampMixin):
         related_name="transport_receipt",
     )
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+
+    def get_transport_receipt(self, item: Item) -> str:
+        ...
+
+    def get_checkout_receipt(self, items: QuerySet[Item]) -> str:
+        ...
+
+    def get_hold_receipt(self, item: Item) -> str:
+        ...
+
+    def get_money_receipt(self, transactions) -> str:
+        # this will be a queryset of Transaction objects, but that hasn't
+        # been built yet
+        ...
