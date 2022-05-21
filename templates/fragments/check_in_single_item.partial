@@ -28,7 +28,12 @@
                     {% elif is_hold %}
                         <strong>{% translate "On hold" %}</strong>
                     {% else %}
-                        {% icon name="task_alt" description="Checked in" override_classes="material-icons mt-1" %}
+                        {% if request.context.check_in.use_shelving_cart %}
+                            {# Translators: This is saying "the item is now located on the shelving cart", if that changes anything. #}
+                            <strong>{% translate "Shelving cart" %}</strong>
+                        {% else %}
+                            <strong>{% translate "Checked In" %}</strong>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>

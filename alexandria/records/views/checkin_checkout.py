@@ -249,7 +249,6 @@ def check_in_item_htmx(request: Request) -> HttpResponse:
 
     # Process:
     #
-    # * Check in the item (by making it not checked out to anyone)
     # * See if it's part of a requested hold
     #   * check out to In Transit
     #   * print hold receipt
@@ -259,6 +258,7 @@ def check_in_item_htmx(request: Request) -> HttpResponse:
     #   * if not floating collection:
     #     * if current checkin location == item.home_location, end
     #     * else checkout to In Transit, print receipt, end
+    # * Otherwise, check in the item (by making it not checked out to anyone)
 
     context = {"item": item, "bg_style": "success"}
     current_location = BranchLocation.objects.get(
@@ -272,22 +272,30 @@ def check_in_item_htmx(request: Request) -> HttpResponse:
     if hold:
         if hold.destination != current_location:
             needs_transport = True
-            context |= {'redirect_to': hold.destination}
+            context |= {"redirect_to": hold.destination}
         else:
             # it's not going anywhere, so pass that info to the template
-            context |= {'is_hold': True}
+            context |= {"is_hold": True}
     else:
-        if item.home_location != current_location and not request.context.get("floating_collection"):
+        if item.home_location != current_location and not request.context.get(
+            "floating_collection"
+        ):
             needs_transport = True
-            context |= {'redirect_to': item.home_location}
+            context |= {"redirect_to": item.home_location}
 
     if needs_transport:
         context |= {"receipt": receipts.get_transport_receipt(item), "bg_style": "info"}
-
-    if hold and not needs_transport:
+        item.check_out_to(BranchLocation.objects.get(name="In Transit"))
+    elif hold:
+        # holds should only be processed when they have arrived at their destination
         context |= {"receipt": receipts.get_hold_receipt(item), "bg_style": "warning"}
-
-    # todo: actually check in object / check out to in_transit, etc
+        item.check_out_to(BranchLocation.objects.get(name="Ready for Pickup"))
+    else:
+        if request.context['check_in']['use_shelving_cart']:
+            item.check_out_to(BranchLocation.objects.get(name="Shelving Cart"))
+        else:
+            item.checked_out_to = None
+            item.save()
 
     # TODO: do something with the receipts
     return render(request, "fragments/check_in_single_item.partial", context)

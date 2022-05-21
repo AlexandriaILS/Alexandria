@@ -8,7 +8,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         from alexandria.users.models import BranchLocation
 
-        items = ["In Transit", "Ready for Pickup", "Mending", "Discarded", "ILL"]
+        items = [
+            "In Transit",
+            "Ready for Pickup",
+            "Mending",
+            "Discarded",
+            "ILL",
+            "Shelving Cart",
+        ]
         # TODO: add support for Interlibrary Loan
         count = 0
         for option in items:
