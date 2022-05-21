@@ -7,7 +7,8 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from alexandria.api.views import EXPIRED_SESSION, NO_ACTIVE_SESSION
-from alexandria.records.models import CheckoutSession, Item
+from alexandria.receipts.models import ReceiptContainer
+from alexandria.records.models import CheckoutSession, Item, Hold
 from alexandria.users.models import BranchLocation, User
 from alexandria.utils.decorators import htmx_guard_redirect
 from alexandria.utils.type_hints import Request
@@ -25,7 +26,7 @@ def check_out(request: Request) -> HttpResponse:
 
 @permission_required("records.check_out")
 @htmx_guard_redirect("check_out")
-def check_out_htmx(request: Request) -> HttpResponse:
+def check_out_htmx(request: Request, receipt: str = None) -> HttpResponse:
     # If a staff member is currently checking out someone and the page reloads or
     # something, give them the session that they were using.
     # Otherwise, create a new session and pass that back.
@@ -41,7 +42,8 @@ def check_out_htmx(request: Request) -> HttpResponse:
             checkout_session.delete()
 
     CheckoutSession.objects.create(session_user=request.user)
-    return render(request, "fragments/check_out_new_session.partial")
+    context = {"receipt": receipt} if receipt else {}
+    return render(request, "fragments/check_out_new_session.partial", context)
 
 
 def session_validity_check(
@@ -161,10 +163,10 @@ def check_out_session_finish_htmx(request: Request) -> HttpResponse:
     for item in session.items.all():
         item.check_out_to(session.session_target)
 
-    # TODO: Receipt here?
+    receipt = session.get_receipt()
     session.delete()
     messages.success(request, _("All done!"))
-    return check_out_htmx(request)
+    return check_out_htmx(request, receipt=receipt)
 
 
 @permission_required("records.check_out")
@@ -193,3 +195,107 @@ def check_out_session_cancel_htmx(request: Request) -> HttpResponse:
     messages.info(request, _("Check out session has been cancelled."))
 
     return check_out_htmx(request)
+
+
+@permission_required("records.check_in")
+def check_in(request: Request) -> HttpResponse:
+    return render(request, "staff/checkin.html", {"title": _("Check In")})
+
+
+@permission_required("records.check_in")
+@htmx_guard_redirect("check_in")
+def check_in_htmx(request: Request) -> HttpResponse | JsonResponse:
+    branch_id = request.POST.get("branch_select")
+    # Make sure the building exists and that we have access to it.
+    # Obviously this should never get hit because it's a dropdown but never
+    # underestimate users
+    branch = BranchLocation.objects.filter(id=branch_id, host=request.host).first()
+    if not branch:
+        return JsonResponse(
+            data={
+                "message": _(
+                    "How did you select that??"
+                    " Pick a building you have access to, please!"
+                )
+            },
+            status=400,
+        )
+    # can't serialize the object; tack the ID onto the session for later
+    request.session["checkin_building_id"] = branch_id
+    return render(request, "fragments/check_in.partial", {"branch_name": branch.name})
+
+
+@permission_required("records.check_in")
+def check_in_session_finish(request: Request) -> HttpResponseRedirect:
+    del request.session["checkin_building_id"]
+    return HttpResponseRedirect(reverse("check_in"))
+
+
+@permission_required("records.check_in")
+@htmx_guard_redirect("check_in")
+def check_in_item_htmx(request: Request) -> HttpResponse:
+    item_id = request.POST.get("item_id")
+
+    if not item_id:
+        return JsonResponse(
+            data={"message": _("Missing item ID... please try again.")}, status=400
+        )
+
+    item = Item.objects.filter(host=request.host, barcode=item_id).first()
+    if not item:
+        return JsonResponse(
+            data={"message": _("No item found with that ID.")}, status=400
+        )
+
+    # Process:
+    #
+    # * See if it's part of a requested hold
+    #   * check out to In Transit
+    #   * print hold receipt
+    #   * end
+    # * Verify floating collection status
+    #   * if floating collection, end
+    #   * if not floating collection:
+    #     * if current checkin location == item.home_location, end
+    #     * else checkout to In Transit, print receipt, end
+    # * Otherwise, check in the item (by making it not checked out to anyone)
+
+    context = {"item": item, "bg_style": "success"}
+    current_location = BranchLocation.objects.get(
+        id=request.session["checkin_building_id"]
+    )
+    receipts = ReceiptContainer.objects.get(host=request.host)
+
+    hold = Hold.objects.filter(item=item).order_by("created_at").first()
+    needs_transport = False
+
+    if hold:
+        if hold.destination != current_location:
+            needs_transport = True
+            context |= {"redirect_to": hold.destination}
+        else:
+            # it's not going anywhere, so pass that info to the template
+            context |= {"is_hold": True}
+    else:
+        if item.home_location != current_location and not request.context.get(
+            "floating_collection"
+        ):
+            needs_transport = True
+            context |= {"redirect_to": item.home_location}
+
+    if needs_transport:
+        context |= {"receipt": receipts.get_transport_receipt(item), "bg_style": "info"}
+        item.check_out_to(BranchLocation.objects.get(name="In Transit"))
+    elif hold:
+        # holds should only be processed when they have arrived at their destination
+        context |= {"receipt": receipts.get_hold_receipt(item), "bg_style": "warning"}
+        item.check_out_to(BranchLocation.objects.get(name="Ready for Pickup"))
+    else:
+        if request.context['check_in']['use_shelving_cart']:
+            item.check_out_to(BranchLocation.objects.get(name="Shelving Cart"))
+        else:
+            item.checked_out_to = None
+            item.save()
+
+    # TODO: do something with the receipts
+    return render(request, "fragments/check_in_single_item.partial", context)

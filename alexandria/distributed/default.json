@@ -34,6 +34,9 @@
       "link_3_url": "https://example.com"
     },
     "enable_openlibrary_cover_downloads": true,
-    "max_checkout_session_hours": 24
+    "check_in": {
+      "use_shelving_cart": true,
+      "shelving_cart_delay_hours": 12
+    }
   }
 }

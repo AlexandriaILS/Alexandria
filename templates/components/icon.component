@@ -3,7 +3,7 @@
             {% if not override_classes %}
                 class="material-icons me-1"
             {% else %}
-                class={{ override_classes }}
+                class="{{ override_classes }}"
             {% endif %}
             style="font-size: 24px; {{ extrastyle }}"
         {% endif %}

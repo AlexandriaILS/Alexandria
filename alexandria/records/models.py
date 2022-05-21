@@ -414,6 +414,7 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
         _("due_date"), default=timezone.datetime(year=1970, month=1, day=1)
     )
     renewal_count = models.IntegerField(default=0)
+
     host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
 
     def _convert_isbn10_to_isbn13(self) -> str:

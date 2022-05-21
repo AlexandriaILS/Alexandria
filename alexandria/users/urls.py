@@ -55,7 +55,14 @@ urlpatterns = [
     path("end_act_as_user/", patron_management.end_act_as_user, name="end_act_as_user"),
     path("check_in/", checkin_checkout.check_in, name="check_in"),
     path("check_out/", checkin_checkout.check_out, name="check_out"),
+    path("check_in/", checkin_checkout.check_in, name="check_in"),
     path("check_out_htmx/", checkin_checkout.check_out_htmx, name="check_out_htmx"),
+    path("check_in_htmx/", checkin_checkout.check_in_htmx, name="check_in_htmx"),
+    path(
+        "check_in_item_htmx/",
+        checkin_checkout.check_in_item_htmx,
+        name="check_in_item_htmx",
+    ),
     path(
         "check_out_additional_options_htmx/",
         checkin_checkout.check_out_additional_options_htmx,
@@ -80,6 +87,11 @@ urlpatterns = [
         "check_out_session_finish_htmx/",
         checkin_checkout.check_out_session_finish_htmx,
         name="check_out_session_finish_htmx",
+    ),
+    path(
+        "check_in_session_finish/",
+        checkin_checkout.check_in_session_finish,
+        name="check_in_session_finish",
     ),
     path(
         "check_out_remove_item_htmx/<str:item_id>/",

@@ -3,7 +3,7 @@
 <div class="mt-5" data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkoutContainer">
     <div class="row mb-4">
         <div class="col-12 col-md-8 mb-2">
-            {% include 'partials/branch_dropdown_with_default_on_top.partial' with branches=request.user.get_branches_for_checkout %}
+            {% include 'partials/branch_dropdown_with_default_on_top.partial' with branches=request.user.get_branches_for_checkin_checkout %}
         </div>
         <div class="col-12 col-md-4">
             <div class="d-grid">

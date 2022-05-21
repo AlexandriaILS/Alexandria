@@ -1,36 +1,24 @@
 {% load i18n %}
 
-<div class="mt-5" data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkoutContainer">
+<div class="mt-5" data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkinContainer">
     <div class="row">
         <div class="col-12 col-sm-6">
-            <p>Currently checking out to <span
-                    class="badge bg-secondary fs-6">{{ checkout_session.session_target.get_display_name }}</span></p>
+            <p>Currently checking in to <span
+                    class="badge bg-secondary fs-6">{{ branch_name }}</span></p>
         </div>
         <div class="col-12 col-sm-6">
             <div class="row">
-                <div class="col-8 d-grid gap-2">
-                    <div class="btn btn-success"
-                         data-hx-get="{% url 'check_out_session_finish_htmx' %}"
-                         data-hx-trigger="click"
-                         data-hx-swap="outerHTML"
-                         data-hx-target="#checkoutContainer"
-                    >{% translate "Finish" %}</div>
-                </div>
-                <div class="col-4 d-grid">
-                    <div class="btn btn-outline-danger"
-                         data-hx-get="{% url 'check_out_session_cancel_htmx' %}"
-                         data-hx-trigger="click"
-                         data-hx-swap="outerHTML"
-                         data-hx-target="#checkoutContainer"
-                    >{% translate "Cancel" %}</div>
+                <div class="col-0 col-md-4"></div>
+                <div class="col-12 col-md-8 d-grid gap-2">
+                    <a class="btn btn-success" href="{% url 'check_in_session_finish' %}"
+                    >{% translate "Finish" %}</a>
                 </div>
             </div>
         </div>
-
         <form
-                data-hx-post="{% url 'check_out_item_htmx' %}"
-                data-hx-target="#checkoutList"
-                data-hx-swap="innerHTML"
+                data-hx-post="{% url 'check_in_item_htmx' %}"
+                data-hx-target="#checkinList"
+                data-hx-swap="afterend"
         >
             <div class="mb-4">
                 <label for="itemInput" class="form-label">{% translate "Scan item barcode" %}:</label>
@@ -39,8 +27,7 @@
             </div>
         </form>
         <hr>
-
-        {% include 'fragments/check_out_item_list.partial' with items=checkout_session.items.all %}
+        <div id="checkinList"></div>
     </div>
 
     <script>
