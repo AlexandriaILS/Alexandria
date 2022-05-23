@@ -2,6 +2,7 @@ import glob
 import json
 import logging
 import os
+import re
 from typing import Dict
 
 from django.conf import settings
@@ -33,10 +34,19 @@ def init_site_data(initial_data: dict = None):
     return sites
 
 
-def load_site_config(domain: str) -> Dict:
-    if domain in settings.DEFAULT_HOSTS or domain == settings.DEFAULT_HOST_KEY:
-        return settings.SITE_DATA[settings.DEFAULT_HOST_KEY]
+def get_site_host_key(domain: str) -> str:
+    if (
+        any(
+            re.match(option.replace("*", ".+"), domain)
+            for option in settings.DEFAULT_HOSTS
+        )
+        or domain == settings.DEFAULT_HOST_KEY
+    ):
+        return settings.DEFAULT_HOST_KEY
+    else:
+        return domain
 
+def load_site_config(domain: str) -> Dict:
     if domain in settings.SITE_DATA:
         config = settings.SITE_DATA[domain]
         for key in settings.SITE_DATA[settings.DEFAULT_HOST_KEY].keys():

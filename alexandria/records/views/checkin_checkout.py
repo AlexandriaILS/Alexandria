@@ -14,11 +14,6 @@ from alexandria.utils.decorators import htmx_guard_redirect
 from alexandria.utils.type_hints import Request
 
 
-@permission_required("records.check_in")
-def check_in(request: Request) -> HttpResponse:
-    ...
-
-
 @permission_required("records.check_out")
 def check_out(request: Request) -> HttpResponse:
     return render(request, "staff/checkout.html", {"title": _("Check Out")})
@@ -291,7 +286,7 @@ def check_in_item_htmx(request: Request) -> HttpResponse:
         context |= {"receipt": receipts.get_hold_receipt(item), "bg_style": "warning"}
         item.check_out_to(BranchLocation.objects.get(name="Ready for Pickup"))
     else:
-        if request.context['check_in']['use_shelving_cart']:
+        if request.context["check_in"]["use_shelving_cart"]:
             item.check_out_to(BranchLocation.objects.get(name="Shelving Cart"))
         else:
             item.checked_out_to = None

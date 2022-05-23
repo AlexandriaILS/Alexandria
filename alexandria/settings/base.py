@@ -40,7 +40,7 @@ DEBUG = False
 # actual validation handled in middleware
 ALLOWED_HOSTS = ["*"]
 # used for handling configs on the request
-DEFAULT_HOSTS = ["localhost:8000", "staging.alexandrialibrary.dev"]
+DEFAULT_HOSTS = ["localhost:8000", "staging.alexandrialibrary.dev", "*.ngrok.io"]
 INTERNAL_IPS = [
     "localhost",
     "127.0.0.1",

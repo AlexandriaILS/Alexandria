@@ -605,9 +605,9 @@ class Hold(TimeStampMixin):
 
     def get_status_color_class(self):
         if self.is_ready_for_pickup():
-            return "success text-light"
+            return "success"
         else:
-            return "secondary text-light"
+            return "secondary"
 
     def get_status_for_staff(self):
         ...

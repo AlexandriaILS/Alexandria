@@ -2,7 +2,7 @@
     <tbody>
     <tr>
         <td class="align-middle">
-            <div class="card bg-light" style="height:50%">
+            <div class="card bg-light">
                 <div class="card-body">
                     {{ children }}
                 </div>

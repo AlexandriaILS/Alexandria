@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.utils.deprecation import MiddlewareMixin
 
-from alexandria.distributed.configs import load_site_config
+from alexandria.distributed.configs import load_site_config, get_site_host_key
 from alexandria.utils.context import build_context
 
 
@@ -12,15 +12,16 @@ class HostValidationMiddleware(MiddlewareMixin):
     # to the object.
     def process_request(self, request):
         host = request.get_host()
-        if host_data := load_site_config(host):
+        host_key = get_site_host_key(host)
+        if host_data := load_site_config(host_key):
             request.context = host_data
             request.host = (
-                host
-                if host not in settings.DEFAULT_HOSTS
+                host_key
+                if host_key not in settings.DEFAULT_HOSTS
                 else settings.DEFAULT_HOST_KEY
             )
         else:
-            raise DisallowedHost(f"Invalid host: {host}")
+            raise DisallowedHost(f"Invalid host: {host}, key {host_key}")
 
 
 class ContextUpdateMiddleware(MiddlewareMixin):
