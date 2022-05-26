@@ -5,12 +5,12 @@
             {% else %}
                 class="{{ override_classes }}"
             {% endif %}
-            style="font-size: 24px; {{ extrastyle }}"
+                style="font-size: 24px; {{ extrastyle }}"
         {% endif %}
         {% if description %}
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="{{ description }}"
+                data-bs-toggle="tooltip"
+                data-bs-placement="top"
+                title="{{ description }}"
         {% endif %}
 >
 {% if children %}

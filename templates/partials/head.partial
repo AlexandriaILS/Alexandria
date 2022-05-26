@@ -11,6 +11,7 @@
 
 <script src="{% static 'js/toastutils.js' %}"></script>
 <script src="{% static "js/emailmagic.js" %}" async defer></script>
+<script src="{% static "js/ie_check.js" %}"></script>
 
 <link rel="apple-touch-icon" sizes="57x57" media="(prefers-color-scheme:no-preference)"
       href="{% static "favicons/black/apple-icon-57x57.png" %}">
@@ -103,18 +104,15 @@
 <script>
     htmx.onLoad(function (t) {
         // every time we bring in new html, regenerate the tooltip html
+        // ...at least, that's how it's supposed to work. I'm not actually sure
+        // if it does work that way, but I don't know enough JS to tell for sure.
+        // We might have to destroy all the existing tooltips first, but I can't
+        // figure out how to select the created tooltip objects and dispose of them
+        // properly before recreating them. A problem for another day, I suppose.
         tooltips();
     });
-
-    document.addEventListener("DOMContentLoaded", function (event) {
-        // on first page load, generate the tooltip html
-        tooltips();
-    });
-
     function tooltips() {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     }
 </script>
