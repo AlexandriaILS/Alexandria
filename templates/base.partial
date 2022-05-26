@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 
-<!doctype html>
+<!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}" class="h-100">
 <head>
@@ -21,21 +21,21 @@
 </div>
 
 {% block main %}
-<main class="flex-fill mb-5">
-    {% block navbar %}
-        {% include "partials/navbar.partial" %}
-    {% endblock %}
-    <div class="container flex-shrink-0 mt-3" style="height:100%; width: 100%">
-        {% block content %}
-            <h1>Sorry, this page isn't done yet!</h1>
+    <main class="flex-fill mb-5">
+        {% block navbar %}
+            {% include "partials/navbar.partial" %}
         {% endblock %}
-    </div>
-</main>
+        <div class="container flex-shrink-0 mt-3" id="theContent" style="height:100%; width: 100%">
+            {% block content %}
+                <h1>Sorry, this page isn't done yet!</h1>
+            {% endblock %}
+        </div>
+    </main>
 
-{% include 'partials/footer.partial' %}
-<script src="{% static 'js/toastutils.js' %}" async defer></script>
-<script src="{% static 'js/holdbuttons.js' %}" async defer></script>
-<script src="{% static 'js/renewbuttons.js' %}" async defer></script>
+    {% include 'partials/footer.partial' %}
+    <script src="{% static 'js/toastutils.js' %}" async defer></script>
+    <script src="{% static 'js/holdbuttons.js' %}" async defer></script>
+    <script src="{% static 'js/renewbuttons.js' %}" async defer></script>
 {% endblock %}
 
 {{ request.context.alerts|json_script:"alert-data" }}
