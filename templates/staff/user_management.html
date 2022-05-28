@@ -30,7 +30,11 @@
             <hr>
             <div class="row">
                 <div class="col-sm-6 col-md-4 col-lg-4 text-center text-lg-start">
-                    <strong>{{ u.last_name }}, {{ u.first_name }}</strong>
+                    {% if u.preferred_first_name %}
+                        <strong>{{ u.last_name }}, {{ u.preferred_first_name }} ({{ u.first_name }})</strong>
+                    {% else %}
+                        <strong>{{ u.last_name }}, {{ u.first_name }}</strong>
+                    {% endif %}
                 </div>
                 <div class="col-sm-6 col-md-4 col-lg-3 text-center text-lg-start">
                     {% if patron_mode %}

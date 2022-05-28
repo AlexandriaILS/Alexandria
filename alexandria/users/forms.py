@@ -28,6 +28,7 @@ class PatronForm(forms.Form):
             [
                 "card_number",
                 "first_name",
+                "preferred_first_name",
                 "last_name",
                 "title",
                 "account_type",
@@ -47,6 +48,7 @@ class PatronForm(forms.Form):
 
     card_number = forms.CharField()
     first_name = forms.CharField()
+    preferred_first_name = forms.CharField()
     last_name = forms.CharField()
     email = forms.EmailField()
     is_minor = forms.BooleanField(label=_("Person is legally a minor"), required=False)

@@ -556,7 +556,6 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
             return img
         return None
 
-
     def __str__(self):
         string = f"{self.record.title} | {self.record.authors}"
         if self.call_number:

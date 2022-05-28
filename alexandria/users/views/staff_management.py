@@ -63,6 +63,7 @@ class EditStaffUser(PermissionRequiredMixin, View):
             "card_number": user.card_number,
             "title": user.title,
             "first_name": user.first_name,
+            "preferred_first_name": user.preferred_first_name,
             "last_name": user.last_name,
             "email": user.email,
             "is_minor": user.is_minor,

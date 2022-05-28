@@ -19,6 +19,7 @@
 {% block preface %}
 {% endblock %}
 
+<div class="mt-4"></div>
 {% if messages %}
     {% for message in messages %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
@@ -50,7 +51,7 @@
         {% endfor %}
         {% for item in header_link_buttons %}
             <div class="col mt-2">
-                <a href="{% url item.reverse_url %}"
+                <a href="{% url 'item.reverse_url' %}"
                    class="btn btn-info btn-block">{{ item.text }}</a>
             </div>
         {% endfor %}

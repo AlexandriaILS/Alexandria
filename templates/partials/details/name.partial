@@ -1,2 +1,6 @@
 {% icon name="perm_identity" description="Patron name" %}
-{{ obj.last_name }}, {{ obj.first_name }}
+{% if obj.last_name %}
+    {{ obj.last_name }}, {{ obj.get_first_name }}
+{% else %}
+    {{ obj.get_first_name }}
+{% endif %}

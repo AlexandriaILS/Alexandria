@@ -46,6 +46,7 @@ def get_site_host_key(domain: str) -> str:
     else:
         return domain
 
+
 def load_site_config(domain: str) -> Dict:
     if domain in settings.SITE_DATA:
         config = settings.SITE_DATA[domain]
