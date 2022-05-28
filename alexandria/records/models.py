@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType as DjangoContentType
 from django.db import models
+from django.db.models.fields.files import ImageFieldFile
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from taggit.managers import TaggableManager
@@ -284,6 +285,9 @@ class Record(TimeStampMixin, SearchableFieldMixin, CoverUtilitiesMixin):
             for i in items
         }
 
+    def get_image(self) -> ImageFieldFile:
+        return self.image
+
 
 class Item(TimeStampMixin, CoverUtilitiesMixin):
     NEW = "new"
@@ -544,6 +548,14 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
 
     def is_on_hold(self):
         return Hold.objects.filter(item=self).count() > 0
+
+    def get_image(self) -> ImageFieldFile | None:
+        if img := self.image:
+            return img
+        if img := self.record.image:
+            return img
+        return None
+
 
     def __str__(self):
         string = f"{self.record.title} | {self.record.authors}"

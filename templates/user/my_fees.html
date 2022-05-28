@@ -2,14 +2,14 @@
 {% load i18n %}
 
 {% block content %}
-    <h1>{% translate "My Fees" %}</h1>
+    <h1 class="mb-5">{% translate "My Fees" %}</h1>
     {% if not fees %}
-        {% #centered_column center_width=6 extra_classes="text-center"%}
+        {% #centered_column center_width=6 extra_classes="text-center" %}
         <div class="card shadow mt-5">
             <div class="card-body">
                 <h5 class="card-title">{% translate "You don't have any fees!" %}</h5>
-                    {% url "homepage" as homepage %}
-                    {% #button element='a' extra_classes="mt-3" href=homepage variant="primary" block %}{% translate "Home" %}{% /button %}
+                {% url "homepage" as homepage %}
+                {% #button element='a' extra_classes="mt-3" href=homepage variant="primary" block %}{% translate "Home" %}{% /button %}
             </div>
         </div>
         {% /centered_column %}
