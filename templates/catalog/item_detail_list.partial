@@ -3,7 +3,7 @@
 <div class="row mt-3">
     <div class="col-md-2">
         <div class="row">
-            <div class="col">{% include 'partials/cover_image.partial' with item=el img_height=120 %}</div>
+            <div class="col">{% include 'partials/cover_image.partial' with img_height=120 %}</div>
         </div>
     </div>
     <div class="col-md-1 text-center">
