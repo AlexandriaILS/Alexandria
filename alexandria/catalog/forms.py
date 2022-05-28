@@ -46,8 +46,9 @@ class PatronSettingsForm(forms.ModelForm):
                 " to any branch."
             )
 
-            self.fields["preferred_first_name"].help_text = _("If you prefer to go by something else, put it here!")
-
+            self.fields["preferred_first_name"].help_text = _(
+                "If you prefer to go by something else, put it here!"
+            )
 
     formatted_address = forms.CharField()
     full_name = forms.CharField()

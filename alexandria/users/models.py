@@ -362,7 +362,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         help_text=_(
             "If filled out, this will be used in place of their legal first name on all"
             " correspondence and throughout Alexandria."
-        )
+        ),
     )
     email: str = models.EmailField(_("email address"), blank=True)
     is_minor: bool = models.BooleanField(

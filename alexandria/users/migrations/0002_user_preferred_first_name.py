@@ -6,13 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='preferred_first_name',
-            field=models.CharField(blank=True, help_text='If filled out, this will be used in place of their legal first name on all correspondence and throughout Alexandria.', max_length=255, null=True, verbose_name='preferred first name'),
+            model_name="user",
+            name="preferred_first_name",
+            field=models.CharField(
+                blank=True,
+                help_text="If filled out, this will be used in place of their legal first name on all correspondence and throughout Alexandria.",
+                max_length=255,
+                null=True,
+                verbose_name="preferred first name",
+            ),
         ),
     ]
