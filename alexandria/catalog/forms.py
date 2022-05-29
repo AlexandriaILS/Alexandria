@@ -14,12 +14,10 @@ class PatronSettingsForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         instance = getattr(self, "instance", None)
         if instance and instance.pk:
-            self.fields["full_name"].widget.attrs["disabled"] = True
             self.fields["card_number"].widget.attrs["disabled"] = True
             self.fields["formatted_address"].widget.attrs["disabled"] = True
 
             self.fields["card_number"].required = False
-            self.fields["full_name"].required = False
 
             self.fields["formatted_address"].help_text = _(
                 "If you need to change this, please bring updated proof of address"
@@ -40,18 +38,15 @@ class PatronSettingsForm(forms.ModelForm):
             # make it so that we don't have the blank entry at the top
             self.fields["default_branch"].empty_label = None
 
-            self.fields["full_name"].initial = instance.get_display_name()
-            self.fields["full_name"].help_text = _(
-                "If you need to change this, please bring updated ID with you"
-                " to any branch."
+            self.fields["chosen_first_name"].label = _(
+                "What first name would you like us to call you?"
             )
-
-            self.fields["preferred_first_name"].help_text = _(
-                "If you prefer to go by something else, put it here!"
+            self.fields["chosen_first_name"].help_text = _(
+                "This only changes how we refer to you; if you need to change your legal"
+                " name, please bring updated ID to any branch."
             )
 
     formatted_address = forms.CharField()
-    full_name = forms.CharField()
 
     def _get_readonly_value(self, value):
         instance = getattr(self, "instance", None)
@@ -72,8 +67,7 @@ class PatronSettingsForm(forms.ModelForm):
         model = User
         fields = [
             "card_number",
-            "preferred_first_name",
-            "full_name",
+            "chosen_first_name",
             "email",
             "formatted_address",
             "default_branch",

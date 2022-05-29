@@ -340,7 +340,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
     # where it might not be, so we'll store it as a string with the expectation
     # that it's a very large number.
 
-    SEARCHABLE_FIELDS = ["first_name", "last_name"]
+    SEARCHABLE_FIELDS = ["first_name", "last_name", "chosen_first_name"]
 
     card_number: str = models.CharField(primary_key=True, max_length=50)
     # We only need one address; no need to keep their history.
@@ -354,14 +354,15 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
     last_name: str = models.CharField(
         _("last name"), max_length=255, null=True, blank=True
     )
-    preferred_first_name: str = models.CharField(
-        _("preferred first name"),
+    chosen_first_name: str = models.CharField(
+        _("chosen first name"),
         max_length=255,
         null=True,
         blank=True,
         help_text=_(
             "If filled out, this will be used in place of their legal first name on all"
-            " correspondence and throughout Alexandria."
+            " correspondence and throughout Alexandria. Does not actually modify legal"
+            " first name."
         ),
     )
     email: str = models.EmailField(_("email address"), blank=True)
@@ -537,9 +538,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         return "".join([name[0] for name in self.last_name.split()])
 
     def get_first_name(self) -> str:
-        return (
-            self.preferred_first_name if self.preferred_first_name else self.first_name
-        )
+        return self.chosen_first_name if self.chosen_first_name else self.first_name
 
     def get_shortened_name(self) -> str:
         """
@@ -553,6 +552,14 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
 
         if self.last_name:
             name += f" {self._shorten_last_name()}"
+
+        return name
+
+    def get_display_name(self) -> str:
+        name = self.get_first_name()
+
+        if self.last_name:
+            name += f" {self.last_name}"
 
         return name
 
@@ -639,14 +646,6 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         # Guess you're good to go!
         # We don't actually need the message here, only if it fails
         return True, CHECKOUT_SUCCESS
-
-    def get_display_name(self) -> str:
-        name = self.get_first_name()
-
-        if self.last_name:
-            name += f" {self.last_name}"
-
-        return name
 
     ###
     # Abstractions

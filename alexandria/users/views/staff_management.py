@@ -28,6 +28,7 @@ def staff_management(request: Request):
             results = results.filter(
                 Q(searchable_first_name__icontains=word)
                 | Q(searchable_last_name__icontains=word)
+                | Q(searchable_chosen_first_name__icontains=word)
                 | Q(title__icontains=word)
                 | Q(card_number__icontains=word)
             )
@@ -63,7 +64,7 @@ class EditStaffUser(PermissionRequiredMixin, View):
             "card_number": user.card_number,
             "title": user.title,
             "first_name": user.first_name,
-            "preferred_first_name": user.preferred_first_name,
+            "chosen_first_name": user.chosen_first_name,
             "last_name": user.last_name,
             "email": user.email,
             "is_minor": user.is_minor,
