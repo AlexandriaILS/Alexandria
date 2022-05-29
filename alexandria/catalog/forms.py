@@ -14,7 +14,6 @@ class PatronSettingsForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         instance = getattr(self, "instance", None)
         if instance and instance.pk:
-            self.fields["last_name"].widget.attrs["disabled"] = True
             self.fields["card_number"].widget.attrs["disabled"] = True
             self.fields["formatted_address"].widget.attrs["disabled"] = True
 
@@ -39,9 +38,12 @@ class PatronSettingsForm(forms.ModelForm):
             # make it so that we don't have the blank entry at the top
             self.fields["default_branch"].empty_label = None
 
-            self.fields["last_name"].help_text = _(
-                "If you need to change this, please bring updated ID with you"
-                " to any branch."
+            self.fields["chosen_first_name"].label = _(
+                "What first name would you like us to call you?"
+            )
+            self.fields["chosen_first_name"].help_text = _(
+                "This only changes how we refer to you; if you need to change your legal"
+                " name, please bring updated ID to any branch."
             )
 
     formatted_address = forms.CharField()
@@ -65,8 +67,7 @@ class PatronSettingsForm(forms.ModelForm):
         model = User
         fields = [
             "card_number",
-            "first_name",
-            "last_name",
+            "chosen_first_name",
             "email",
             "formatted_address",
             "default_branch",

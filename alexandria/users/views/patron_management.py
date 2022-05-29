@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator
 from django.db.models.expressions import Q
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render, reverse
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
@@ -28,6 +28,7 @@ def patron_management(request: Request):
             results = results.filter(
                 Q(searchable_first_name__icontains=word)
                 | Q(searchable_last_name__icontains=word)
+                | Q(searchable_chosen_first_name__icontains=word)
                 | Q(title__icontains=word)
                 | Q(card_number__icontains=word)
             )
@@ -82,7 +83,7 @@ def end_act_as_user(request):
 
 
 @permission_required("users.create_patron_account")
-def create_patron(request):
+def create_patron(request: Request) -> HttpResponse:
     if request.method == "POST":
         form = PatronForm(request.POST)
         if form.is_valid():
@@ -110,6 +111,7 @@ def create_patron(request):
                 address=newuserlocation,
                 card_number=data["card_number"],
                 first_name=data["first_name"],
+                chosen_first_name=data["chosen_first_name"],
                 last_name=data["last_name"],
                 email=data["email"],
                 is_minor=data["is_minor"],
@@ -171,6 +173,7 @@ class EditPatronUser(PermissionRequiredMixin, View):
         initial_data = {
             "card_number": user.card_number,
             "first_name": user.first_name,
+            "chosen_first_name": user.chosen_first_name,
             "last_name": user.last_name,
             "email": user.email,
             "is_minor": user.is_minor,
@@ -241,6 +244,7 @@ def view_patron_account(request, user_id):
         "staff/patron_account_view.html",
         {
             "page_title": _("View Patron"),
+            "show_legal_name": True,
             "user": user,
             "checkouts": checkouts,
             "holds": holds,

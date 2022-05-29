@@ -1,2 +1,17 @@
 {% icon name="perm_identity" description="Patron name" %}
-{{ obj.last_name }}, {{ obj.first_name }}
+{# Allows showing the legal name for the staff side but defaults to only showing chosen name. #}
+{% if show_legal_name %}
+    {% if obj.last_name and obj.chosen_first_name %}
+        {{ obj.last_name }}, {{ obj.first_name }} ({{ obj.chosen_first_name }})
+    {% elif obj.last_name and not obj.chosen_first_name %}
+        {{ obj.last_name }}, {{ obj.first_name }}
+    {% else %}
+        {{ obj.first_name }}
+    {% endif %}
+{% else %}
+    {% if obj.last_name %}
+        {{ obj.last_name }}, {{ obj.get_first_name }}
+    {% else %}
+        {{ obj.get_first_name }}
+    {% endif %}
+{% endif %}
