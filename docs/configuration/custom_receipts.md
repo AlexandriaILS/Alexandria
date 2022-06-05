@@ -1,5 +1,5 @@
 ---
-icon: pencil
+icon: file
 tags: [receipts, staff app, electron]
 ---
 # Custom Receipts
