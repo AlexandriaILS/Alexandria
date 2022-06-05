@@ -1,0 +1,15 @@
+{% load friendly_truncatechars %}
+|^^^^{{ hold.placed_for.get_hold_receipt_header }}^^^^
+|
+|
+|
+|
+|
+|
+|Title: {{ hold.item.record.title | truncatecharswithellipsis:30}}
+|Item Barcode: {{ hold.item.barcode }}
+|
+{c:{{ hold.item.barcode }}}
+|
+|Hold Expiry: {{ expiry_date }}
+|

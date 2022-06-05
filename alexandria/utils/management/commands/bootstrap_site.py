@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
-from alexandria.receipts.management.commands import create_default_receipts
 from alexandria.users.models import AccountType, USLocation
 from alexandria.utils.management.commands import (
     bootstrap_system_branches,
@@ -17,7 +16,6 @@ class Command(BaseCommand):
         bootstrap_types.Command().handle()
         bootstrap_system_branches.Command().handle()
         create_permissions_groups.Command().handle()
-        create_default_receipts.Command().handle()
 
         location, created = USLocation.objects.get_or_create(
             address_1="123 Sesame St.",

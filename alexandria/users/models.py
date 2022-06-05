@@ -12,6 +12,7 @@ from django.core.mail import send_mail
 from django.db import models
 from django.db.models import QuerySet
 from django.forms import Form
+from django.template import loader
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from localflavor.us.models import USStateField, USZipCodeField
@@ -161,6 +162,18 @@ class BranchLocation(TimeStampMixin):
 
     def get_display_name(self) -> str:
         return f"{self.name}"
+
+    @property
+    def is_user(self) -> bool:
+        # used for differentiating between user and branchlocation on shared FKs
+        return False
+
+    def get_transport_receipt(self, request) -> str:
+        return loader.render_to_string(
+            "receipts/transport.html",
+            {"branch": self},
+            request,
+        )
 
 
 class AccountType(TimeStampMixin, PermissionsMixin):
@@ -400,6 +413,9 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
     checkout_session: Manager[CheckoutSession] = GenericRelation(
         "records.CheckoutSession", related_query_name="user_session_target"
     )
+    # if context.enable_running_borrow_saved_money is enabled, the prices of each item
+    # will be summed and added to this field on every checkout.
+    saved_money = models.IntegerField(default=0)
     host: str = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
     # for setting holds
     default_branch: BranchLocation = models.ForeignKey(
@@ -534,8 +550,10 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
 
         return qs.order_by("last_name", "first_name")
 
-    def _shorten_last_name(self) -> str:
-        return "".join([name[0] for name in self.last_name.split()])
+    def _abbreviate_name(self, name: str = None) -> str:
+        """Take a name and abbreviate it. Defaults to last name."""
+        target = name if name else self.last_name
+        return "".join([n[0] for n in target.split()])
 
     def get_first_name(self) -> str:
         return self.chosen_first_name if self.chosen_first_name else self.first_name
@@ -551,7 +569,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         name = self.get_first_name()
 
         if self.last_name:
-            name += f" {self._shorten_last_name()}"
+            name += f" {self._abbreviate_name()}"
 
         return name
 
@@ -647,16 +665,34 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         # We don't actually need the message here, only if it fails
         return True, CHECKOUT_SUCCESS
 
+    def get_hold_receipt_header(self):
+        """
+        Return a formatted header for the hold receipts.
+
+        Example: for Admin von Admin with card number 1234567890123, return vA - 890123
+        """
+        if self.last_name:
+            name = self._abbreviate_name()
+        else:
+            name = self._abbreviate_name(name=self.get_first_name())
+
+        return f"{name} - {self.card_number[-6:]}"
+
     ###
     # Abstractions
     ###
 
     @property
-    def is_staff(self):
+    def is_user(self) -> bool:
+        # used for differentiating between user and branchlocation on shared FKs
+        return True
+
+    @property
+    def is_staff(self) -> bool:
         return self.account_type.is_staff
 
     @property
-    def is_superuser(self):
+    def is_superuser(self) -> bool:
         return self.account_type.is_superuser
 
     @property
@@ -667,7 +703,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
     def user_permissions(self):
         return self.account_type.user_permissions
 
-    def has_perm(self, *args, **kwargs):
+    def has_perm(self, *args, **kwargs) -> bool:
         return self.account_type.has_perm(*args, **kwargs)
 
     def has_perms(self, *args, **kwargs):

@@ -1,0 +1,23 @@
+|^^^^Receipt^^^^
+|
+{width:*,12; text:nowrap;}
+|Description | Amount|
+|
+{% for payment in payments %}
+|{{ payment.item.record.title }} | {{ payment.price }}|
+{% endfor %}
+|
+|
+|
+|Renew your materials and place holds
+|online or by phone:
+|
+|{{ request.context.url }}
+|{{ request.context.phone_number }}
+|
+|"{{ request.context.name }} "
+|{{ request.context.address.address_1 }}
+|{{ request.context.address.city }}, {{ request.context.address.state }} {{ request.context.address.zip_code }}
+|{{ request.context.phone_number }}
+|{% now "l, N j Y @ g:iA" %}
+|

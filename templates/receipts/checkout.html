@@ -1,0 +1,30 @@
+{% load friendly_truncatechars %}
+|^^^Checkouts^^^
+|
+|
+|
+|{width:*,10; text:nowrap; align:center}
+|Title | Due Date|
+{% for item in checkout_session.items.all %}
+|{{item.record.title | truncatecharswithellipsis:28}} | {{ item.get_due_date_for_receipt }}|
+{% endfor %}
+{width:auto}
+|
+|
+|Renew your materials and place holds
+|online or by phone:
+|
+|{{ request.context.url }}
+|{{ request.context.phone_number }}
+|{% if request.context.enable_running_borrow_saved_money and checkout_session.session_target.is_user %}
+|You've saved "${{ checkout_session.session_target.saved_money }}" by using
+|your library card! Nice work!
+|{% endif %}
+|
+|
+|"{{ request.context.name }} "
+|{{ request.context.address.address_1 }}
+|{{ request.context.address.city }}, {{ request.context.address.state }} {{ request.context.address.zip_code }}
+|{{ request.context.phone_number }}
+|{% now "l, N j Y @ g:iA" %}
+|

@@ -62,5 +62,5 @@
 </script>
 
 {% if receipt %}
-    {{ receipt|json_script:"receipt" }}
+    {% include 'receipts/receipt_container.partial' %}
 {% endif %}

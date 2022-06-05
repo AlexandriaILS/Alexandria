@@ -1,6 +1,6 @@
 import re
 import zoneinfo
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 import pymarc
 from django.conf import settings
@@ -9,15 +9,16 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType as DjangoContentType
 from django.db import models
 from django.db.models.fields.files import ImageFieldFile
+from django.template import loader
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from taggit.managers import TaggableManager
 
-from alexandria.receipts.models import Receipt, ReceiptContainer
 from alexandria.records.mixins import CoverUtilitiesMixin
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 from alexandria.users.models import BranchLocation, User
 from alexandria.utils.models import TimeStampMixin
+from alexandria.utils.type_hints import Request
 
 UTC = zoneinfo.ZoneInfo("UTC")
 
@@ -312,9 +313,6 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
             ("check_out", _("Can check out materials")),
         ]
 
-    def get_due_date(self):
-        return timezone.now() + timedelta(days=self.type.number_of_days_per_checkout)
-
     # the scanned bar code, usually purchased from an outside vendor
     # Also, ebooks don't have barcodes.
     barcode = models.CharField(_("barcode"), max_length=50, null=True, blank=True)
@@ -364,7 +362,7 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
         limit_choices_to={
             "model__in": (
                 "branchlocation",
-                "alexandriauser",
+                "user",
             )
         },
     )
@@ -482,6 +480,14 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
     def is_checked_out_to_system(self) -> bool:
         if hasattr(self.checked_out_to, "host"):
             return self.checked_out_to.host == settings.DEFAULT_SYSTEM_HOST_KEY
+
+    def get_due_date(self):
+        return timezone.now().date() + timedelta(
+            days=self.type.number_of_days_per_checkout
+        )
+
+    def get_due_date_for_receipt(self):
+        return self.get_due_date().strftime("%m/%d/%y")
 
     def calculate_due_date(self, start_date: date = None) -> date:
         # This function does not set the due date because it's used to show
@@ -620,8 +626,20 @@ class Hold(TimeStampMixin):
         else:
             return "secondary"
 
+    def get_receipt(self, request) -> str:
+        return loader.render_to_string(
+            "receipts/hold.html",
+            {"hold": self, "expiry_date": self.get_expiry_date(request)},
+            request,
+        )
+
     def get_status_for_staff(self):
         ...
+
+    def get_expiry_date(self, request: Request) -> date:
+        return timezone.now().date() + timedelta(
+            days=request.context["default_hold_expiry_days"]
+        )
 
 
 class CheckoutSession(TimeStampMixin):
@@ -634,19 +652,18 @@ class CheckoutSession(TimeStampMixin):
         limit_choices_to={
             "model__in": (
                 "branchlocation",
-                "alexandriauser",
+                "user",
             )
         },
     )
     object_id = models.CharField(max_length=50, null=True, blank=True)
-    # Note: do not try to filter on this directly -- the database doesn't like that.
-    # Go through the object on the other side.
     session_target = GenericForeignKey("content_type", "object_id")
     items = models.ManyToManyField(Item)
 
-    def get_receipt(self) -> str:
-        container = ReceiptContainer.objects.get(host=self.session_user.host)
-        return container.checkout_receipt.body
+    def get_receipt(self, request) -> str:
+        return loader.render_to_string(
+            "receipts/checkout.html", {"checkout_session": self}, request
+        )
 
     def is_expired(self) -> bool:
         """Checkout sessions can only last for 24 hours without being updated."""

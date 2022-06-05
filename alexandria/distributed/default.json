@@ -3,7 +3,14 @@
     "name": "Neverland Library",
     "url": "https://alexandrialibrary.dev",
     "logo_url": null,
-    "address": "123 Neverland Lane, Neverland, USA, 12345",
+    "address": {
+      "address_1": "123 Neverland Lane",
+      "address_2": "",
+      "city": "Neverland",
+      "state": "IN",
+      "country": "USA",
+      "zip_code": "12345"
+    },
     "phone_number": "1-234-555-6789",
     "enable_running_borrow_saved_money": true,
     "floating_collection": false,
@@ -25,6 +32,7 @@
     "default_checkout_duration_days": 21,
     "default_location_id": 5,
     "default_renewal_delay_days": 7,
+    "default_hold_expiry_days": 3,
     "navbar": {
       "link_1_title": "Example!",
       "link_1_url": "https://example.com",

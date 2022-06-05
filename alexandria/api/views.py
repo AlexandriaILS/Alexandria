@@ -1,5 +1,5 @@
-from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.conf import settings
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -10,7 +10,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from alexandria.api.authentication import CsrfExemptSessionAuthentication
 from alexandria.api.serializers import HoldSerializer, ItemSerializer, RecordSerializer
-from alexandria.records.models import CheckoutSession, Hold, Item, ItemType, Record
+from alexandria.records.models import Hold, Item, ItemType, Record
 from alexandria.users.models import BranchLocation, User
 
 # holds
@@ -176,17 +176,5 @@ class RecordViewSet(ModelViewSet):
         return create_hold(request, item, location)
 
 
-class CheckoutViewSet(GenericViewSet):
-    @action(methods=["post"], detail=False)
-    def get_receipt(self, request: Request) -> Response:
-        session: CheckoutSession = request.user.get_active_checkout_session()
-        if not session:
-            return message_response(
-                message=_("There is no checkout session currently active."),
-                status=NO_ACTIVE_SESSION,
-            )
-
-        # Even if the session is expired, we should be able to get the receipt and
-        # finish the session.
-
-        return Response({"receipt": session.get_receipt()})
+def ping(request: Request) -> JsonResponse:
+    return JsonResponse(data={"message": "PONG", "server_hash": settings.CURRENT_HASH})

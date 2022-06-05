@@ -1,13 +1,15 @@
+import uuid
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.db.models import F
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from alexandria.api.views import EXPIRED_SESSION, NO_ACTIVE_SESSION
-from alexandria.receipts.models import ReceiptContainer
 from alexandria.records.models import CheckoutSession, Item, Hold
 from alexandria.users.models import BranchLocation, User
 from alexandria.utils.decorators import htmx_guard_redirect
@@ -37,6 +39,8 @@ def check_out_htmx(request: Request, receipt: str = None) -> HttpResponse:
             checkout_session.delete()
 
     CheckoutSession.objects.create(session_user=request.user)
+    # if we get a receipt, that means that we just finished a session. Show the
+    # new session page along with the command to print the old session's receipt.
     context = {"receipt": receipt} if receipt else {}
     return render(request, "fragments/check_out_new_session.partial", context)
 
@@ -155,10 +159,24 @@ def check_out_session_finish_htmx(request: Request) -> HttpResponse:
     if resp := session_validity_check(session, session_check_only=True):
         return resp
 
+    add_money = (
+        session.session_target.is_user
+        and request.context["enable_running_borrow_saved_money"]
+    )
+    user_money_saved = session.session_target.saved_money if add_money else 0
+
     for item in session.items.all():
         item.check_out_to(session.session_target)
+        if add_money:
+            user_money_saved += item.price
 
-    receipt = session.get_receipt()
+    if add_money:
+        # we don't really have to worry about race conditions here because one
+        # person won't be checking out all over the place at the same time
+        session.session_target.saved_money = user_money_saved
+        session.session_target.save()
+
+    receipt = session.get_receipt(request)
     session.delete()
     messages.success(request, _("All done!"))
     return check_out_htmx(request, receipt=receipt)
@@ -259,7 +277,6 @@ def check_in_item_htmx(request: Request) -> HttpResponse:
     current_location = BranchLocation.objects.get(
         id=request.session["checkin_building_id"]
     )
-    receipts = ReceiptContainer.objects.get(host=request.host)
 
     hold = Hold.objects.filter(item=item).order_by("created_at").first()
     needs_transport = False
@@ -279,11 +296,14 @@ def check_in_item_htmx(request: Request) -> HttpResponse:
             context |= {"redirect_to": item.home_location}
 
     if needs_transport:
-        context |= {"receipt": receipts.get_transport_receipt(item), "bg_style": "info"}
+        context |= {
+            "receipt": context["redirect_to"].get_transport_receipt(request),
+            "bg_style": "info",
+        }
         item.check_out_to(BranchLocation.objects.get(name="In Transit"))
     elif hold:
         # holds should only be processed when they have arrived at their destination
-        context |= {"receipt": receipts.get_hold_receipt(item), "bg_style": "warning"}
+        context |= {"receipt": hold.get_receipt(request), "bg_style": "warning"}
         item.check_out_to(BranchLocation.objects.get(name="Ready for Pickup"))
     else:
         if request.context["check_in"]["use_shelving_cart"]:
@@ -292,5 +312,4 @@ def check_in_item_htmx(request: Request) -> HttpResponse:
             item.checked_out_to = None
             item.save()
 
-    # TODO: do something with the receipts
     return render(request, "fragments/check_in_single_item.partial", context)

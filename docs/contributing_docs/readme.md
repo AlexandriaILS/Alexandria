@@ -1,6 +1,7 @@
 ---
 label: Contributing Documentation
 icon: book
+order: 100
 ---
 # Contributing Documentation
 
