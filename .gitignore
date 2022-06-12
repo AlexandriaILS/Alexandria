@@ -12,3 +12,6 @@ configs/
 sent_emails/
 postgres_data/
 node_modules/
+
+# any file relating to the openlibrary dump files
+ol_dump*
