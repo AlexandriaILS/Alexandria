@@ -307,7 +307,7 @@ class RelatedManager(Manager[_T]):
         objs: Union[QuerySet[_T], Iterable[Union[_T, int]]],
         *,
         bulk: bool = ...,
-        clear: bool = ...
+        clear: bool = ...,
     ) -> None:
         ...
 

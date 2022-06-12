@@ -2,7 +2,7 @@ import json
 import random
 
 from django.core.management.base import BaseCommand
-from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn, track
+from rich.progress import track
 
 from alexandria.catalog.management.commands.import_from_z import (
     PUBLISHERS,

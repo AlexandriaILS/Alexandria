@@ -1,8 +1,10 @@
 from django.core.management.base import BaseCommand
+from mimesis.providers import Address
 
 from alexandria.records.models import ItemType, ItemTypeBase
 from alexandria.users.management.commands import create_test_patrons, create_test_staff
-from alexandria.users.models import BranchLocation
+from alexandria.users.models import BranchLocation, USLocation
+from alexandria.utils import us_state_to_abbrev
 from alexandria.utils.management.commands import bootstrap_site, import_gutenberg_titles
 
 BRANCH_LOCATIONS = [
@@ -38,6 +40,7 @@ CASSETTE_SVG = (
 
 
 def create_test_locations_and_types():
+    address = Address()
     for branch in [
         "Crickhollow",
         "Frogmorton",
@@ -51,7 +54,13 @@ def create_test_locations_and_types():
         "Willowbottom",
         "Woodhall",
     ]:
-        BranchLocation.objects.get_or_create(name=branch)
+        location = USLocation.objects.create(
+            address_1=address.address(),
+            city=address.city(),
+            state=us_state_to_abbrev[address.state()],
+            zip_code=address.zip_code(),
+        )
+        BranchLocation.objects.get_or_create(name=branch, address=location)
 
     base = ItemTypeBase.objects.get(name=ItemTypeBase.LANGUAGE_MATERIAL)
     ItemType.objects.get_or_create(name="Audiobook (CD)", base=base, icon_name="album")
