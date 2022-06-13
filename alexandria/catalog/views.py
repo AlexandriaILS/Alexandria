@@ -44,10 +44,14 @@ def search(request: Request) -> HttpResponse:
         [
             i
             for i in search_term.split()
-            if i not in request.context["ignored_search_terms"]
+            if i
+            not in [
+                term.strip()
+                for term in request.settings.ignored_search_terms.split(",")
+            ]
         ]
     )
-
+    print(search_term)
     # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#searchrank
     # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#searchvector
     # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#trigram-similarity

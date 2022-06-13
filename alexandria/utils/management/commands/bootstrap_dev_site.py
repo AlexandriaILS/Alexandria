@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from mimesis.providers import Address
 
+from alexandria.distributed.management.commands import write_default_settings
 from alexandria.records.models import ItemType, ItemTypeBase
 from alexandria.users.management.commands import create_test_patrons, create_test_staff
 from alexandria.users.models import BranchLocation, USLocation
@@ -77,6 +78,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # First instantiate the site as normal
         bootstrap_site.Command().handle()
+        write_default_settings.Command().handle()
         create_test_locations_and_types()
         # roughly 1 librarian for every 600 cardholders
         self.stdout.write("Creating a metric ton of patrons...")

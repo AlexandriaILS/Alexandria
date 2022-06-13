@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from taggit.managers import TaggableManager
 
+from alexandria.distributed.models import Domain
 from alexandria.records.mixins import CoverUtilitiesMixin
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 from alexandria.users.models import BranchLocation, User
@@ -28,7 +29,9 @@ class Subject(TimeStampMixin, SearchableFieldMixin):
 
     # look, sometimes people are more wordy than they need to be, that's all I'm saying
     name = models.CharField(max_length=500)
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self):
         return self.name
@@ -44,7 +47,9 @@ class Collection(TimeStampMixin):
         BranchLocation, null=True, blank=True, on_delete=models.CASCADE
     )
     can_circulate = models.BooleanField(default=True)
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self):
         return self.name
@@ -70,7 +75,9 @@ class BibliographicLevel(models.Model):
     ]
 
     name = models.CharField(max_length=1, choices=LEVEL_OPTIONS)
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self):
         return self.get_name_display()
@@ -123,7 +130,9 @@ class ItemTypeBase(TimeStampMixin):
     ]
 
     name = models.CharField(max_length=1, choices=TYPE_OPTIONS)
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self):
         return self.get_name_display()
@@ -152,7 +161,9 @@ class ItemType(TimeStampMixin):
             "How many of this item type can be placed on hold at the same time?"
         ),
     )
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
     icon_name = models.CharField(
         _("icon name"),
         max_length=30,
@@ -241,7 +252,9 @@ class Record(TimeStampMixin, SearchableFieldMixin, CoverUtilitiesMixin):
 
     zenodotus_id = models.IntegerField(blank=True, null=True)
     zenodotus_record_version = models.IntegerField(blank=True, null=True)
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self):
         val = f"{self.title}"
@@ -417,7 +430,9 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
     )
     renewal_count = models.IntegerField(default=0)
 
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def _convert_isbn10_to_isbn13(self) -> str:
         # this process is so ridiculous.
@@ -597,7 +612,9 @@ class Hold(TimeStampMixin):
         ),
     )
 
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self):
         return f"{self.item} heading to {self.destination}"
@@ -638,7 +655,7 @@ class Hold(TimeStampMixin):
 
     def get_expiry_date(self, request: Request) -> date:
         return timezone.now().date() + timedelta(
-            days=request.context["default_hold_expiry_days"]
+            days=int(request.settings.default_hold_expiry_days)
         )
 
 

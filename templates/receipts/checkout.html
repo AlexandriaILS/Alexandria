@@ -14,17 +14,17 @@
 |Renew your materials and place holds
 |online or by phone:
 |
-|{{ request.context.url }}
-|{{ request.context.phone_number }}
-|{% if request.context.enable_running_borrow_saved_money and checkout_session.session_target.is_user %}
+|{{ request.settings.url }}
+|{{ request.settings.phone_number }}
+|{% if request.settings.enable_running_borrow_saved_money and checkout_session.session_target.is_user %}
 |You've saved "${{ checkout_session.session_target.saved_money }}" by using
 |your library card! Nice work!
 |{% endif %}
 |
 |
-|"{{ request.context.name }} "
-|{{ request.context.address.address_1 }}
-|{{ request.context.address.city }}, {{ request.context.address.state }} {{ request.context.address.zip_code }}
-|{{ request.context.phone_number }}
+|"{{ request.settings.name }} "
+|{{ request.settings.address_1 }}
+|{{ request.settings.city }}, {{ request.settings.state }} {{ request.settings.zip_code }}
+|{{ request.settings.phone_number }}
 |{% now "l, N j Y @ g:iA" %}
 |

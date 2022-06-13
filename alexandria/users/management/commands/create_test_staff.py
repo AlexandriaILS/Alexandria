@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from rich.progress import track
 
+from alexandria.distributed.models import Domain
 from alexandria.users.models import AccountType, BranchLocation, User, USLocation
 from alexandria.utils import us_state_to_abbrev
 
@@ -32,7 +33,7 @@ class Command(BaseCommand):
 
         valid_branches = list(
             BranchLocation.objects.filter(
-                open_to_public=True, host=settings.DEFAULT_HOST_KEY
+                open_to_public=True, host=Domain.get_default()
             )
         )
 
@@ -49,8 +50,8 @@ class Command(BaseCommand):
                 address=location,
                 title=title,
                 account_type=AccountType.objects.get(name=title),
-                first_name=person.first_name(),
-                last_name=person.last_name(),
+                legal_first_name=person.first_name(),
+                legal_last_name=person.last_name(),
                 email=person.email(),
                 birth_year=2021 - person.age(minimum=20),
                 default_branch=random.choice(valid_branches),

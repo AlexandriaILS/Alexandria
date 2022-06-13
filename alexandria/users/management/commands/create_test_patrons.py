@@ -2,10 +2,10 @@ import random
 import string
 from datetime import datetime
 
-from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from rich.progress import track
 
+from alexandria.distributed.models import Domain
 from alexandria.users.models import AccountType, BranchLocation, User, USLocation
 from alexandria.utils import us_state_to_abbrev
 
@@ -33,7 +33,7 @@ class Command(BaseCommand):
         people = []
 
         valid_branches = BranchLocation.objects.filter(
-            open_to_public=True, host=settings.DEFAULT_HOST_KEY
+            open_to_public=True, host=Domain.get_default()
         )
 
         for x in track(range(count), description="[green]Generating locations..."):
@@ -65,8 +65,8 @@ class Command(BaseCommand):
                     address=USLocation.objects.get(
                         id=x + 2
                     ),  # account for zero and the admin address
-                    first_name=person.first_name(),
-                    last_name=person.last_name(),
+                    legal_first_name=person.first_name(),
+                    legal_last_name=person.last_name(),
                     account_type=underage if age < 18 else patron,
                     email=person.email(),
                     birth_year=datetime.now().year - age,

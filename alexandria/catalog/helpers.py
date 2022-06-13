@@ -2,7 +2,7 @@ from alexandria.utils.type_hints import Request
 
 
 def get_results_per_page(request: Request) -> int:
-    default: int = request.context["default_results_per_page"]
+    default: int = int(request.settings.default_results_per_page)
     try:
         results_per_page = int(request.GET.get("count", default))
         if results_per_page < 1:

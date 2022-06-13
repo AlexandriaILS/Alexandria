@@ -41,6 +41,7 @@ class PatronSettingsForm(forms.ModelForm):
             self.fields["chosen_first_name"].label = _(
                 "What first name would you like us to call you?"
             )
+            self.fields["chosen_first_name"].required = False
             self.fields["chosen_first_name"].help_text = _(
                 "This only changes how we refer to you; if you need to change your legal"
                 " name, please bring updated ID to any branch."

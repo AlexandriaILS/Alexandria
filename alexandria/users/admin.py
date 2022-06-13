@@ -34,8 +34,8 @@ class CustomUserAdmin(UserAdmin):
             _("Personal info"),
             {
                 "fields": (
-                    "first_name",
-                    "last_name",
+                    "legal_first_name",
+                    "legal_last_name",
                     "title",
                     "account_type",
                     "email",
@@ -57,8 +57,8 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
-    list_display = ("card_number", "email", "first_name", "last_name")
-    search_fields = ("card_number", "first_name", "last_name", "email")
+    list_display = ("card_number", "email", "legal_first_name", "legal_last_name")
+    search_fields = ("card_number", "legal_first_name", "legal_last_name", "email")
     list_filter = ("is_active",)
     filter_horizontal = ()
     ordering = ("card_number",)

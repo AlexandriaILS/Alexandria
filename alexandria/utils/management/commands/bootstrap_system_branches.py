@@ -1,5 +1,6 @@
-from django.conf import settings
 from django.core.management.base import BaseCommand
+
+from alexandria.distributed.models import Domain
 
 
 class Command(BaseCommand):
@@ -20,7 +21,7 @@ class Command(BaseCommand):
         count = 0
         for option in items:
             item, created = BranchLocation.objects.get_or_create(
-                name=option, open_to_public=False, host=settings.DEFAULT_SYSTEM_HOST_KEY
+                name=option, open_to_public=False, host=Domain.get_system()
             )
             if created:
                 count += 1

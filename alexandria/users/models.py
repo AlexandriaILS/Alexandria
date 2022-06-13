@@ -18,6 +18,7 @@ from django.utils.translation import gettext as _
 from localflavor.us.models import USStateField, USZipCodeField
 
 from alexandria.distributed.configs import load_site_config
+from alexandria.distributed.models import Domain, Setting
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 from alexandria.utils.models import TimeStampMixin
 from alexandria.utils.permissions import perm_to_permission
@@ -61,7 +62,7 @@ class UserManager(DjangoUserManager):
             raise ValueError("First name must be set")
         email = self.normalize_email(email)
         user = self.model(
-            card_number=card_number, email=email, first_name=first_name, **extra_fields
+            card_number=card_number, email=email, legal_first_name=first_name, **extra_fields
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -111,7 +112,9 @@ class USLocation(TimeStampMixin):
     city = models.CharField(_("City"), max_length=64, null=True, blank=True)
     state = USStateField(_("State"), null=True, blank=True)
     zip_code = USZipCodeField(_("Zip Code"), null=True, blank=True)
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     class Meta:
         verbose_name = "US Location"
@@ -140,7 +143,9 @@ class BranchLocation(TimeStampMixin):
             "Set to false if this building is staff-only or a processing center."
         ),
     )
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self) -> str:
         if self.address:
@@ -220,7 +225,9 @@ class AccountType(TimeStampMixin, PermissionsMixin):
             "Designates whether users with this role are library staff members."
         ),
     )
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     class Meta:
         verbose_name = _("account type")
@@ -353,7 +360,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
     # where it might not be, so we'll store it as a string with the expectation
     # that it's a very large number.
 
-    SEARCHABLE_FIELDS = ["first_name", "last_name", "chosen_first_name"]
+    SEARCHABLE_FIELDS = ["legal_first_name", "legal_last_name", "chosen_first_name"]
 
     card_number: str = models.CharField(primary_key=True, max_length=50)
     # We only need one address; no need to keep their history.
@@ -363,9 +370,9 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
     title: str = models.CharField(_("title"), max_length=50, null=True, blank=True)
 
     # first name is mandatory, last name is optional
-    first_name: str = models.CharField(_("first name"), max_length=255)
-    last_name: str = models.CharField(
-        _("last name"), max_length=255, null=True, blank=True
+    legal_first_name: str = models.CharField(_("legal first name"), max_length=255)
+    legal_last_name: str = models.CharField(
+        _("legal last name"), max_length=255, null=True, blank=True
     )
     chosen_first_name: str = models.CharField(
         _("chosen first name"),
@@ -416,7 +423,9 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
     # if context.enable_running_borrow_saved_money is enabled, the prices of each item
     # will be summed and added to this field on every checkout.
     saved_money = models.IntegerField(default=0)
-    host: str = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
     # for setting holds
     default_branch: BranchLocation = models.ForeignKey(
         BranchLocation,
@@ -493,7 +502,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         if not self.default_branch:
             # this shouldn't really happen, but we can at least correct for it if it does
             self.default_branch = BranchLocation.objects.get(
-                id=load_site_config(self.host)["default_location_id"], host=self.host
+                id=Setting.get("default_location_id", host=self.host), host=self.host
             )
             self.save()
         return self.default_branch
@@ -504,7 +513,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
             return None
         if not self.work_branch:
             self.work_branch = BranchLocation.objects.get(
-                id=load_site_config(self.host)["default_location_id"]
+                id=Setting.get("default_location_id", host=self.host)
             )
             self.save()
         return self.work_branch
@@ -538,9 +547,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
     def get_system_branches(self) -> QuerySet[BranchLocation]:
         # formats system branches using the `branch_dropdown_with_default_on_top`
         # template.
-        return BranchLocation.objects.filter(
-            host=settings.DEFAULT_SYSTEM_HOST_KEY
-        ).order_by("name")
+        return BranchLocation.objects.filter(host=Domain.get_system()).order_by("name")
 
     def _get_users(self, is_staff: bool) -> QuerySet[User]:
         qs = User.objects.filter(account_type__is_staff=is_staff, host=self.host)
@@ -548,15 +555,15 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
             # superusers can edit themselves
             qs = qs.exclude(card_number=self)
 
-        return qs.order_by("last_name", "first_name")
+        return qs.order_by("legal_last_name", "legal_first_name")
 
     def _abbreviate_name(self, name: str = None) -> str:
         """Take a name and abbreviate it. Defaults to last name."""
-        target = name if name else self.last_name
+        target = name if name else self.legal_last_name
         return "".join([n[0] for n in target.split()])
 
     def get_first_name(self) -> str:
-        return self.chosen_first_name if self.chosen_first_name else self.first_name
+        return self.chosen_first_name if self.chosen_first_name else self.legal_first_name
 
     def get_shortened_name(self) -> str:
         """
@@ -568,7 +575,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         # https://english.stackexchange.com/a/413015
         name = self.get_first_name()
 
-        if self.last_name:
+        if self.legal_last_name:
             name += f" {self._abbreviate_name()}"
 
         return name
@@ -576,8 +583,8 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
     def get_display_name(self) -> str:
         name = self.get_first_name()
 
-        if self.last_name:
-            name += f" {self.last_name}"
+        if self.legal_last_name:
+            name += f" {self.legal_last_name}"
 
         return name
 
@@ -671,7 +678,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
 
         Example: for Admin von Admin with card number 1234567890123, return vA - 890123
         """
-        if self.last_name:
+        if self.legal_last_name:
             name = self._abbreviate_name()
         else:
             name = self._abbreviate_name(name=self.get_first_name())

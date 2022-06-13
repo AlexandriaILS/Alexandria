@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from alexandria.api.views import EXPIRED_SESSION, NO_ACTIVE_SESSION
+from alexandria.distributed.models import Domain
 from alexandria.records.models import CheckoutSession, Item, Hold
 from alexandria.users.models import BranchLocation, User
 from alexandria.utils.decorators import htmx_guard_redirect
@@ -96,7 +97,7 @@ def check_out_set_target_htmx(request: Request) -> HttpResponse:
         ).first()
     else:
         target = BranchLocation.objects.filter(
-            id=system_building_id, host=settings.DEFAULT_SYSTEM_HOST_KEY
+            id=system_building_id, host=Domain.get_system()
         ).first()
 
     if not target:
@@ -161,7 +162,7 @@ def check_out_session_finish_htmx(request: Request) -> HttpResponse:
 
     add_money = (
         session.session_target.is_user
-        and request.context["enable_running_borrow_saved_money"]
+        and request.settings.enable_running_borrow_saved_money
     )
     user_money_saved = session.session_target.saved_money if add_money else 0
 
@@ -289,8 +290,9 @@ def check_in_item_htmx(request: Request) -> HttpResponse:
             # it's not going anywhere, so pass that info to the template
             context |= {"is_hold": True}
     else:
-        if item.home_location != current_location and not request.context.get(
-            "floating_collection"
+        if (
+            item.home_location != current_location
+            and not request.settings.floating_collection
         ):
             needs_transport = True
             context |= {"redirect_to": item.home_location}
@@ -306,7 +308,7 @@ def check_in_item_htmx(request: Request) -> HttpResponse:
         context |= {"receipt": hold.get_receipt(request), "bg_style": "warning"}
         item.check_out_to(BranchLocation.objects.get(name="Ready for Pickup"))
     else:
-        if request.context["check_in"]["use_shelving_cart"]:
+        if request.settings.use_shelving_cart:
             item.check_out_to(BranchLocation.objects.get(name="Shelving Cart"))
         else:
             item.checked_out_to = None

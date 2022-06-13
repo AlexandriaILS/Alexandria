@@ -12,26 +12,26 @@ from alexandria.users.models import AccountType, BranchLocation, User
 
 DEFAULT_SUPERUSER = {
     "card_number": "123444",
-    "first_name": "Atticus",
-    "last_name": "Finch",
+    "legal_first_name": "Atticus",
+    "legal_last_name": "Finch",
     "password": "headhighfistsdown",
 }
 DEFAULT_STAFF_USER = {
     "card_number": "2345",  # existing Admin user is 1234
-    "first_name": "Guy",
-    "last_name": "Montag",
+    "legal_first_name": "Guy",
+    "legal_last_name": "Montag",
     "password": "l1ght1tup",
 }
 DEFAULT_PATRON_USER = {
     "card_number": "3456",
-    "first_name": "Fitzwilliam",
-    "last_name": "Darcy",
+    "legal_first_name": "Fitzwilliam",
+    "legal_last_name": "Darcy",
     "password": "misunderst00ddefect",
 }
 DEFAULT_UNDERAGE_PATRON_USER = {
     "card_number": "4567",
-    "first_name": "Augustus",
-    "last_name": "Gloop",
+    "legal_first_name": "Augustus",
+    "legal_last_name": "Gloop",
     "birth_year": 2012,
     "is_minor": True,
     "password": "chocolateriver4me",

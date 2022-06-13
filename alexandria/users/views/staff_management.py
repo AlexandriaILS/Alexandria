@@ -63,9 +63,9 @@ class EditStaffUser(PermissionRequiredMixin, View):
         initial_data = {
             "card_number": user.card_number,
             "title": user.title,
-            "first_name": user.first_name,
+            "legal_first_name": user.legal_first_name,
             "chosen_first_name": user.chosen_first_name,
-            "last_name": user.last_name,
+            "legal_last_name": user.legal_last_name,
             "email": user.email,
             "is_minor": user.is_minor,
             "birth_year": user.birth_year,
