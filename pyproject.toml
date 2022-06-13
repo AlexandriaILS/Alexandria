@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "alexandria"
-version = "0.57.0"
+version = "0.58.0"
 description = "Bespoke. Books. Battlestar Galactica."
 authors = ["Joe Kaufeld <alexandria@joekaufeld.com>"]
 
