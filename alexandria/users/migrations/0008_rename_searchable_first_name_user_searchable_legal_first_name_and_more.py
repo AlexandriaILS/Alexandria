@@ -6,37 +6,41 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0007_alter_user_host'),
+        ("users", "0007_alter_user_host"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='user',
-            old_name='searchable_first_name',
-            new_name='searchable_legal_first_name',
+            model_name="user",
+            old_name="searchable_first_name",
+            new_name="searchable_legal_first_name",
         ),
         migrations.RenameField(
-            model_name='user',
-            old_name='searchable_last_name',
-            new_name='searchable_legal_last_name',
+            model_name="user",
+            old_name="searchable_last_name",
+            new_name="searchable_legal_last_name",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='first_name',
+            model_name="user",
+            name="first_name",
         ),
         migrations.RemoveField(
-            model_name='user',
-            name='last_name',
+            model_name="user",
+            name="last_name",
         ),
         migrations.AddField(
-            model_name='user',
-            name='legal_first_name',
-            field=models.CharField(default='', max_length=255, verbose_name='legal first name'),
+            model_name="user",
+            name="legal_first_name",
+            field=models.CharField(
+                default="", max_length=255, verbose_name="legal first name"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='user',
-            name='legal_last_name',
-            field=models.CharField(blank=True, max_length=255, null=True, verbose_name='legal last name'),
+            model_name="user",
+            name="legal_last_name",
+            field=models.CharField(
+                blank=True, max_length=255, null=True, verbose_name="legal last name"
+            ),
         ),
     ]

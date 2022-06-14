@@ -49,13 +49,19 @@ class TestCreateUser:
     def test_create_superuser_fails_with_overridden_flags_1(self):
         with pytest.raises(ValueError):
             User.objects.create_superuser(
-                card_number="aaaa", email="a@a.com", legal_first_name="A", is_staff=False
+                card_number="aaaa",
+                email="a@a.com",
+                legal_first_name="A",
+                is_staff=False,
             )
 
     def test_create_superuser_fails_with_overridden_flags_2(self):
         with pytest.raises(ValueError):
             User.objects.create_superuser(
-                card_number="aaaa", email="a@a.com", legal_first_name="A", is_superuser=False
+                card_number="aaaa",
+                email="a@a.com",
+                legal_first_name="A",
+                is_superuser=False,
             )
 
 

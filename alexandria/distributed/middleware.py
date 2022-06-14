@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.exceptions import DisallowedHost
 from django.utils.deprecation import MiddlewareMixin
 
-from alexandria.distributed.configs import load_site_config, get_site_host_key
+from alexandria.distributed.configs import get_site_host_key
 from alexandria.distributed.models import Domain, SettingsContainer
 from alexandria.utils.context import build_context
 

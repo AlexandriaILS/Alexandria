@@ -17,7 +17,6 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from localflavor.us.models import USStateField, USZipCodeField
 
-from alexandria.distributed.configs import load_site_config
 from alexandria.distributed.models import Domain, Setting
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 from alexandria.utils.models import TimeStampMixin
@@ -62,7 +61,10 @@ class UserManager(DjangoUserManager):
             raise ValueError("First name must be set")
         email = self.normalize_email(email)
         user = self.model(
-            card_number=card_number, email=email, legal_first_name=first_name, **extra_fields
+            card_number=card_number,
+            email=email,
+            legal_first_name=first_name,
+            **extra_fields,
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -563,7 +565,9 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         return "".join([n[0] for n in target.split()])
 
     def get_first_name(self) -> str:
-        return self.chosen_first_name if self.chosen_first_name else self.legal_first_name
+        return (
+            self.chosen_first_name if self.chosen_first_name else self.legal_first_name
+        )
 
     def get_shortened_name(self) -> str:
         """

@@ -14,7 +14,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from taggit.managers import TaggableManager
 
-from alexandria.distributed.models import Domain
+from alexandria.distributed.models import Domain, Setting
 from alexandria.records.mixins import CoverUtilitiesMixin
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 from alexandria.users.models import BranchLocation, User
@@ -510,9 +510,8 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
         # self.due_date to actually set the due date.
         if not start_date:
             start_date = timezone.now().date()
-        checkout_renew_days = (
-            self.type.number_of_days_per_checkout
-            or settings.SITE_DATA[self.host].get("default_checkout_duration_days")
+        checkout_renew_days = self.type.number_of_days_per_checkout or Setting.get_int(
+            "default_checkout_duration_days", host=self.host
         )
         return start_date + timedelta(days=checkout_renew_days)
 
@@ -547,7 +546,7 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
         )
 
     def within_renewal_period(self):
-        day_delay = settings.SITE_DATA[self.host].get("default_renewal_delay_days")
+        day_delay = Setting.get_int("default_renewal_delay_days", host=self.host)
         now = timezone.now().date()
         return self.due_date < now + timedelta(days=day_delay)
 
@@ -559,12 +558,12 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
     def get_renewal_availability_date(self):
         # For when the renewal button turns on. Controlled by the delay
         # in the configs for the library.
-        day_delay = settings.SITE_DATA[self.host].get("default_renewal_delay_days")
+        day_delay = Setting.get_int("default_renewal_delay_days", host=self.host)
         return self.due_date - timedelta(days=day_delay)
 
     def get_max_renewal_count(self):
-        return self.type.number_of_allowed_renews or settings.SITE_DATA[self.host].get(
-            "default_max_renews"
+        return self.type.number_of_allowed_renews or Setting.get_int(
+            "default_max_renews", host=self.host
         )
 
     def is_on_hold(self):

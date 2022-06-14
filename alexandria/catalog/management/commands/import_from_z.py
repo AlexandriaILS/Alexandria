@@ -4,10 +4,9 @@ import sys
 from typing import Dict
 
 import requests
-from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from alexandria.distributed.configs import init_site_data
+from alexandria.distributed.models import Setting
 from alexandria.records.models import (
     BibliographicLevel,
     Item,
@@ -31,18 +30,12 @@ PUBLISHERS = [
     "CowFjord University Press",
 ]
 
-sites = init_site_data()
-
 
 def build_record(item: Dict) -> Record:
     subject_list = [
         Subject.objects.get_or_create(name=subj)[0]
         for subj in [
-            requests.get(
-                slash_join(
-                    sites[settings.DEFAULT_HOST_KEY]["zenodotus_url"], "subject", id
-                )
-            )
+            requests.get(slash_join(Setting.get("zenodotus_url"), "subject", id))
             .json()
             .get("name")
             for id in item["subjects"]
@@ -52,7 +45,7 @@ def build_record(item: Dict) -> Record:
     bib_resp = (
         requests.get(
             slash_join(
-                sites[settings.DEFAULT_HOST_KEY]["zenodotus_url"],
+                Setting.get("zenodotus_url"),
                 "bibliographiclevel",
                 item["bibliographic_level"],
             )
@@ -66,14 +59,12 @@ def build_record(item: Dict) -> Record:
         bibliographic_level = None
 
     itemtype_response = requests.get(
-        slash_join(
-            sites[settings.DEFAULT_HOST_KEY]["zenodotus_url"], "itemtype", item["type"]
-        )
+        slash_join(Setting.get("zenodotus_url"), "itemtype", item["type"])
     ).json()
     itemtypebase_response = (
         requests.get(
             slash_join(
-                sites[settings.DEFAULT_HOST_KEY]["zenodotus_url"],
+                Setting.get("zenodotus_url"),
                 "itemtypebase",
                 itemtype_response["base"],
             )
@@ -184,7 +175,7 @@ class Command(BaseCommand):
                 sys.exit(0)
 
         available_records = requests.get(
-            slash_join(sites[settings.DEFAULT_HOST_KEY]["zenodotus_url"], "record")
+            slash_join(Setting.get("zenodotus_url"), "record")
         ).json()
         # returns a list of dicts
         for item in available_records:

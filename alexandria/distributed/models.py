@@ -29,11 +29,11 @@ class Domain(models.Model):
 
 
 class SettingsContainer:
-    # allow dot notation on the request object.
     def __init__(self, host):
         self.host = host
 
     def __getattr__(self, item):
+        # allow dot notation on the request object for templates
         return Setting.get(name=item, host=self.host)
 
     def as_dict(self):
@@ -51,7 +51,9 @@ class Setting(models.Model):
     )
 
     @classmethod
-    def get(cls, name: str, host: Domain = None, default: int | str = None) -> None:
+    def get(
+        cls, name: str, host: Domain = None, default: int | str = None
+    ) -> str | None:
         if not host:
             host = Domain.get_default()
         if result := cls.objects.filter(name=name, host=host).first():
@@ -60,3 +62,10 @@ class Setting(models.Model):
 
     def __str__(self):
         return f"{self.host.name}: {self.name}={self.value}"
+
+    @classmethod
+    def get_int(cls, *args, **kwargs) -> int | None:
+        # Handle settings that might be None without extra boilerplate.
+        if result := cls.get(*args, **kwargs):
+            return int(result)
+        return None
