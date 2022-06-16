@@ -1,5 +1,6 @@
 from typing import Dict
 
+from alexandria.distributed.models import Domain
 from alexandria.records.models import (
     Collection,
     Hold,
@@ -48,6 +49,7 @@ DEFAULT_COLLECTION = {"name": "Coolest Books"}
 DEFAULT_ACCOUNT_TYPE = {"name": "Default"}
 DEFAULT_RECORD = {"title": "Test Record"}
 DEFAULT_ITEM_TYPE = {"name": "Book"}
+DEFAULT_DOMAIN = {"name": "example.com"}
 
 
 def get_default_item_type(**kwargs):
@@ -67,6 +69,15 @@ def get_default_record(**kwargs):
         **{key: kwargs[key] for key in kwargs if key in dir(Record)},
     }
     obj, _ = Record.objects.get_or_create(**data)
+    return obj
+
+
+def get_default_domain(**kwargs):
+    data = {
+        **DEFAULT_DOMAIN,
+        **{key: kwargs[key] for key in kwargs if key in dir(Domain)},
+    }
+    obj, _ = Domain.objects.get_or_create(**data)
     return obj
 
 

@@ -39,19 +39,11 @@ def search(request: Request) -> HttpResponse:
     search_term = request.GET.get("q")
     if not search_term:
         return render(request, "catalog/search.html", context)
+    ignored_terms = request.settings.get("ignored_search_terms", default=[])
+    if ignored_terms:
+        ignored_terms = [term.strip() for term in ignored_terms.split(",")]
 
-    search_term = " ".join(
-        [
-            i
-            for i in search_term.split()
-            if i
-            not in [
-                term.strip()
-                for term in request.settings.ignored_search_terms.split(",")
-            ]
-        ]
-    )
-    print(search_term)
+    search_term = " ".join([i for i in search_term.split() if i not in ignored_terms])
     # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#searchrank
     # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#searchvector
     # https://docs.djangoproject.com/en/4.0/ref/contrib/postgres/search/#trigram-similarity

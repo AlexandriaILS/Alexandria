@@ -2,12 +2,15 @@ import pytest
 from django.shortcuts import reverse
 from django.test import Client
 
+from alexandria.distributed.models import Setting
 from alexandria.records.models import Hold
 from alexandria.utils.test_helpers import get_default_patron_user, get_test_item
 
 
 def test_my_checkouts(client: Client):
     """Verify that the 'My Checkouts' page works as expected."""
+    Setting.objects.create(name="default_renewal_delay_days", value="5")
+
     item = get_test_item()
     user = get_default_patron_user()
     assert item.checked_out_to is None

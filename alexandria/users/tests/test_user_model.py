@@ -2,12 +2,14 @@ import pytest
 from django.contrib.auth.models import Group
 from django.db.models import QuerySet
 
+from alexandria.distributed.models import Setting
 from alexandria.records.models import ItemType
 from alexandria.users.models import AccountType, BranchLocation, User, USLocation
 from alexandria.utils.permissions import perm_to_permission
 from alexandria.utils.test_helpers import (
     get_default_branch_location,
     get_default_collection,
+    get_default_domain,
     get_default_item_type,
     get_default_patron_user,
     get_default_staff_user,
@@ -80,7 +82,7 @@ class TestUserFunctions:
 
     def test_get_branches_in_wrong_host(self):
         user = get_default_patron_user()
-        branch = get_default_branch_location(host="AAA")
+        branch = get_default_branch_location(host=get_default_domain(name="AAA.com"))
 
         assert user.host != branch.host
 
@@ -108,10 +110,7 @@ class TestUserFunctions:
         user = get_default_patron_user()
         branch = get_default_branch_location()
 
-        mocker.patch(
-            "alexandria.users.models.load_site_config",
-            return_value={"default_location_id": branch.id},
-        )
+        Setting.objects.create(name="default_location_id", value=str(branch.id))
 
         assert user.get_default_branch() == branch
 
@@ -123,10 +122,7 @@ class TestUserFunctions:
         user = get_default_staff_user()
         branch = get_default_branch_location()
 
-        mocker.patch(
-            "alexandria.users.models.load_site_config",
-            return_value={"default_location_id": branch.id},
-        )
+        Setting.objects.create(name="default_location_id", value=str(branch.id))
 
         assert user.get_work_branch() == branch
 
@@ -180,7 +176,7 @@ class TestUserFunctions:
         """Verify that patrons from different hosts are not visible."""
         user = get_default_staff_user()
         patron = get_default_patron_user()
-        patron.host = "aaaa"
+        patron.host = get_default_domain()
         patron.save()
         assert len(user.get_viewable_patrons()) == 0
 
@@ -224,7 +220,7 @@ class TestUserFunctions:
         user = get_default_staff_user()
         patron = get_default_patron_user()
         patron.account_type = AccountType.objects.get(name="Librarian")
-        patron.host = "aaaa"
+        patron.host = get_default_domain()
         patron.save()
         assert len(user.get_viewable_staff()) == 0
         user.account_type.is_superuser = True
@@ -379,7 +375,7 @@ class TestUserFunctions:
     def test_can_checkout_item_wrong_host(self):
         user = get_default_patron_user()
         item = get_test_item()
-        item.host = "asdf.com"
+        item.host = get_default_domain(name="https://asdf.com")
         item.save()
 
         assert not user.can_checkout_item(item)[0]

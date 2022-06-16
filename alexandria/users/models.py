@@ -43,7 +43,7 @@ class UserManager(DjangoUserManager):
         card_number=None,
         email=None,
         password=None,
-        first_name=None,
+        legal_first_name=None,
         **extra_fields,
     ) -> User:
         """
@@ -57,13 +57,13 @@ class UserManager(DjangoUserManager):
             raise ValueError("Card number must be set")
         if not email:
             raise ValueError("Email address must be set")
-        if not first_name:
+        if not legal_first_name:
             raise ValueError("First name must be set")
         email = self.normalize_email(email)
         user = self.model(
             card_number=card_number,
             email=email,
-            legal_first_name=first_name,
+            legal_first_name=legal_first_name,
             **extra_fields,
         )
         user.set_password(password)

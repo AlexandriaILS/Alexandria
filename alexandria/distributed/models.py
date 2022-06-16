@@ -1,6 +1,6 @@
+from django.conf import settings
 from django.db import models
 from django.db.utils import ProgrammingError
-from django.conf import settings
 
 
 class Domain(models.Model):
@@ -35,6 +35,12 @@ class SettingsContainer:
     def __getattr__(self, item):
         # allow dot notation on the request object for templates
         return Setting.get(name=item, host=self.host)
+
+    def get(self, name: str, **kwargs):
+        return Setting.get(name, **kwargs, host=self.host)
+
+    def get_int(self, name: str, **kwargs):
+        return Setting.get_int(name, **kwargs, host=self.host)
 
     def as_dict(self):
         # todo: fix

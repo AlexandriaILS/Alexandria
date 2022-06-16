@@ -11,7 +11,7 @@ from django.utils.translation import gettext as _
 
 from alexandria.api.views import EXPIRED_SESSION, NO_ACTIVE_SESSION
 from alexandria.distributed.models import Domain
-from alexandria.records.models import CheckoutSession, Item, Hold
+from alexandria.records.models import CheckoutSession, Hold, Item
 from alexandria.users.models import BranchLocation, User
 from alexandria.utils.decorators import htmx_guard_redirect
 from alexandria.utils.type_hints import Request
