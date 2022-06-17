@@ -28,7 +28,7 @@
                     {% elif is_hold %}
                         <strong>{% translate "On hold" %}</strong>
                     {% else %}
-                        {% if request.context.check_in.use_shelving_cart %}
+                        {% if request.settings.use_shelving_cart %}
                             {# Translators: This is saying "the item is now located on the shelving cart", if that changes anything. #}
                             <strong>{% translate "Shelving cart" %}</strong>
                         {% else %}

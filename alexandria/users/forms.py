@@ -27,9 +27,9 @@ class PatronForm(forms.Form):
         self.order_fields(
             [
                 "card_number",
-                "first_name",
+                "legal_first_name",
                 "chosen_first_name",
-                "last_name",
+                "legal_last_name",
                 "title",
                 "account_type",
                 "email",
@@ -47,9 +47,9 @@ class PatronForm(forms.Form):
         )
 
     card_number = forms.CharField()
-    first_name = forms.CharField()
-    chosen_first_name = forms.CharField()
-    last_name = forms.CharField()
+    legal_first_name = forms.CharField()
+    chosen_first_name = forms.CharField(required=False)
+    legal_last_name = forms.CharField()
     email = forms.EmailField()
     is_minor = forms.BooleanField(label=_("Person is legally a minor"), required=False)
     birth_year = forms.IntegerField(

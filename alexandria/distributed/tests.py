@@ -9,20 +9,17 @@ from alexandria.distributed.middleware import (
     ContextUpdateMiddleware,
     HostValidationMiddleware,
 )
+from alexandria.utils.test_helpers import get_default_domain
 
 
-def test_valid_host_response(
-    rf: RequestFactory, mocker: MockerFixture, settings: SettingsWrapper
-):
-    mocker.patch(
-        "alexandria.distributed.middleware.load_site_config", return_value={"a": "b"}
-    )
+def test_valid_host_response(rf: RequestFactory, settings: SettingsWrapper):
     request = rf.get("/")
-    request.host = None
+    request.host = get_default_domain()
 
-    HostValidationMiddleware(lambda: True).process_request(request)
-    assert request.host == settings.DEFAULT_HOST_KEY
-    assert request.context == {"a": "b"}
+    try:
+        HostValidationMiddleware(lambda: True).process_request(request)
+    except DisallowedHost:
+        assert False, "Should allow the default domain."
 
 
 def test_invalid_host(rf: RequestFactory):

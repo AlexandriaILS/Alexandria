@@ -6,7 +6,7 @@
         <a class="navbar-brand mb-1" href="/">
             <img src="{% static 'favicons/black/favicon-32x32.png' %}" width="30"
                  height="30" class="d-inline-block align-top"
-                 alt="">{{ request.context.name }}
+                 alt="">{{ request.settings.name }}
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -14,17 +14,17 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="navbar-nav me-auto mb-lg-0">
-                {% if request.context.navbar.link_1_title %}
+                {% if request.settings.navbar_link_1_title %}
                     <a class="nav-link" target="_blank"
-                       href="{{ request.context.navbar.link_1_url }}">{{ request.context.navbar.link_1_title }}</a>
+                       href="{{ request.settings.navbar_link_1_url }}">{{ request.settings.navbar_link_1_title }}</a>
                 {% endif %}
-                {% if request.context.navbar.link_2_title %}
+                {% if request.settings.navbar_link_2_title %}
                     <a class="nav-link" target="_blank"
-                       href="{{ request.context.navbar.link_2_url }}">{{ request.context.navbar.link_2_title }}</a>
+                       href="{{ request.settings.navbar_link_2_url }}">{{ request.settings.navbar_link_2_title }}</a>
                 {% endif %}
-                {% if request.context.navbar.link_3_title %}
+                {% if request.settings.navbar_link_3_title %}
                     <a class="nav-link" target="_blank"
-                       href="{{ request.context.navbar.link_3_url }}">{{ request.context.navbar.link_3_title }}</a>
+                       href="{{ request.settings.navbar_link_3_url }}">{{ request.settings.navbar_link_3_title }}</a>
                 {% endif %}
             </div>
             <div class="navbar-nav mb-lg-0">

@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import subprocess
-from collections.abc import Mapping
+
+from alexandria.utils.lazy import LazyObject
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -49,33 +50,13 @@ DEFAULT_HOST_KEY = "default"
 DEFAULT_SYSTEM_HOST_KEY = "system"
 
 
-class LazySiteData(Mapping):
-    # from https://stackoverflow.com/a/47212782 with minor tweaks
-    def __init__(self, *args, **kw):
-        self._raw_dict = dict(*args, **kw)
+def is_first_run() -> bool:
+    from alexandria.distributed.models import Domain
 
-    def __getitem__(self, key):
-        if not self._raw_dict:
-            self.init_data()
-        return self._raw_dict.__getitem__(key)
-
-    def __iter__(self):
-        if not self._raw_dict:
-            self.init_data()
-        return iter(self._raw_dict)
-
-    def __len__(self):
-        if not self._raw_dict:
-            self.init_data()
-        return len(self._raw_dict)
-
-    def init_data(self):
-        from alexandria.distributed.configs import init_site_data
-
-        self._raw_dict = init_site_data()
+    return Domain.objects.count() == 0
 
 
-SITE_DATA = LazySiteData()  # this will get populated at runtime
+IS_FIRST_RUN = LazyObject(factory=is_first_run)
 
 AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "/login/"

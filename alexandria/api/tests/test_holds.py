@@ -7,6 +7,7 @@ from alexandria.api.views import create_hold
 from alexandria.records.models import Hold
 from alexandria.utils.test_helpers import (
     get_default_branch_location,
+    get_default_domain,
     get_default_hold,
     get_default_patron_user,
     get_default_record,
@@ -187,7 +188,7 @@ def test_create_hold_verify_correct_data(rf: RequestFactory):
 
     request = rf.get("/")
     request.user = user
-    request.host = "example.com"
+    request.host = get_default_domain()
     request.session = {}
 
     assert Hold.objects.count() == 0
@@ -198,7 +199,7 @@ def test_create_hold_verify_correct_data(rf: RequestFactory):
     assert new_hold.destination == location
     assert new_hold.placed_for == user
     assert new_hold.item == item
-    assert new_hold.host == "example.com"
+    assert new_hold.host == get_default_domain()
 
 
 def test_set_hold_for_other_user(rf: RequestFactory):
@@ -210,7 +211,7 @@ def test_set_hold_for_other_user(rf: RequestFactory):
 
     request = rf.get("/")
     request.user = staff_member
-    request.host = "example.com"
+    request.host = get_default_domain()
     request.session = {"acting_as_patron": user.card_number}
 
     assert Hold.objects.count() == 0

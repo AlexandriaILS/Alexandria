@@ -2,7 +2,7 @@ from django.conf import settings
 from django.shortcuts import HttpResponseRedirect, redirect, reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 
-from alexandria.distributed.configs import get_domains_from_configs
+from alexandria.distributed.models import Domain
 from alexandria.utils.type_hints import Request
 
 
@@ -14,7 +14,7 @@ def next_or_reverse(request: Request, view_name: str) -> str:
         # because we don't use settings.ALLOWED_HOSTS in the normal way, we have
         # to construct what Django is looking for so that we can use this security
         # function.
-        hosts = settings.DEFAULT_HOSTS + get_domains_from_configs()
+        hosts = settings.DEFAULT_HOSTS + list(Domain.objects.all())
         if url_has_allowed_host_and_scheme(next, hosts):
             return next
         else:

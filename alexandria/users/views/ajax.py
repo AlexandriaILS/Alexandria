@@ -42,4 +42,4 @@ def patron_search(request, term):
         | Q(card_number=term),
         is_active=True,
         host=request.host,
-    ).order_by("last_name", "-birth_year")
+    ).order_by("legal_last_name", "-birth_year")

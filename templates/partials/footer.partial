@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row text-center">
             <div class="col">
-                <a href="{{ request.context.url }}" style="color:black">{{ request.context.name }}</a>
+                <a href="{{ request.settings.url }}" style="color:black">{{ request.settings.name }}</a>
             </div>
             <div class="col">
                     <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" data-bs-delay="750" title="running {{ request.context.current_hash }}">

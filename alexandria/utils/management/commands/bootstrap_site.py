@@ -29,8 +29,8 @@ class Command(BaseCommand):
             birth_year=1900,
             account_type=AccountType.objects.get(name="Superuser"),
             title="Admin Extraordinaire",
-            first_name="Admin",
-            last_name="von Admin",
+            legal_first_name="Admin",
+            legal_last_name="von Admin",
             address=location,
             notes="It's the admin.",
         )

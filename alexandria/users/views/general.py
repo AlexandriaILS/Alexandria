@@ -43,7 +43,7 @@ def staff_search(request):
         [
             i
             for i in search_term.split()
-            if i not in request.context["ignored_search_terms"]
+            if i not in request.settings.ignored_search_terms.split(",")
         ]
     )
     backed_up_search_term = search_term

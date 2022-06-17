@@ -43,6 +43,7 @@ class Request(HttpRequest):
 
     user: User
     context: dict
+    settings: Any  # overloads dot notation to query the database
     host: str
     htmx: bool
 

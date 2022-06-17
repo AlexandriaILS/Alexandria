@@ -67,7 +67,7 @@
             </table>
         </div>
         <div class="col-10 col-md-9 col-lg-10 ps-1 fs-5 fs-md-3">
-            <a href="{% url 'homepage' %}" style="text-decoration: none; color: black;">{{ request.context.name }}</a>
+            <a href="{% url 'homepage' %}" style="text-decoration: none; color: black;">{{ request.settings.name }}</a>
         </div>
     </div>
     <hr class="d-none d-md-block">

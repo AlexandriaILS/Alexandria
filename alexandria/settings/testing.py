@@ -49,6 +49,7 @@ LOGGING = {
     },
 }
 
+# todo: remove
 SITE_DATA = {
     "default": {
         "name": "Neverland Library",

@@ -1,5 +1,6 @@
 from typing import Dict
 
+from alexandria.distributed.models import Domain
 from alexandria.records.models import (
     Collection,
     Hold,
@@ -12,26 +13,26 @@ from alexandria.users.models import AccountType, BranchLocation, User
 
 DEFAULT_SUPERUSER = {
     "card_number": "123444",
-    "first_name": "Atticus",
-    "last_name": "Finch",
+    "legal_first_name": "Atticus",
+    "legal_last_name": "Finch",
     "password": "headhighfistsdown",
 }
 DEFAULT_STAFF_USER = {
     "card_number": "2345",  # existing Admin user is 1234
-    "first_name": "Guy",
-    "last_name": "Montag",
+    "legal_first_name": "Guy",
+    "legal_last_name": "Montag",
     "password": "l1ght1tup",
 }
 DEFAULT_PATRON_USER = {
     "card_number": "3456",
-    "first_name": "Fitzwilliam",
-    "last_name": "Darcy",
+    "legal_first_name": "Fitzwilliam",
+    "legal_last_name": "Darcy",
     "password": "misunderst00ddefect",
 }
 DEFAULT_UNDERAGE_PATRON_USER = {
     "card_number": "4567",
-    "first_name": "Augustus",
-    "last_name": "Gloop",
+    "legal_first_name": "Augustus",
+    "legal_last_name": "Gloop",
     "birth_year": 2012,
     "is_minor": True,
     "password": "chocolateriver4me",
@@ -48,6 +49,7 @@ DEFAULT_COLLECTION = {"name": "Coolest Books"}
 DEFAULT_ACCOUNT_TYPE = {"name": "Default"}
 DEFAULT_RECORD = {"title": "Test Record"}
 DEFAULT_ITEM_TYPE = {"name": "Book"}
+DEFAULT_DOMAIN = {"name": "example.com"}
 
 
 def get_default_item_type(**kwargs):
@@ -67,6 +69,15 @@ def get_default_record(**kwargs):
         **{key: kwargs[key] for key in kwargs if key in dir(Record)},
     }
     obj, _ = Record.objects.get_or_create(**data)
+    return obj
+
+
+def get_default_domain(**kwargs):
+    data = {
+        **DEFAULT_DOMAIN,
+        **{key: kwargs[key] for key in kwargs if key in dir(Domain)},
+    }
+    obj, _ = Domain.objects.get_or_create(**data)
     return obj
 
 

@@ -1,6 +1,7 @@
 from django.test import Client
 from django.urls import reverse
 
+from alexandria.distributed.models import Setting
 from alexandria.utils.test_helpers import (
     DEFAULT_PATRON_USER,
     get_default_patron_user,
@@ -61,6 +62,9 @@ class TestCatalog:
         assert test_record not in paginator_results.object_list
 
     def test_catalog_ignored_search_terms(self, client: Client):
+        Setting.objects.create(
+            name=Setting.options.IGNORED_SEARCH_TERMS, value="a, an, the"
+        )
         response = client.get(reverse("search"), data={"q": "a an the asdf"})
         assert response.status_code == 200
         assert response.context["search_term"] == "asdf"

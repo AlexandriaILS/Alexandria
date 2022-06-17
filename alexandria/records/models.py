@@ -1,6 +1,6 @@
 import re
 import zoneinfo
-from datetime import date, timedelta, datetime
+from datetime import date, datetime, timedelta
 
 import pymarc
 from django.conf import settings
@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from taggit.managers import TaggableManager
 
+from alexandria.distributed.models import Domain, Setting
 from alexandria.records.mixins import CoverUtilitiesMixin
 from alexandria.searchablefields.mixins import SearchableFieldMixin
 from alexandria.users.models import BranchLocation, User
@@ -28,7 +29,9 @@ class Subject(TimeStampMixin, SearchableFieldMixin):
 
     # look, sometimes people are more wordy than they need to be, that's all I'm saying
     name = models.CharField(max_length=500)
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self):
         return self.name
@@ -44,7 +47,9 @@ class Collection(TimeStampMixin):
         BranchLocation, null=True, blank=True, on_delete=models.CASCADE
     )
     can_circulate = models.BooleanField(default=True)
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self):
         return self.name
@@ -70,7 +75,9 @@ class BibliographicLevel(models.Model):
     ]
 
     name = models.CharField(max_length=1, choices=LEVEL_OPTIONS)
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self):
         return self.get_name_display()
@@ -123,7 +130,9 @@ class ItemTypeBase(TimeStampMixin):
     ]
 
     name = models.CharField(max_length=1, choices=TYPE_OPTIONS)
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self):
         return self.get_name_display()
@@ -152,7 +161,9 @@ class ItemType(TimeStampMixin):
             "How many of this item type can be placed on hold at the same time?"
         ),
     )
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
     icon_name = models.CharField(
         _("icon name"),
         max_length=30,
@@ -241,7 +252,9 @@ class Record(TimeStampMixin, SearchableFieldMixin, CoverUtilitiesMixin):
 
     zenodotus_id = models.IntegerField(blank=True, null=True)
     zenodotus_record_version = models.IntegerField(blank=True, null=True)
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self):
         val = f"{self.title}"
@@ -417,7 +430,9 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
     )
     renewal_count = models.IntegerField(default=0)
 
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def _convert_isbn10_to_isbn13(self) -> str:
         # this process is so ridiculous.
@@ -495,9 +510,8 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
         # self.due_date to actually set the due date.
         if not start_date:
             start_date = timezone.now().date()
-        checkout_renew_days = (
-            self.type.number_of_days_per_checkout
-            or settings.SITE_DATA[self.host].get("default_checkout_duration_days")
+        checkout_renew_days = self.type.number_of_days_per_checkout or Setting.get_int(
+            "default_checkout_duration_days", host=self.host
         )
         return start_date + timedelta(days=checkout_renew_days)
 
@@ -532,7 +546,9 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
         )
 
     def within_renewal_period(self):
-        day_delay = settings.SITE_DATA[self.host].get("default_renewal_delay_days")
+        day_delay = Setting.get_int(
+            Setting.options.DEFAULT_RENEWAL_DELAY_DAYS, host=self.host
+        )
         now = timezone.now().date()
         return self.due_date < now + timedelta(days=day_delay)
 
@@ -544,12 +560,14 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
     def get_renewal_availability_date(self):
         # For when the renewal button turns on. Controlled by the delay
         # in the configs for the library.
-        day_delay = settings.SITE_DATA[self.host].get("default_renewal_delay_days")
+        day_delay = Setting.get_int(
+            Setting.options.DEFAULT_RENEWAL_DELAY_DAYS, host=self.host
+        )
         return self.due_date - timedelta(days=day_delay)
 
     def get_max_renewal_count(self):
-        return self.type.number_of_allowed_renews or settings.SITE_DATA[self.host].get(
-            "default_max_renews"
+        return self.type.number_of_allowed_renews or Setting.get_int(
+            Setting.options.DEFAULT_MAX_RENEWS, host=self.host
         )
 
     def is_on_hold(self):
@@ -597,7 +615,9 @@ class Hold(TimeStampMixin):
         ),
     )
 
-    host = models.CharField(max_length=100, default=settings.DEFAULT_HOST_KEY)
+    host = models.ForeignKey(
+        Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
+    )
 
     def __str__(self):
         return f"{self.item} heading to {self.destination}"
@@ -638,7 +658,7 @@ class Hold(TimeStampMixin):
 
     def get_expiry_date(self, request: Request) -> date:
         return timezone.now().date() + timedelta(
-            days=request.context["default_hold_expiry_days"]
+            days=int(request.settings.default_hold_expiry_days)
         )
 
 

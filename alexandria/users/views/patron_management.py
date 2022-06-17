@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator
 from django.db.models.expressions import Q
-from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, reverse
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
@@ -110,9 +110,9 @@ def create_patron(request: Request) -> HttpResponse:
             newuser = User.objects.create_user(
                 address=newuserlocation,
                 card_number=data["card_number"],
-                first_name=data["first_name"],
+                legal_first_name=data["legal_first_name"],
                 chosen_first_name=data["chosen_first_name"],
-                last_name=data["last_name"],
+                legal_last_name=data["legal_last_name"],
                 email=data["email"],
                 is_minor=data["is_minor"],
                 birth_year=data["birth_year"],
@@ -172,9 +172,9 @@ class EditPatronUser(PermissionRequiredMixin, View):
 
         initial_data = {
             "card_number": user.card_number,
-            "first_name": user.first_name,
+            "legal_first_name": user.legal_first_name,
             "chosen_first_name": user.chosen_first_name,
-            "last_name": user.last_name,
+            "legal_last_name": user.legal_last_name,
             "email": user.email,
             "is_minor": user.is_minor,
             "birth_year": user.birth_year,
