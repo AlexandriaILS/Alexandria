@@ -546,7 +546,9 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
         )
 
     def within_renewal_period(self):
-        day_delay = Setting.get_int("default_renewal_delay_days", host=self.host)
+        day_delay = Setting.get_int(
+            Setting.options.DEFAULT_RENEWAL_DELAY_DAYS, host=self.host
+        )
         now = timezone.now().date()
         return self.due_date < now + timedelta(days=day_delay)
 
@@ -558,12 +560,14 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
     def get_renewal_availability_date(self):
         # For when the renewal button turns on. Controlled by the delay
         # in the configs for the library.
-        day_delay = Setting.get_int("default_renewal_delay_days", host=self.host)
+        day_delay = Setting.get_int(
+            Setting.options.DEFAULT_RENEWAL_DELAY_DAYS, host=self.host
+        )
         return self.due_date - timedelta(days=day_delay)
 
     def get_max_renewal_count(self):
         return self.type.number_of_allowed_renews or Setting.get_int(
-            "default_max_renews", host=self.host
+            Setting.options.DEFAULT_MAX_RENEWS, host=self.host
         )
 
     def is_on_hold(self):

@@ -110,7 +110,9 @@ class TestUserFunctions:
         user = get_default_patron_user()
         branch = get_default_branch_location()
 
-        Setting.objects.create(name="default_location_id", value=str(branch.id))
+        Setting.objects.create(
+            name=Setting.options.DEFAULT_LOCATION_ID, value=str(branch.id)
+        )
 
         assert user.get_default_branch() == branch
 
@@ -122,7 +124,9 @@ class TestUserFunctions:
         user = get_default_staff_user()
         branch = get_default_branch_location()
 
-        Setting.objects.create(name="default_location_id", value=str(branch.id))
+        Setting.objects.create(
+            name=Setting.options.DEFAULT_LOCATION_ID, value=str(branch.id)
+        )
 
         assert user.get_work_branch() == branch
 

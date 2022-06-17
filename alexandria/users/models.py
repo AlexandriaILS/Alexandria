@@ -504,7 +504,8 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
         if not self.default_branch:
             # this shouldn't really happen, but we can at least correct for it if it does
             self.default_branch = BranchLocation.objects.get(
-                id=Setting.get("default_location_id", host=self.host), host=self.host
+                id=Setting.get(Setting.options.DEFAULT_LOCATION_ID, host=self.host),
+                host=self.host,
             )
             self.save()
         return self.default_branch
@@ -515,7 +516,7 @@ class User(AbstractBaseUser, SearchableFieldMixin, TimeStampMixin):
             return None
         if not self.work_branch:
             self.work_branch = BranchLocation.objects.get(
-                id=Setting.get("default_location_id", host=self.host)
+                id=Setting.get(Setting.options.DEFAULT_LOCATION_ID, host=self.host)
             )
             self.save()
         return self.work_branch

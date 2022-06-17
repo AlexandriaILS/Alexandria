@@ -1,8 +1,11 @@
+from alexandria.distributed.models import Setting
 from alexandria.utils.type_hints import Request
 
 
 def get_results_per_page(request: Request) -> int:
-    default: int = request.settings.get_int("default_results_per_page", default=25)
+    default: int = request.settings.get_int(
+        Setting.options.DEFAULT_RESULTS_PER_PAGE, default=25
+    )
     try:
         results_per_page = int(request.GET.get("count", default))
         if results_per_page < 1:

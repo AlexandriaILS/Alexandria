@@ -62,7 +62,9 @@ class TestCatalog:
         assert test_record not in paginator_results.object_list
 
     def test_catalog_ignored_search_terms(self, client: Client):
-        Setting.objects.create(name="ignored_search_terms", value="a, an, the")
+        Setting.objects.create(
+            name=Setting.options.IGNORED_SEARCH_TERMS, value="a, an, the"
+        )
         response = client.get(reverse("search"), data={"q": "a an the asdf"})
         assert response.status_code == 200
         assert response.context["search_term"] == "asdf"

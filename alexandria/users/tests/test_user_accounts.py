@@ -9,7 +9,7 @@ from alexandria.utils.test_helpers import get_default_patron_user, get_test_item
 
 def test_my_checkouts(client: Client):
     """Verify that the 'My Checkouts' page works as expected."""
-    Setting.objects.create(name="default_renewal_delay_days", value="5")
+    Setting.objects.create(name=Setting.options.DEFAULT_RENEWAL_DELAY_DAYS, value="5")
 
     item = get_test_item()
     user = get_default_patron_user()

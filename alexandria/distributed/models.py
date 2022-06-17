@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.db.utils import ProgrammingError
+from django.utils.translation import gettext as _
 
 
 class Domain(models.Model):
@@ -32,8 +33,11 @@ class SettingsContainer:
     def __init__(self, host):
         self.host = host
 
-    def __getattr__(self, item):
-        # allow dot notation on the request object for templates
+    def __getattr__(self, item: str) -> str:
+        # allow case-insensitive dot notation on the request object for templates
+        if item.upper() in dir(Setting.options):
+            return Setting.get(name=Setting.options[item.upper()], host=self.host)
+
         return Setting.get(name=item, host=self.host)
 
     def get(self, name: str, **kwargs):
@@ -42,15 +46,65 @@ class SettingsContainer:
     def get_int(self, name: str, **kwargs):
         return Setting.get_int(name, **kwargs, host=self.host)
 
-    def as_dict(self):
-        # todo: fix
-        return Setting.objects.filter(host=self.host).values_list(
-            "name", "value", flat=True
-        )
-
 
 class Setting(models.Model):
-    name = models.CharField(max_length=50)
+    class options(models.TextChoices):
+        NAME = "name", _("Library system name")
+        URL = "url", _("Library system base URL")
+        ADDRESS_1 = "ad_1", _("Address: street 1")
+        ADDRESS_2 = "ad_2", _("Address: street 2")
+        CITY = "city", _("Address: city")
+        STATE = "stat", _("Address: state (two letter version, like IN or NY)")
+        COUNTRY = "cntr", _("Address: country")
+        ZIP_CODE = "zip", _("Address: zip code")
+        PHONE_NUMBER = "phon", _("Phone number")
+        ENABLE_RUNNING_BORROW_SAVED_MONEY = "ebsm", _(
+            "Enable keeping track of saved money through borrowing"
+        )
+        FLOATING_COLLECTION = "flot", _("Floating collection")
+        FORCE_UNIQUE_CALL_NUMBERS = "fucn", _("Force unique call numbers")
+        IGNORED_SEARCH_TERMS = "ist", _("a,an,the")
+        ZENODOTUS_URL = "zurl", _("Zenodotus API URL")
+        ZENODOTUS_AUTO_UPLOAD = "z_au", _("Enable automatic uploads to Zenodotus")
+        ZENODOTUS_AUTO_CHECK_FOR_UPDATES = "z_up", _(
+            "Automatically check Zenodotus for record updates"
+        )
+        DEFAULT_ADDRESS_STATE_OR_REGION = "d_st", _(
+            "Default address for new users: state or region (two letter version, like"
+            " IN or NY)"
+        )
+        DEFAULT_ADDRESS_CITY = "d_ct", _("Default address for new users: city")
+        DEFAULT_ADDRESS_ZIP_CODE = "d_zc", _("Default address for new users: zip code")
+        DEFAULT_ADDRESS_COUNTRY = "d_cy", _("Default address for new users: country")
+        DEFAULT_RESULTS_PER_PAGE = "drpp", _("Default number of results per page")
+        DEFAULT_MAX_RENEWS = "dmr", _("Default maximum number of renewals")
+        DEFAULT_CHECKOUT_DURATION_DAYS = "dcdd", _("Default checkout duration (days)")
+        DEFAULT_LOCATION_ID = "d_li", _("Default location ID")
+        DEFAULT_RENEWAL_DELAY_DAYS = "drdd", _(
+            "Default renewal delay (how long before an item is due that the renewal"
+            " button can be pressed) in days"
+        )
+        DEFAULT_HOLD_EXPIRY_DAYS = "dhed", _(
+            "How long to leave a hold on the shelf before it expires"
+        )
+        NAVBAR_LINK_1_TITLE = "n1t", _("Navbar item 1: title")
+        NAVBAR_LINK_1_URL = "n1u", _("Navbar item 1: URL")
+        NAVBAR_LINK_2_TITLE = "n2t", _("Navbar item 2: title")
+        NAVBAR_LINK_2_URL = "n2u", _("Navbar item 2: URL")
+        NAVBAR_LINK_3_TITLE = "n3t", _("Navbar item 3: title")
+        NAVBAR_LINK_3_URL = "n3u", _("Navbar item 3: URL")
+        ENABLE_OPENLIBRARY_COVER_DOWNLOADS = "eocd", _(
+            "Enable automatic downloading of missing cover images from OpenLibrary"
+        )
+        USE_SHELVING_CART_FOR_CHECK_IN = "uscc", _(
+            "When checking in books, have items default to the shelving cart"
+        )
+        SHELVING_CART_DELAY_HOURS = "scdh", _(
+            "When using the shelving cart, how long before items are automatically"
+            " marked as available in the stacks (hours)"
+        )
+
+    name = models.CharField(max_length=4, choices=options.choices)
     value = models.TextField()
     host = models.ForeignKey(
         Domain, on_delete=models.CASCADE, default=Domain.get_default_pk

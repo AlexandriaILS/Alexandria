@@ -45,7 +45,7 @@ def build_record(item: Dict) -> Record:
     bib_resp = (
         requests.get(
             slash_join(
-                Setting.get("zenodotus_url"),
+                Setting.get(Setting.options.ZENODOTUS_URL),
                 "bibliographiclevel",
                 item["bibliographic_level"],
             )
@@ -59,12 +59,12 @@ def build_record(item: Dict) -> Record:
         bibliographic_level = None
 
     itemtype_response = requests.get(
-        slash_join(Setting.get("zenodotus_url"), "itemtype", item["type"])
+        slash_join(Setting.get(Setting.options.ZENODOTUS_URL), "itemtype", item["type"])
     ).json()
     itemtypebase_response = (
         requests.get(
             slash_join(
-                Setting.get("zenodotus_url"),
+                Setting.get(Setting.options.ZENODOTUS_URL),
                 "itemtypebase",
                 itemtype_response["base"],
             )
@@ -175,7 +175,7 @@ class Command(BaseCommand):
                 sys.exit(0)
 
         available_records = requests.get(
-            slash_join(Setting.get("zenodotus_url"), "record")
+            slash_join(Setting.get(Setting.options.ZENODOTUS_URL), "record")
         ).json()
         # returns a list of dicts
         for item in available_records:
