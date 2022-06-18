@@ -1,0 +1,2 @@
+{% icon name="article" description="Patron notes" %}
+{{ obj.notes }}

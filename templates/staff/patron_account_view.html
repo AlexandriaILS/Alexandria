@@ -28,6 +28,11 @@
                     {% include 'partials/details/address.partial' with obj=user %}
                 </div>
             </div>
+            {% if user.notes %}
+                <div class="d-flex align-items-center mt-2">
+                    {% include 'partials/details/notes.partial' with obj=user %}
+                </div>
+            {% endif %}
         </div>
         <div class="col-12 col-xxl-6">
             <div class="d-xxl-none mt-5"></div>

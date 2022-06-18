@@ -26,6 +26,11 @@
                 </div>
             </div>
         </div>
+        {% if checkout_session.session_target.notes %}
+            <div class="d-flex align-items-center my-3">
+                {% include 'partials/details/notes.partial' with obj=checkout_session.session_target %}
+            </div>
+        {% endif %}
 
         <form
                 data-hx-post="{% url 'check_out_item_htmx' %}"
