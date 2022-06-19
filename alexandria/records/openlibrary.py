@@ -16,6 +16,7 @@ def download_cover(item: Union["Item", "Record"], size: str = "M") -> None:
     """
     This function is called by the `save` function on Records and Items.
     """
+    is_record = False
     # https://openlibrary.org/dev/docs/api/covers
     if item.image != "":
         # Django stores null images as empty strings, so if it's not an
@@ -25,6 +26,7 @@ def download_cover(item: Union["Item", "Record"], size: str = "M") -> None:
         return
 
     if not hasattr(item, "isbn"):
+        is_record = True
         # Records don't have ISBNs because those are stored on the items
         # that are under the records. However, records can still have a
         # cover image, so we'll grab an item from under the record and
@@ -44,7 +46,12 @@ def download_cover(item: Union["Item", "Record"], size: str = "M") -> None:
     if size not in ["S", "M", "L"]:
         raise Exception("Can only request sizes in 'S', 'M', or 'L'.")
 
-    get_and_save_image(URL.format(value=isbn, size=size), item)
+    args = {"url": URL.format(value=isbn, size=size)}
+    if is_record:
+        args.update({"record_id": item.id})
+    else:
+        args.update({"item_id": item.id})
+    get_and_save_image(**args)
 
 
 def get_by_isbn(isbn: str) -> Dict:

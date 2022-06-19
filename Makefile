@@ -1,4 +1,4 @@
-.PHONY: migrate dev_data run nuke shell docs db_up db_down db_setup test wipe_db
+.PHONY: migrate dev_data run nuke shell docs db_up db_down db_setup test wipe_db wipe_redis
 
 migrate:
 	poetry run python manage.py migrate
@@ -12,7 +12,10 @@ run:
 wipe_db:
 	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres -c 'drop database if exists alexandria;'"
 
-clean: | wipe_db db_setup migrate
+wipe_redis:
+	docker exec -it dev-redis bash -c "redis-cli FLUSHALL"
+
+clean: | wipe_db wipe_redis db_setup migrate
 
 shell:
 	poetry run python manage.py shell_plus
@@ -30,10 +33,15 @@ db_up:
 		-e POSTGRES_PASSWORD=alexandria \
 		-v pgdata:/var/lib/postgresql/data \
 		-p 5432:5432 postgres
+	docker run -d \
+		--name dev-redis \
+		-p 6379:6379 redis
 
 db_down:
 	docker stop dev-postgres
+	docker stop dev-redis
 	docker rm dev-postgres
+	docker rm dev-redis
 
 # Install dependency for trigram similarities, force it to be available for every
 # test database, and then create the database and user information we'll use to
@@ -49,3 +57,7 @@ psql_shell:
 
 test:
 	poetry run pytest -n auto
+
+# launch the django_lightweight_queue worker
+worker:
+	poetry run python manage.py queue_runner --config=alexandria/settings/routing.py

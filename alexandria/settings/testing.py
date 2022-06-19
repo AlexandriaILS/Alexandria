@@ -29,6 +29,10 @@ DATABASES = {
     }
 }
 
+LIGHTWEIGHT_QUEUE_BACKEND = (
+    " django_lightweight_queue.backends.synchronous.SynchronousBackend"
+)
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
