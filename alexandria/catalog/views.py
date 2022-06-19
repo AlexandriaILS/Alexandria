@@ -16,6 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from alexandria.catalog.helpers import get_results_per_page
 from alexandria.distributed.models import Setting
 from alexandria.records.models import Record
+from alexandria.records.openlibrary import download_cover
 from alexandria.users.helpers import add_patron_acted_as
 from alexandria.utils.db import query_debugger
 from alexandria.utils.type_hints import Request
