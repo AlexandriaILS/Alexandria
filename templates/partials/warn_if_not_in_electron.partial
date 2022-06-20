@@ -1,0 +1,14 @@
+<div id="missingElectronWarning"></div>
+
+<script type="application/javascript">
+    var userAgent = navigator.userAgent.toLowerCase();
+    if (userAgent.indexOf(' electron/') === -1) {
+        const warning = document.getElementById("missingElectronWarning");
+        const newAlert = document.createElement("div");
+        newAlert.classList = "alert alert-danger text-center mt-3";
+        newAlert.role = "alert";
+        newAlert.innerHTML = "<strong>Receipts will not print</strong>! Open this page through the <strong>Alexandria app</strong> on a computer connected to a receipt printer to get receipts.";
+        newAlert.innerHTML += "<br>Don't have it? <a href='https://github.com/AlexandriaILS/alexandria-electron/releases/latest/' class='alert-link'>Download it here!</a>"
+        warning.appendChild(newAlert);
+    }
+</script>

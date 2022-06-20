@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+    {% include 'partials/warn_if_not_in_electron.partial' %}
     <div class="mt-5" data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkinContainer">
         <div class="row mb-4">
             <div class="col-12 col-md-8 mb-2">

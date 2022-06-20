@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+    {% include 'partials/warn_if_not_in_electron.partial' %}
     <div class="text-center my-5 px-5"
          data-hx-get="{% url 'check_out_htmx' %}"
          data-hx-trigger="load"
