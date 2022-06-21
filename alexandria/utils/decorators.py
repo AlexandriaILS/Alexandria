@@ -30,13 +30,18 @@ def htmx_guard_redirect(redirect_name):
 
     If a request comes in to this endpoint that did not originate from HTMX,
     respond with a redirect to the requested endpoint.
+
+    Takes an optional `test` boolean that bypasses the redirect.
     """
     # https://stackoverflow.com/a/9030358
     def _method_wrapper(view_method: Callable) -> Callable:
         def _arguments_wrapper(
             request: Request, *args, **kwargs
         ) -> HttpResponseRedirect | Callable:
-            if not request.htmx:
+            testing = False
+            if "test" in kwargs.keys():
+                testing = kwargs.pop("test")
+            if not request.htmx and not testing:
                 return HttpResponseRedirect(reverse(redirect_name))
             return view_method(request, *args, **kwargs)
 

@@ -1,9 +1,5 @@
-import uuid
-
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
-from django.db.models import F
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse

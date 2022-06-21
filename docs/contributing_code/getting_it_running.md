@@ -51,61 +51,7 @@ touch local_settings.py
 
 Open the file in your preferred editor and paste the following lines into it as your starting point:
 
-```python
-from alexandria.settings.local import *
-import better_exceptions
-import os
-
-# trust me, this will make your life better.
-better_exceptions.MAX_LENGTH = None
-# Use this file when developing locally -- it has some helpful additions which
-# change how the server runs.
-DEBUG = True
-
-# Make sure that the server doesn't cache anything -- we always want to see new
-# changes on page reload.
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-    }
-}
-
-# Connect to our development Postgres database in Docker
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'alexandria',
-        'USER': 'alexandria',
-        'PASSWORD': 'asdf',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
-}
-
-# log everything to the console so that it's visible
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-        },
-        'alexandria': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG')
-        }
-    },
-}
-
-# add in an extra piece of middleware to make errors in development easier to find
-MIDDLEWARE = ["alexandria.middleware.BetterExceptionsMiddleware"] + MIDDLEWARE
-```
+:::code source="../../local_settings.py" :::
 
 Any setting specified here will override the setting in `alexandria/settings/base.py` without having to change anything in that file! It's a great way to test whatever you want without having to worry about undoing your changes.
 
