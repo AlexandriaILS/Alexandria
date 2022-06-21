@@ -51,7 +51,60 @@ touch local_settings.py
 
 Open the file in your preferred editor and paste the following lines into it as your starting point:
 
-:::code source="../../local_settings.py" :::
+```python
+import better_exceptions
+
+from alexandria.settings.local import *
+
+# trust me, this will make your life better.
+better_exceptions.MAX_LENGTH = None
+# Use this file when developing locally -- it has some helpful additions which
+# change how the server runs.
+DEBUG = True
+
+ALLOWED_HOSTS = ['*']
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'alexandria',
+        'USER': 'alexandria',
+        'PASSWORD': 'asdf',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+        'alexandria': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'DEBUG')
+        }
+    },
+}
+
+# uncomment this when working on queued jobs to send them to the browser instead
+# for debugging
+# LIGHTWEIGHT_QUEUE_BACKEND = 'django_lightweight_queue.backends.debug_web.DebugWebBackend'
+
+MIDDLEWARE = ["alexandria.middleware.BetterExceptionsMiddleware"] + MIDDLEWARE
+```
 
 Any setting specified here will override the setting in `alexandria/settings/base.py` without having to change anything in that file! It's a great way to test whatever you want without having to worry about undoing your changes.
 
