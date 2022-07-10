@@ -1,7 +1,7 @@
 from django.urls import include, path
 
 from alexandria.catalog.printing.urls import urlpatterns as printing_urls
-from alexandria.records.views import catalog, checkin_checkout
+from alexandria.records.views import catalog, checkin_checkout, selfcheckout
 from alexandria.users.views import general, patron_management, staff_management
 
 urlpatterns = [
@@ -98,6 +98,7 @@ urlpatterns = [
         checkin_checkout.check_out_remove_item_htmx,
         name="check_out_remove_item_htmx",
     ),
+    path("selfcheckout/", selfcheckout.index, name="self_check_out"),
     # path(
     #     "patron_edit/<int:user_id>/",
     #     general.EditPatronUser.as_view(),

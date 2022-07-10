@@ -1,0 +1,60 @@
+{# This page should not be accessed by anything other than a standalone computer. #}
+{# Therefore, it is a completely standalone HTML experience. #}
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}" class="h-100">
+<head>
+    {% include "partials/head.partial" %}
+    <script src="{% static 'vendored/js/fittext.js' %}"></script>
+    <script src="{% static 'vendored/js/evanyou.js' %}"></script>
+    <title>{% translate "Alexandria Self-Check" %}</title>
+</head>
+<body class="d-flex flex-column h-100" id="body">
+<div class="text-center mt-5">
+    <h1 style="white-space: nowrap;" id="header">Self-Checkout</h1>
+    {% include 'partials/warn_if_not_in_electron.partial' %}
+</div>
+
+<main class="flex-fill mb-5" id="main">
+    <div class="container flex-shrink-0 mt-3" style="height:100%; width: 100%">
+        <table style="width: 100%; height: 90%" class="mx-auto">
+            <tbody>
+            <tr>
+                <td class="align-middle">
+                    <div class="card bg-light shadow">
+                        <div class="card-body" id="stopclicks">
+                            <table style="height: 100%; width: 100%">
+                                <tbody>
+                                <tr>
+                                    <td class="align-middle">
+                                        <div
+                                                class="text-center"
+                                        >
+                                            <div class="d-grid col-8 text-center mx-auto my-5">
+                                                <div class="btn btn-lg btn-primary">
+                                                    <span class="fs-1">Touch here to start!</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script type="application/javascript">
+    document.getElementById("stopclicks").addEventListener("click", function(e){ e.stopImmediatePropagation() });
+    window.fitText(document.getElementById("header"));
+</script>
+</body>
+</html>
