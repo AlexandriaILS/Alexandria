@@ -1,0 +1,31 @@
+services:
+
+  app:
+    build:
+      context: .
+      args:
+        - NO_DEV=--
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env.local
+    depends_on:
+      - postgres
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+  postgres:
+    build:
+      context: .
+      dockerfile: postgres.Dockerfile
+    env_file:
+      - .env.local
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis
+
+volumes:
+  pgdata: {}
