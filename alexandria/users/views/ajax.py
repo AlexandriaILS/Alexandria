@@ -37,8 +37,9 @@ def item_search(request, term):
 @permission_or_none("users.read_patron_account")
 def patron_search(request, term):
     return User.objects.filter(
-        Q(searchable_first_name__icontains=term)
-        | Q(searchable_last_name__icontains=term)
+        Q(searchable_legal_first_name__icontains=term)
+        | Q(searchable_legal_last_name__icontains=term)
+        | Q(searchable_chosen_first_name__icontains=term)
         | Q(card_number=term),
         is_active=True,
         host=request.host,
