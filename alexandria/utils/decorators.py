@@ -31,17 +31,22 @@ def htmx_guard_redirect(redirect_name):
     If a request comes in to this endpoint that did not originate from HTMX,
     respond with a redirect to the requested endpoint.
 
-    Takes an optional `test` boolean that bypasses the redirect.
+    Takes an optional `test` boolean that bypasses the redirect specifically
+    for testing the underlying view or an optional `htmx_bypass` boolean for
+    skipping the check in production code. Both do the same thing, but it
+    allows for semantically seeing _why_ we're bypassing the decorator at a
+    moment's glance.
     """
     # https://stackoverflow.com/a/9030358
     def _method_wrapper(view_method: Callable) -> Callable:
         def _arguments_wrapper(
             request: Request, *args, **kwargs
         ) -> HttpResponseRedirect | Callable:
-            testing = False
-            if "test" in kwargs.keys():
-                testing = kwargs.pop("test")
-            if not request.htmx and not testing:
+            testing, bypass = False, False
+            if "test" in kwargs.keys() or "htmx_bypass" in kwargs.keys():
+                testing = kwargs.pop("test", None)
+                bypass = kwargs.pop("htmx_bypass", None)
+            if not request.htmx and not testing and not bypass:
                 return HttpResponseRedirect(reverse(redirect_name))
             return view_method(request, *args, **kwargs)
 

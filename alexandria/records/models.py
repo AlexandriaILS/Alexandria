@@ -654,6 +654,7 @@ class Hold(TimeStampMixin):
         )
 
     def get_status_for_staff(self):
+        # TODO: complete
         ...
 
     def get_expiry_date(self, request: Request) -> date:
@@ -688,3 +689,6 @@ class CheckoutSession(TimeStampMixin):
     def is_expired(self) -> bool:
         """Checkout sessions can only last for 24 hours without being updated."""
         return self.updated_at + timezone.timedelta(hours=24) < timezone.now()
+
+    def has_items(self) -> bool:
+        return self.items.count() != 0

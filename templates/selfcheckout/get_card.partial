@@ -1,0 +1,36 @@
+{% load i18n %}
+
+<form class="mt-4 mb-5" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+      hx-post="{% url 'start_selfcheck_session_htmx' %}">
+    <div class="text-center">
+        <span class="fs-1"><strong>{% translate "Scan your library card!" %}</strong></span>
+    </div>
+    <div class="input-group has-validation mt-4 px-5">
+        <input type="text" name="card_number" class="form-control form-control-lg shadow" id="card_number" required>
+        <div class="invalid-feedback fs-4 mt-4 text-center" id="card_number_error">
+            {# Translators: This is an error message for the self-checkout that appears if you scan something that's not your library card. #}
+            {% blocktranslate %}
+                That doesn't look like a valid card. Please scan your
+                library card or ask a staff member for help.
+            {% endblocktranslate %}
+        </div>
+        <div class="invalid-feedback fs-4 mt-4 text-center" id="invalid_session_error">
+            {# Translators: This is an error message for the self-checkout that appears if your session is invalid. #}
+            {% blocktranslate %}
+                Something went wrong with your checkout session.
+                Please try again or ask a staff member for help.
+            {% endblocktranslate %}
+        </div>
+    </div>
+</form>
+<script>
+    document.getElementById("restartButton").style.display = "block";
+    // place the cursor in the form so that the card can be scanned
+    document.getElementById("card_number").focus();
+    {% if show_card_error %}
+        document.getElementById("card_number_error").style.display = "block";
+    {% endif %}
+    {% if show_invalid_session_error %}
+        document.getElementById("invalid_session_error").style.display = "block";
+    {% endif %}
+</script>

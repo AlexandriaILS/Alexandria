@@ -1,0 +1,15 @@
+{% load i18n %}
+
+<form
+        hx-post="{% url 'selfcheck_item_htmx' %}"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+        id="scanItemForm"
+>
+    <div class="mb-4 px-5">
+        <label for="itemInput" class="form-label">{% translate "Scan item barcode" %}:</label>
+        <input type="text" class="form-control shadow form-control-lg" id="itemInput" name="item_id"
+               placeholder="123">
+        <input type="text" name="user_id" style="display: none;" value="{{ user_id }}">
+        <button type="submit" class="d-none">submit</button>
+    </div>
+</form>

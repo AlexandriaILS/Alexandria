@@ -8,7 +8,7 @@
         newAlert.classList = "alert alert-danger text-center mt-3";
         newAlert.role = "alert";
         newAlert.innerHTML = "<strong>Receipts will not print</strong>! Open this page through the <strong>Alexandria app</strong> on a computer connected to a receipt printer to get receipts.";
-        newAlert.innerHTML += "<br>Don't have it? <a href='https://github.com/AlexandriaILS/alexandria-electron/releases/latest/' class='alert-link'>Download it here!</a>"
+        newAlert.innerHTML += "<br>Don't have it? <a href='https://github.com/AlexandriaILS/Alexandria-Desktop/releases/latest/' class='alert-link' target='_blank'>Download it here!</a>"
         warning.appendChild(newAlert);
     }
 </script>

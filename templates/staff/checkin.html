@@ -7,7 +7,7 @@
 
 {% block content %}
     {% include 'partials/warn_if_not_in_electron.partial' %}
-    <div class="mt-5" data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkinContainer">
+    <div class="mt-5" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkinContainer">
         <div class="row mb-4">
             <div class="col-12 col-md-8 mb-2">
                 {% include 'partials/branch_dropdown_with_default_on_top.partial' with branches=request.user.get_branches_for_checkin_checkout %}
@@ -15,11 +15,11 @@
             <div class="col-12 col-md-4">
                 <div class="d-grid">
                     <button class="btn btn-primary"
-                            data-hx-post="{% url 'check_in_htmx' %}"
-                            data-hx-trigger="click"
-                            data-hx-include="[name='branch_select']"
-                            data-hx-swap="outerHTML"
-                            data-hx-target="#checkinContainer"
+                            hx-post="{% url 'check_in_htmx' %}"
+                            hx-trigger="click"
+                            hx-include="[name='branch_select']"
+                            hx-swap="outerHTML"
+                            hx-target="#checkinContainer"
                     >{% translate "Check in" %}</button>
                 </div>
             </div>

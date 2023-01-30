@@ -1,0 +1,4 @@
+{% load slippers %}
+{% load i18n %}
+
+{% include 'fragments/check_out_item_list.partial' with items=items selfcheck=True %}

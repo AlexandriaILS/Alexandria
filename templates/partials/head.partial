@@ -112,9 +112,15 @@
         tooltips();
     });
 
+    let tooltipList, tooltipTriggerList;
+
     function tooltips() {
         // clear out all the old tooltips in case new ones got loaded in
-        if (tooltipList !== undefined && tooltipList.length > 0) {
+        if (tooltipList === undefined) {
+            // set tooltiplist if it's undefined
+            tooltipList = []
+        }
+        if (tooltipList.length > 0) {
             tooltipList.forEach(function (tip) {
                 tip.dispose()
             })
