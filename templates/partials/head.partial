@@ -111,8 +111,22 @@
         // properly before recreating them. A problem for another day, I suppose.
         tooltips();
     });
+
+    let tooltipList, tooltipTriggerList;
+
     function tooltips() {
-        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        // clear out all the old tooltips in case new ones got loaded in
+        if (tooltipList === undefined) {
+            // set tooltiplist if it's undefined
+            tooltipList = []
+        }
+        if (tooltipList.length > 0) {
+            tooltipList.forEach(function (tip) {
+                tip.dispose()
+            })
+        }
+        // generate / regenerate all the new tooltips
+        tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     }
 </script>

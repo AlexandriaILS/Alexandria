@@ -1,3 +1,7 @@
-<div id="receipt" class="d-none">
+<pre id="receipt" class="d-none">
     {{ receipt }}
-</div>
+</pre>
+
+<pre>
+    {{ receipt }}
+</pre>

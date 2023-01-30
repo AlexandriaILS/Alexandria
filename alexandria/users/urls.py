@@ -1,7 +1,7 @@
 from django.urls import include, path
 
 from alexandria.catalog.printing.urls import urlpatterns as printing_urls
-from alexandria.records.views import catalog, checkin_checkout
+from alexandria.records.views import catalog, checkin_checkout, selfcheckout
 from alexandria.users.views import general, patron_management, staff_management
 
 urlpatterns = [
@@ -97,6 +97,32 @@ urlpatterns = [
         "check_out_remove_item_htmx/<str:item_id>/",
         checkin_checkout.check_out_remove_item_htmx,
         name="check_out_remove_item_htmx",
+    ),
+    path("selfcheckout/", selfcheckout.index, name="self_check_out"),
+    path(
+        "selfcheckout/step1/",
+        selfcheckout.get_user_card_htmx,
+        name="self_check_get_card",
+    ),
+    path(
+        "selfcheckout/step2/",
+        selfcheckout.start_selfcheck_session_htmx,
+        name="start_selfcheck_session_htmx",
+    ),
+    path(
+        "selfcheckout/step3/",
+        selfcheckout.selfcheck_item_htmx,
+        name="selfcheck_item_htmx",
+    ),
+    path(
+        "selfcheck_remove_item_htmx/<str:item_id>/",
+        selfcheckout.selfcheck_remove_item_htmx,
+        name="selfcheck_remove_item_htmx",
+    ),
+    path(
+        "selfcheckout_finish_htmx/<str:user_id>/",
+        selfcheckout.selfcheckout_finish_htmx,
+        name="selfcheckout_finish_htmx"
     ),
     # path(
     #     "patron_edit/<int:user_id>/",

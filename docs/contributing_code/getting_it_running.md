@@ -52,9 +52,9 @@ touch local_settings.py
 Open the file in your preferred editor and paste the following lines into it as your starting point:
 
 ```python
-from alexandria.settings.local import *
 import better_exceptions
-import os
+
+from alexandria.settings.local import *
 
 # trust me, this will make your life better.
 better_exceptions.MAX_LENGTH = None
@@ -62,15 +62,13 @@ better_exceptions.MAX_LENGTH = None
 # change how the server runs.
 DEBUG = True
 
-# Make sure that the server doesn't cache anything -- we always want to see new
-# changes on page reload.
+ALLOWED_HOSTS = ['*']
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
 
-# Connect to our development Postgres database in Docker
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -81,8 +79,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
-# log everything to the console so that it's visible
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -103,7 +99,10 @@ LOGGING = {
     },
 }
 
-# add in an extra piece of middleware to make errors in development easier to find
+# uncomment this when working on queued jobs to send them to the browser instead
+# for debugging
+# LIGHTWEIGHT_QUEUE_BACKEND = 'django_lightweight_queue.backends.debug_web.DebugWebBackend'
+
 MIDDLEWARE = ["alexandria.middleware.BetterExceptionsMiddleware"] + MIDDLEWARE
 ```
 
