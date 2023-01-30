@@ -28,7 +28,7 @@ django-htmx = "^1.11.0"
 django-lightweight-queue = {git = "https://github.com/itsthejoker/django-lightweight-queue.git", branch='master', extras = ["redis"]}
 typing-extensions = "^4.2.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 better_exceptions = "^0.2.2"
 pytest = "^6.2.2"
 pytest-django = "^4.1.0"
