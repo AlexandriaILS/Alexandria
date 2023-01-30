@@ -26,8 +26,8 @@ def staff_management(request: Request):
         search_text = clean_text(search_text)
         for word in search_text.split():
             results = results.filter(
-                Q(searchable_first_name__icontains=word)
-                | Q(searchable_last_name__icontains=word)
+                Q(searchable_legal_first_name__icontains=word)
+                | Q(searchable_legal_last_name__icontains=word)
                 | Q(searchable_chosen_first_name__icontains=word)
                 | Q(title__icontains=word)
                 | Q(card_number__icontains=word)
