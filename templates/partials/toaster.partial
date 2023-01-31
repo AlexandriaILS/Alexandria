@@ -1,0 +1,6 @@
+{# Do you need toasts? If so, you need the toaster. Add this to the top of the page. #}
+
+<div aria-live="polite" aria-atomic="true" class="position-sticky" style="position: sticky; top: 0; z-index: 2000">
+    <div id="toaster" class="toast-container position-absolute top-0 end-0 p-3">
+    </div>
+</div>

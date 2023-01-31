@@ -1,0 +1,22 @@
+{% load i18n %}
+
+{% include 'fragments/scan_item_form.partial' %}
+
+{% include 'partials/selfcheck_item_list.partial' %}
+
+<script>
+    // rebuild the document to fit what we need
+    // hide the "Self-Checkout" text
+    document.getElementById("header").style.display = "none";
+    // stop vertically-centering the content
+    document.getElementById("theContent").classList.remove("align-middle");
+    document.getElementById("theContent").classList.add("align-top");
+
+    // The end user has buttons to press and potentially scrolling to do, all of which defocuses the text
+    // field that we need to dump things into when we scan. If the user "clicks" away from the text field,
+    // we can use this to detect incoming text from the scanner and automatically put it into the right place
+    // as it's coming in.
+    document.onkeydown = function (e) {
+        document.getElementById("itemInput").focus()
+    }
+</script>

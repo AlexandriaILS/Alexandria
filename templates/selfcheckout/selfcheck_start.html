@@ -1,0 +1,122 @@
+{# This page should not be accessed by anything other than a standalone computer. #}
+{# Therefore, it is a completely standalone HTML experience. #}
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}" class="h-100">
+<head>
+    {% include "partials/head.partial" %}
+    <script src="{% static 'vendored/js/fittext.js' %}"></script>
+    <script src="{% static 'vendored/js/evanyou.js' %}"></script>
+    <title>{% translate "Alexandria Self-Check" %}</title>
+    <script src="{% static 'vendored/js/jquery-3.6.0.min.js' %}"></script>
+</head>
+<body class="d-flex flex-column h-100" id="body">
+{% include 'partials/toaster.partial' %}
+<div class="container mt-3" id="restartButton">
+    <div class="row">
+        <div class="col-3">
+            <a href="{% url 'self_check_out' %}" style="width:100%" class="btn btn-danger">Cancel</a>
+        </div>
+    </div>
+</div>
+<div class="text-center mt-5">
+    <h1 style="white-space: nowrap;" id="header">Self-Checkout</h1>
+        {% include 'partials/warn_if_not_in_electron.partial' %}
+</div>
+
+<main class="flex-fill mb-5" id="main">
+    <div class="container flex-shrink-0" style="height:100%; width: 100%">
+        <table style="width: 100%; height: 100%" class="mx-auto" id="baseTable">
+            <tbody>
+            <tr>
+                <td class="align-middle">
+                    <div class="card bg-light shadow" id="theCard">
+                        <div class="card-body" id="stopclicks">
+                            <table style="width: 100%">
+                                <tbody>
+                                <tr>
+                                    <td class="align-middle" id="theContent" hx-swap="innerHTML"
+                                        hx-target="#theContent">
+                                        <div
+                                                class="text-center"
+                                        >
+                                            <div class="d-grid col-8 text-center mx-auto my-5">
+                                                <div class="btn btn-lg btn-primary"
+                                                     hx-get="{% url 'self_check_get_card' %}"
+                                                     hx-trigger="click"
+                                                     id="startButton"
+                                                >
+                                                    <div id="spinner" style="display: none;">
+                                                        <div class="spinner-border" role="status"></div>
+                                                        <!-- This is to make the button render at the same height as the
+                                                        text it replaced by... replacing it with empty text that's the
+                                                        same size. HTML is fun y'all -->
+                                                        <span class="fs-1"></span>
+                                                    </div>
+                                                    <span class="fs-1" id="buttonText">Touch here to start!</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script type="application/javascript">
+    // make it so rapid taps on the screen to change the background doesn't select the text
+    //const disableselect = (e) => {
+    //    return false
+    //}
+    //document.onselectstart = disableselect
+    //document.onmousedown = disableselect
+    document.getElementById("restartButton").style.display = "none";
+    document.getElementById("stopclicks").addEventListener("click", function (e) {
+        e.stopImmediatePropagation()
+    });
+    document.getElementById("startButton").addEventListener("click", function (e) {
+        const button = document.getElementById("startButton");
+        button.classList.add('disabled');
+        document.getElementById("spinner").style.display = "inline-block";
+        document.getElementById("buttonText").style.display = "none";
+    })
+    window.fitText(document.getElementById("header"));
+
+    document.body.addEventListener('htmx:beforeSwap', function (evt) {
+        const toastId = 'checkoutError';
+        let newtoast = null;
+
+        if (evt.detail.xhr.status === 200) {
+            return;
+        } else {
+            let message = JSON.parse(evt.detail.xhr.response)['message'];
+            if (toastAlreadyExists(`toast-${toastId}`)) {
+                return
+            }
+            newtoast = createToastHTML(message, 'bg-danger', '', toastId, false);
+            evt.detail.isError = false;
+        }
+
+        document.getElementById("toaster").insertAdjacentHTML('beforeend', newtoast);
+
+        let toastEl = document.getElementById(`toast-${toastId}`);
+        let toast = new bootstrap.Toast(toastEl, {'delay': 8000});
+        toast.show();
+
+        toastEl.addEventListener('hidden.bs.toast', function (event) {
+            toastEl.remove();
+        });
+    });
+</script>
+</body>
+</html>

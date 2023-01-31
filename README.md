@@ -14,14 +14,16 @@ It should include:
 * 🟠 printing receipts
 * 🟠 hold management
 * 🔴 email notification capabilities
-* 🔴 handle fines with Stripe
+* 🔴 handle fines with Stripe (billing, part 1)
 * 🟢 support for multiple locations
 * 🟢 support for multiple systems
-* 🔴 support for federated systems
 * 🔴 support for books checked out by staff (no due date)
 * 🔴 support for books that need to be weeded
-* 🔴 support for replacing weeded books
-* 🔴 investigate adding bookstore functionality for sale of weeded materials
+* 🔴 investigate adding bookstore functionality for sale of weeded materials (billing, part 2)
+
+Planned features for V2 release:
+
+* 🔴 support for federated systems
 
 ...and probably more. ¯\\\_(ツ)_/¯
 

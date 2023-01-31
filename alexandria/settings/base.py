@@ -150,7 +150,6 @@ DATABASES = {
     }
 }
 
-# LIGHTWEIGHT_QUEUE_BACKEND = 'django_lightweight_queue.backends.debug_web.DebugWebBackend'
 LIGHTWEIGHT_QUEUE_BACKEND = "django_lightweight_queue.backends.redis.RedisBackend"
 LIGHTWEIGHT_QUEUE_SITE_URL = "http://localhost:8000"
 LIGHTWEIGHT_QUEUE_REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")

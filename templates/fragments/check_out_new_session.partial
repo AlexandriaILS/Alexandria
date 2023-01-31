@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="mt-5" data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkoutContainer">
+<div class="mt-5" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkoutContainer">
     {% include 'partials/messages.partial' %}
     {% #centered_column center_width=6 %}
     <form>
@@ -11,17 +11,17 @@
         </div>
         <div class="text-center mt-4 mt-sm-5">
             <button class="btn btn-primary btn-lg mt-2 mt-sm-0"
-                    data-hx-post="{% url 'check_out_set_target_htmx' %}"
-                    data-hx-trigger="click"
-                    data-hx-include="[name='card_number'], [name='branch_select']"
-                    data-hx-swap="outerHTML"
-                    data-hx-target="#checkoutContainer"
+                    hx-post="{% url 'check_out_set_target_htmx' %}"
+                    hx-trigger="click"
+                    hx-include="[name='card_number'], [name='branch_select']"
+                    hx-swap="outerHTML"
+                    hx-target="#checkoutContainer"
             >{% translate "Start check out session" %}</button>
             <button class="btn btn-secondary btn-lg mt-2 mt-sm-0"
-                    data-hx-get="{% url 'check_out_additional_options_htmx' %}"
-                    data-hx-trigger="click"
-                    data-hx-swap="outerHTML"
-                    data-hx-target="#checkoutContainer"
+                    hx-get="{% url 'check_out_additional_options_htmx' %}"
+                    hx-trigger="click"
+                    hx-swap="outerHTML"
+                    hx-target="#checkoutContainer"
             >
                 <div class="d-flex justify-content-center">
                     {% translate "Additional check out options" as checkout_text %}

@@ -1,9 +1,5 @@
-import uuid
-
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
-from django.db.models import F
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
@@ -12,6 +8,7 @@ from django.utils.translation import gettext as _
 from alexandria.api.views import EXPIRED_SESSION, NO_ACTIVE_SESSION
 from alexandria.distributed.models import Domain
 from alexandria.records.models import CheckoutSession, Hold, Item
+from alexandria.records.views.checkout_utils import create_toast, Toasts
 from alexandria.users.models import BranchLocation, User
 from alexandria.utils.decorators import htmx_guard_redirect
 from alexandria.utils.type_hints import Request
@@ -50,29 +47,14 @@ def session_validity_check(
     session: CheckoutSession, session_check_only=False
 ) -> JsonResponse | None:
     if not session:
-        return JsonResponse(
-            data={
-                "message": _(
-                    "There is no checkout session currently active."
-                    " Please refresh the page."
-                )
-            },
-            status=NO_ACTIVE_SESSION,
-        )
+        return create_toast(Toasts.NO_ACTIVE_CHECKOUT_SESSION, status=NO_ACTIVE_SESSION)
 
     # By default, a session is valid for 24 hours. Don't leave the browser tab open
     # for more than a day.
     if not session_check_only:
         if session.is_expired():
             session.delete()
-            return JsonResponse(
-                data={
-                    "message": _(
-                        "The checkout session has expired. Please refresh the page."
-                    )
-                },
-                status=EXPIRED_SESSION,
-            )
+            return create_toast(Toasts.EXPIRED_CHECKOUT_SESSION, status=EXPIRED_SESSION)
 
 
 @permission_required("records.check_out")
@@ -125,15 +107,11 @@ def check_out_item_htmx(request: Request) -> HttpResponse:
     item_id = request.POST.get("item_id")
 
     if not item_id:
-        return JsonResponse(
-            data={"message": _("Missing item ID... please try again.")}, status=400
-        )
+        return create_toast(Toasts.MISSING_ITEM_ID)
 
     item = Item.objects.filter(host=request.host, barcode=item_id).first()
     if not item:
-        return JsonResponse(
-            data={"message": _("No item found with that ID.")}, status=400
-        )
+        return create_toast(Toasts.NO_ITEM_FOUND)
 
     # The session target is either a user or a branchlocation
     check, message = session.session_target.can_checkout_item(item)
@@ -142,9 +120,7 @@ def check_out_item_htmx(request: Request) -> HttpResponse:
         JsonResponse(data={"message": message}, status=400)
 
     if session.items.filter(barcode=item_id).exists():
-        return JsonResponse(
-            data={"message": _("That item is already in the list.")}, status=400
-        )
+        return create_toast(Toasts.ITEM_ALREADY_PRESENT)
 
     # We got this far, so we can actually do the checkout thing now.
     session.items.add(item)
@@ -251,15 +227,11 @@ def check_in_item_htmx(request: Request) -> HttpResponse:
     item_id = request.POST.get("item_id")
 
     if not item_id:
-        return JsonResponse(
-            data={"message": _("Missing item ID... please try again.")}, status=400
-        )
+        return create_toast(Toasts.MISSING_ITEM_ID)
 
     item = Item.objects.filter(host=request.host, barcode=item_id).first()
     if not item:
-        return JsonResponse(
-            data={"message": _("No item found with that ID.")}, status=400
-        )
+        return create_toast(Toasts.NO_ITEM_FOUND)
 
     # Process:
     #

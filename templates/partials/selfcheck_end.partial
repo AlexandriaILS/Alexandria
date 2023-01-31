@@ -1,0 +1,21 @@
+{% load i18n %}
+
+<h1 class="fs-2 text-center">{% translate "Thank you!" %}</h1>
+
+<p class="fs-4">
+    {% blocktrans %}
+        Please take your receipt. Have a great day!
+    {% endblocktrans %}
+</p>
+
+{% if receipt %}
+    {% include 'receipts/receipt_container.partial' %}
+{% endif %}
+
+<script>
+    setTimeout(toTheBeginning, 7000);
+
+    function toTheBeginning() {
+        window.location.href = "{% url 'self_check_out' %}";
+    }
+</script>

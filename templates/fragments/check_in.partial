@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="mt-5" data-hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkinContainer">
+<div class="mt-5" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' id="checkinContainer">
     <div class="row">
         <div class="col-12 col-sm-6">
             <p>Currently checking in to <span
@@ -16,9 +16,9 @@
             </div>
         </div>
         <form
-                data-hx-post="{% url 'check_in_item_htmx' %}"
-                data-hx-target="#checkinList"
-                data-hx-swap="afterend"
+                hx-post="{% url 'check_in_item_htmx' %}"
+                hx-target="#checkinList"
+                hx-swap="afterend"
         >
             <div class="mb-4">
                 <label for="itemInput" class="form-label">{% translate "Scan item barcode" %}:</label>
