@@ -3,12 +3,11 @@
 |
 |
 |
-|{width:*,10; text:nowrap; align:center}
-|Title | Due Date|
+|Due       Title
+{text:nowrap}
 {% for item in checkout_session.items.all %}
-|{{item.record.title | truncatecharswithellipsis:28}} | {{ item.get_due_date_for_receipt }}|
+|{{ item.get_due_date_for_receipt }}  {{item.record.title | truncatecharswithellipsis:28}}
 {% endfor %}
-{width:auto}
 |
 |
 |Renew your materials and place holds
@@ -17,12 +16,13 @@
 |{{ request.settings.url }}
 |{{ request.settings.phone_number }}
 |{% if request.settings.enable_running_borrow_saved_money and checkout_session.session_target.is_user %}
-|You've saved "${{ checkout_session.session_target.saved_money }}" by using
-|your library card! Nice work!
+|
+|You've saved "${{ checkout_session.session_target.saved_money }}" by using|
+|your library card! Nice work!|
 |{% endif %}
 |
 |
-|"{{ request.settings.name }} "
+|"{{ request.settings.name }}"
 |{{ request.settings.address_1 }}
 |{{ request.settings.city }}, {{ request.settings.state }} {{ request.settings.zip_code }}
 |{{ request.settings.phone_number }}
