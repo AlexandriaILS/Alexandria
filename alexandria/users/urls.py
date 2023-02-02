@@ -122,7 +122,7 @@ urlpatterns = [
     path(
         "selfcheckout_finish_htmx/<str:user_id>/",
         selfcheckout.selfcheckout_finish_htmx,
-        name="selfcheckout_finish_htmx"
+        name="selfcheckout_finish_htmx",
     ),
     # path(
     #     "patron_edit/<int:user_id>/",

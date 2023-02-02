@@ -38,7 +38,9 @@ def get_user_and_selfcheck_session(
 
 
 def index(request):
-    return render(request, "selfcheckout/selfcheck_start.html", {"hide_back_button": True})
+    return render(
+        request, "selfcheckout/selfcheck_start.html", {"hide_back_button": True}
+    )
 
 
 @htmx_guard_redirect("self_check_out")
@@ -155,4 +157,4 @@ def selfcheckout_finish_htmx(request: Request, user_id: str) -> HttpResponse:
 
     receipt = session.get_receipt(request)
     session.delete()
-    return render(request, "partials/selfcheck_end.partial", {'receipt': receipt})
+    return render(request, "partials/selfcheck_end.partial", {"receipt": receipt})
