@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.conf import settings
 from django.db import models
 from django.db.utils import ProgrammingError
@@ -32,19 +34,28 @@ class Domain(models.Model):
 class SettingsContainer:
     def __init__(self, host):
         self.host = host
+        # Grab all the settings in one call, then compile them into a
+        # dict for easy access without repetitive calls later in the
+        # templates.
+        settings_values = Setting.objects.filter(host=self.host).values("name", "value")
+        options = {
+            Setting.options[i].value: i.lower()
+            for i in dir(Setting.options)
+            if not i.startswith("__")
+        }
+        self.values = {options[s["name"]]: s["value"] for s in settings_values}
 
     def __getattr__(self, item: str) -> str:
-        # allow case-insensitive dot notation on the request object for templates
-        if item.upper() in dir(Setting.options):
-            return Setting.get(name=Setting.options[item.upper()], host=self.host)
+        if item in self.values:
+            return self.values[item]
 
-        return Setting.get(name=item, host=self.host)
+        return None
 
-    def get(self, name: str, **kwargs):
-        return Setting.get(name, **kwargs, host=self.host)
+    def get(self, name: str, default: Any):
+        return self.values.get(name, default)
 
-    def get_int(self, name: str, **kwargs):
-        return Setting.get_int(name, **kwargs, host=self.host)
+    def get_int(self, name: str, default: int):
+        return int(self.values.get(name, default))
 
 
 class Setting(models.Model):

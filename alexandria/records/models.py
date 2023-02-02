@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType as DjangoContentType
+from django.contrib.postgres.indexes import GinIndex
 from django.db import models
 from django.db.models.fields.files import ImageFieldFile
 from django.template import loader
@@ -32,6 +33,15 @@ class Subject(TimeStampMixin, SearchableFieldMixin):
     host = models.ForeignKey(
         Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
     )
+
+    class Meta:
+        indexes = [
+            GinIndex(
+                name="sbl_name_subject_gin_idx",
+                fields=["searchable_name"],
+                opclasses=["gin_trgm_ops"],
+            )
+        ]
 
     def __str__(self):
         return self.name
@@ -256,6 +266,45 @@ class Record(TimeStampMixin, SearchableFieldMixin, CoverUtilitiesMixin):
         Domain, on_delete=models.CASCADE, default=Domain.get_default_pk
     )
 
+    class Meta:
+        indexes = [
+            GinIndex(
+                name="rcrd_combined_gin_idx",
+                fields=[
+                    "searchable_authors",
+                    "searchable_title",
+                    "searchable_uniform_title",
+                    "searchable_subtitle",
+                ],
+                opclasses=[
+                    "gin_trgm_ops",
+                    "gin_trgm_ops",
+                    "gin_trgm_ops",
+                    "gin_trgm_ops",
+                ],
+            ),
+            GinIndex(
+                name="sbl_author_rcrd_gin_idx",
+                fields=["searchable_authors"],
+                opclasses=["gin_trgm_ops"],
+            ),
+            GinIndex(
+                name="sbl_title_rcrd_gin_idx",
+                fields=["searchable_title"],
+                opclasses=["gin_trgm_ops"],
+            ),
+            GinIndex(
+                name="sbl_unfrm_rcrd_title_gin_idx",
+                fields=["searchable_uniform_title"],
+                opclasses=["gin_trgm_ops"],
+            ),
+            GinIndex(
+                name="sbl_subtitle_rcrd_gin_idx",
+                fields=["searchable_subtitle"],
+                opclasses=["gin_trgm_ops"],
+            ),
+        ]
+
     def __str__(self):
         val = f"{self.title}"
         if self.authors:
@@ -267,21 +316,6 @@ class Record(TimeStampMixin, SearchableFieldMixin, CoverUtilitiesMixin):
     def save(self, *args, **kwargs):
         self.update_searchable_fields()
         super(Record, self).save(*args, **kwargs)
-
-    def get_available_types(self):
-        return set(
-            [
-                (i.type.name, i.type.id)
-                for i in self.item_set.filter(is_active=True)
-                if i.type
-            ]
-        )
-
-    def show_quick_hold_button(self):
-        # Only show the quick hold button on standalone items where it makes sense to
-        # have a quick hold button.
-        if self.bibliographic_level:
-            return self.bibliographic_level.name == BibliographicLevel.MONOGRAPH_ITEM
 
     def get_valid_items(self):
         return self.item_set.filter(is_active=True).order_by("type__name", "-pubyear")

@@ -35,13 +35,13 @@
             </div>
         </div>
         <div class="col-xl-3 col-xxl-3">
-            <div class="card shadow-sm{% if not item.show_quick_hold_button %} d-none d-xl-block{% endif %}"
+            <div class="card shadow-sm{% if not item.show_hold_button %} d-none d-xl-block{% endif %}"
                  style="height:100%">
                 <div class="card-body">
                     <div class="row">
-                        {% if item.show_quick_hold_button %}
+                        {% if item.show_hold_button %}
                             <div class="text-center mb-2">{% translate "Quick hold:" %}</div>
-                            {% for subitem in item.get_available_types %}
+                            {% for subitem in item.type_data %}
                                 <div class="col-1 col-md-3 col-xl-0"></div>
                                 <div class="col-10 col-md-6 col-xl-12">
                                     <div class="d-grid mt-2">
