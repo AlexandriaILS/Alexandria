@@ -8,7 +8,6 @@ from alexandria.searchablefields.strings import clean_text
 from alexandria.users.views.ajax import item_search, patron_search, record_search
 
 # Create your views here.
-# TODO: create checkout views
 # TODO: move material management views
 # TODO: add reports functionality
 # TODO: add user management

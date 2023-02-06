@@ -395,7 +395,7 @@ class Item(TimeStampMixin, CoverUtilitiesMixin):
     # for yet.
     marc_location = models.TextField(_("marc_location"), blank=True, null=True)
 
-    # all of the leader information for the marc record -- easier to store and parse
+    # All the leader information for the marc record -- easier to store and parse
     # this string than it is to spread it out into the database.
     # https://www.loc.gov/marc/bibliographic/bdleader.html
     marc_leader = models.CharField(max_length=50, blank=True, null=True)

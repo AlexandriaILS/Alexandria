@@ -76,7 +76,7 @@
             <li class="mb-1">
                 <div class="btn-chevron-padding ps-2">
                     {% comment %}Translators: there will always be a name and punctuation at the end of this.{% endcomment %}
-                    {% translate "Hi there," %} {{ request.user.get_shortened_name }}!
+                    {% translate "Hi," %} {{ request.user.get_shortened_name }}!
                 </div>
             </li>
         </ul>
@@ -87,61 +87,45 @@
                     {% translate "Home" %}
                 </a>
             </li>
-            <li class="mb-1">
+            {% if 'records.check_in' in perms %}
+                <li class="mb-1">
+                    <a class="btn btn-toggle btn-chevron-padding align-items-center rounded"
+                       href="{% url 'check_in' %}">
+                        {% translate "Check In" %}
+                    </a>
+                </li>
+            {% endif %}
+            {% if "records.check_out" in perms %}
+                <li class="mb-1">
+                    <a class="btn btn-toggle btn-chevron-padding align-items-center rounded"
+                       href="{% url 'check_out' %}">
+                        {% translate "Check Out" %}
+                    </a>
+                </li>
+            {% endif %}
+            <li class="sidebarGroup">
                 <button class="btn btn-toggle btn-toggle-chevron align-items-center rounded collapsed"
                         data-bs-toggle="collapse"
-                        data-bs-target="#circ-collapse" aria-expanded="false">
-                    {% translate "Circulation" %}
+                        data-bs-target="#accounts-collapse" aria-expanded="false">
+                    {% translate "Accounts" %}
                 </button>
-                <div class="collapse" id="circ-collapse">
+                <div class="collapse" id="accounts-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        {% if 'records.check_in' in perms %}
-                            <li><a href="{% url 'check_in' %}" class="link-dark rounded">{% translate "Check In" %}</a></li>
-                        {% endif %}
-                        {% if "records.check_out" in perms %}
-                            <li><a href="{% url 'check_out' %}" class="link-dark rounded">{% translate "Check Out" %}</a></li>
-                        {% endif %}
-                        {% if 'users.create_patron_account' in perms %}
-                            <li><a href="{% url 'create_patron' %}"
-                                   class="link-dark rounded">{% translate "Create Patron Account" %}</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </li>
-            <li class="mb-1">
-                <button class="btn btn-toggle btn-toggle-chevron align-items-center rounded collapsed"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#reference-collapse" aria-expanded="false">
-                    {% translate "Reference" %}
-                </button>
-                <div class="collapse" id="reference-collapse">
-                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        <li><a href="#" class="link-dark rounded">Overview</a></li>
-                        <li><a href="#" class="link-dark rounded">Weekly</a></li>
-                        <li><a href="#" class="link-dark rounded">Monthly</a></li>
-                        <li><a href="#" class="link-dark rounded">Annually</a></li>
-                    </ul>
-                </div>
-            </li>
-            <li class="mb-1">
-                <button class="btn btn-toggle btn-toggle-chevron align-items-center rounded collapsed"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#admin-collapse" aria-expanded="false">
-                    {% translate "Administration" %}
-                </button>
-                <div class="collapse" id="admin-collapse">
-                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                        {% if 'users.read_staff_account' in perms %}
-                            <li>
-                                <a href="{% url 'staff_management' %}" class="link-dark rounded">
-                                    {% translate "Staff Management" %}
-                                </a>
-                            </li>
-                        {% endif %}
                         {% if 'users.read_patron_account' in perms %}
                             <li>
                                 <a href="{% url 'patron_management' %}" class="link-dark rounded">
-                                    {% translate "Patron Management" %}
+                                    {% translate "Search Patrons" %}
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if 'users.create_patron_account' in perms %}
+                            <li><a href="{% url 'create_patron' %}"
+                                   class="link-dark rounded">{% translate "Create Patron" %}</a></li>
+                        {% endif %}
+                        {% if 'users.read_staff_account' in perms %}
+                            <li>
+                                <a href="{% url 'staff_management' %}" class="link-dark rounded">
+                                    {% translate "Search Staff" %}
                                 </a>
                             </li>
                         {% endif %}
@@ -155,6 +139,42 @@
                     </ul>
                 </div>
             </li>
+            <li class="sidebarGroup">
+                <button class="btn btn-toggle btn-toggle-chevron align-items-center rounded collapsed"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#items-collapse" aria-expanded="false">
+                    {% translate "Items" %}
+                </button>
+                <div class="collapse" id="items-collapse">
+                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                        {% if 'users.read_patron_account' in perms %}
+                            <li><a href="{% url 'check_in' %}"
+                                   class="link-dark rounded">{% translate "Add New Item" %}</a>
+                            </li>
+                        {% endif %}
+                        {% if "users.change_patron_account" in perms %}
+                            <li><a href="{% url 'check_out' %}"
+                                   class="link-dark rounded">{% translate "Edit Item" %}</a></li>
+                        {% endif %}
+                        {% if 'users.create_patron_account' in perms %}
+                            <li><a href="{% url 'create_patron' %}"
+                                   class="link-dark rounded">{% translate "Add Record" %}</a></li>
+                        {% endif %}
+                        {% if 'users.create_patron_account' in perms %}
+                            <li><a href="{% url 'create_patron' %}"
+                                   class="link-dark rounded">{% translate "Edit Record" %}</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </li>
+            {% if "records.check_out" in perms %}
+                <li class="mb-1">
+                    <a class="btn btn-toggle btn-chevron-padding align-items-center rounded"
+                       href="{% url 'check_out' %}">
+                        {% translate "Reports" %}
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
     <hr>
