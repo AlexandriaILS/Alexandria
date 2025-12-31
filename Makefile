@@ -1,4 +1,7 @@
-.PHONY: migrate dev_data run nuke shell docs db_up db_down db_setup test wipe_db wipe_redis pretty
+.PHONY: migrate dev_data run nuke shell docs db_up db_down db_setup tests wipe_db wipe_redis pretty
+
+# See information here: https://retype.com/blog/2025-06-06-new-github-pages-community-key/
+RETYPE_KEY = "dEVPBhEAT01MR0NBQ0xBT0VHR0NDR0dGT09PRUFDTEZARE9PT09FRERET15aEx0AHAEWWh0bT0Q-pId4N7uwS11nfzalpH2MG9Wql5Jtoc9vFnQMJJeh0WfKhv7CHrYPeg"
 
 migrate:
 	@uv run python manage.py migrate && uv run python manage.py migrate --database queue steady_queue
@@ -22,7 +25,9 @@ shell:
 	uv run python manage.py shell_plus
 
 docs:
-	retype watch
+	@command -v retype >/dev/null 2>&1 || npm install -g retypeapp
+	@retype wallet --list | grep -q "dEVPB*****" || retype wallet --add $(RETYPE_KEY)
+	retype start
 
 # Want to use Postgres to develop locally? Use these commands to spin up a local
 # copy of Postgres through docker. Note: this does expect that you've set up the
@@ -57,7 +62,7 @@ db_setup:
 psql_shell:
 	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres"
 
-test:
+tests:
 	uv run pytest -n auto
 
 # launch the django_lightweight_queue worker

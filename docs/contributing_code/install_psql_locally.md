@@ -8,7 +8,7 @@ tags: [dev, development, postgres, psql]
 
 ## Introduction
 
-!!! danger :rotating_light: Stop! :rotating_light:
+!!!danger :rotating_light: Stop! :rotating_light:
 You don't need to do this if you take the recommended Docker route.
 
 :arrow_right: **This method is not supported.** :arrow_left: 
@@ -34,7 +34,7 @@ Install the `pg_trgm` extension on the default template database with the follow
 psql -h localhost -U postgres -d template1 -c 'CREATE EXTENSION IF NOT EXISTS pg_trgm;'
 ```
 
-This will make it so that the extension is always available, even for tests. Note: if this fails, you need to install `postgresql-contrib`. `pg_trgm` is NOT optional.
+This will make it so that the extension is always available, even for tests. Note: if this fails, you need to install `postgresql-contrib`. **`pg_trgm` is NOT optional**.
 
 Activate the Postgres shell using `psql`:
 
@@ -56,8 +56,10 @@ Run the following commands to create the database information needed by Alexandr
 ```sql
 -- After you get pg_trgm installed, you can build the rest:
 CREATE DATABASE alexandria;
+CREATE DATABASE queue;
 CREATE USER alexandria WITH SUPERUSER PASSWORD 'asdf';
 GRANT ALL ON DATABASE alexandria TO alexandria;
+GRANT ALL ON DATABASE queue TO alexandria;
 ```
 
 If everything ran correctly, you should see the following responses to your commands:
@@ -66,6 +68,8 @@ If everything ran correctly, you should see the following responses to your comm
 CREATE
 CREATE
 CREATE
+CREATE
+GRANT
 GRANT
 ```
 

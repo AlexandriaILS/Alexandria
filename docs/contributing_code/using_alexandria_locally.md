@@ -72,19 +72,19 @@ make dev_data
 Tests make sure that we don't break existing functionality while working on new features and make sure that new features work the way they're supposed to! If you just want to run the tests directly, make sure that the Python environment is activated (`poetry shell`) and run the following:
 
 ```shell
-pytest
+uv run pytest
 ```
 
 You can run a specific file of tests (or a group of tests) by specifying the folder for `pytest` to check:
 
 ```shell
-pytest alexandria/api
+uv run pytest alexandria/api
 ```
 
 If you want to run all the tests the fast way, run:
 
 ```shell
-make test
+make tests
 ```
 
 ## Launching the Docs Server
