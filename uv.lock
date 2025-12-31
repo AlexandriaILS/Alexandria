@@ -25,6 +25,7 @@ dependencies = [
     { name = "requests" },
     { name = "rich" },
     { name = "slippers" },
+    { name = "steady-queue" },
     { name = "typing-extensions" },
 ]
 
@@ -64,6 +65,7 @@ requires-dist = [
     { name = "requests" },
     { name = "rich" },
     { name = "slippers" },
+    { name = "steady-queue", specifier = ">=0.1.2" },
     { name = "typing-extensions" },
 ]
 
@@ -215,6 +217,12 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/f5/5f/b177aa0011f354abf03a8f30a85032686d290fdeed4222b27d36b4372a50/coverage-7.13.1-cp314-cp314t-win_arm64.whl", hash = "sha256:eaecf47ef10c72ece9a2a92118257da87e460e113b83cc0d2905cbbe931792b4", size = 221707, upload-time = "2025-12-28T15:42:53.034Z" },
     { url = "https://files.pythonhosted.org/packages/cc/48/d9f421cb8da5afaa1a64570d9989e00fb7955e6acddc5a12979f7666ef60/coverage-7.13.1-py3-none-any.whl", hash = "sha256:2016745cb3ba554469d02819d78958b571792bb68e31302610e898f80dd3a573", size = 210722, upload-time = "2025-12-28T15:42:54.901Z" },
 ]
+
+[[package]]
+name = "crontab"
+version = "1.0.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/36/a255b6f5a2e22df03fd2b2f3088974b44b8c9e9407e26b44742cb7cfbf5b/crontab-1.0.5.tar.gz", hash = "sha256:f80e01b4f07219763a9869f926dd17147278e7965a928089bca6d3dc80ae46d5", size = 21963, upload-time = "2025-07-09T17:09:38.264Z" }
 
 [[package]]
 name = "djade"
@@ -716,6 +724,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/90/76/437d71068094df0726366574cf3432a4ed754217b436eb7429415cf2d480/sqlparse-0.5.5.tar.gz", hash = "sha256:e20d4a9b0b8585fdf63b10d30066c7c94c5d7a7ec47c889a2d83a3caa93ff28e", size = 120815, upload-time = "2025-12-19T07:17:45.073Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/49/4b/359f28a903c13438ef59ebeee215fb25da53066db67b305c125f1c6d2a25/sqlparse-0.5.5-py3-none-any.whl", hash = "sha256:12a08b3bf3eec877c519589833aed092e2444e68240a3577e8e26148acc7b1ba", size = 46138, upload-time = "2025-12-19T07:17:46.573Z" },
+]
+
+[[package]]
+name = "steady-queue"
+version = "0.1.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "crontab" },
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/6f/1e/7873705bb536099599f674dfe210502a2afbf7e6fee072bdafa50b31fce4/steady_queue-0.1.2.tar.gz", hash = "sha256:5e280507bb9bfd0140fefc2d2bc193e9a5c349ef86cedc040f2fdd95c6a90f53", size = 76698, upload-time = "2025-12-29T18:11:33.522Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fa/6b/4072d05d57b6200d5232b562cc99c46ba14038edeab8d55fe0cdd180f1ba/steady_queue-0.1.2-py3-none-any.whl", hash = "sha256:3b04b09f8645a186b421eb4fa986508f0a3d7d2b87c132008292d2c5760d7e77", size = 62487, upload-time = "2025-12-29T18:11:32.071Z" },
 ]
 
 [[package]]

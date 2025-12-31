@@ -1,5 +1,6 @@
 import random
 import string
+from datetime import datetime
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
@@ -53,7 +54,7 @@ class Command(BaseCommand):
                 legal_first_name=person.first_name(),
                 legal_last_name=person.last_name(),
                 email=person.email(),
-                birth_year=2021 - person.age(minimum=20),
+                birth_year=person.birthdate(min_year=1945, max_year=datetime.now().year - 20).year,
                 default_branch=random.choice(valid_branches),
                 work_branch=random.choice(valid_branches),
             )

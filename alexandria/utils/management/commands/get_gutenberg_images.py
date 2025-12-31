@@ -17,8 +17,8 @@ class Command(BaseCommand):
         for book in track(records, description="Getting images..."):
             time.sleep(0.1)
             try:
-                get_and_save_image(url.format(book.notes.split(":")[1]), book)
-                book.save()
+                get_and_save_image.enqueue(url.format(book.notes.split(":")[1]), book)
+                # book.save()
             except:
                 self.stdout.write(f"Error on {book.id} -- continuing.")
 

@@ -55,7 +55,8 @@ class Command(BaseCommand):
         )
 
         for x in track(range(count), description="[green]Generating patrons..."):
-            age = person.age(minimum=0)
+            birthyear = person.birthdate(min_year=1945, max_year=2021).year
+            is_minor = datetime.now().year - birthyear < 18
 
             people.append(
                 User(
@@ -67,10 +68,10 @@ class Command(BaseCommand):
                     ),  # account for zero and the admin address
                     legal_first_name=person.first_name(),
                     legal_last_name=person.last_name(),
-                    account_type=underage if age < 18 else patron,
+                    account_type=underage if is_minor else patron,
                     email=person.email(),
-                    birth_year=datetime.now().year - age,
-                    is_minor=True if age < 18 else False,
+                    birth_year=birthyear,
+                    is_minor=True if is_minor else False,
                     default_branch=random.choice(valid_branches),
                 )
             )

@@ -51,7 +51,7 @@ def download_cover(item: Union["Item", "Record"], size: str = "M") -> None:
         args.update({"record_id": item.id})
     else:
         args.update({"item_id": item.id})
-    get_and_save_image(**args)
+    get_and_save_image.enqueue(**args)
 
 
 def get_by_isbn(isbn: str) -> Dict:

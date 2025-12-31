@@ -97,7 +97,7 @@ def build_record(item: Dict) -> Record:
         new_record.tags.add(tag)
 
     if item["image"]:
-        new_record = get_and_save_image(item["image"], new_record)
+        new_record = get_and_save_image.enqueue(item["image"], new_record)
 
     new_record.save()
     return new_record

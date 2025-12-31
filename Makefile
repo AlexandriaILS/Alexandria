@@ -1,7 +1,7 @@
 .PHONY: migrate dev_data run nuke shell docs db_up db_down db_setup test wipe_db wipe_redis pretty
 
 migrate:
-	uv run python manage.py migrate
+	@uv run python manage.py migrate && uv run python manage.py migrate --database queue steady_queue
 
 dev_data:
 	uv run python manage.py bootstrap_dev_site
@@ -11,6 +11,7 @@ run:
 
 wipe_db:
 	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres -c 'drop database if exists alexandria;'"
+	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres -c 'drop database if exists queue;'"
 
 wipe_redis:
 	docker exec -it dev-redis bash -c "redis-cli FLUSHALL"
@@ -49,8 +50,9 @@ db_down:
 db_setup:
 	docker exec -it dev-postgres bash -c "apt update && apt install postgresql-contrib -y"
 	docker exec -it dev-postgres bash -c "echo \"SELECT 'CREATE DATABASE alexandria' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'alexandria')\gexec\" | psql -h localhost -U postgres"
+	docker exec -it dev-postgres bash -c "echo \"SELECT 'CREATE DATABASE queue' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'queue')\gexec\" | psql -h localhost -U postgres"
 	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres -d template1 -c 'CREATE EXTENSION IF NOT EXISTS pg_trgm;'"
-	docker exec -it dev-postgres bash -c "printf '\set AUTOCOMMIT on\nDROP ROLE IF EXISTS alexandria; CREATE USER alexandria WITH SUPERUSER PASSWORD '\''asdf'\''; GRANT ALL ON DATABASE alexandria TO alexandria;' | psql -h localhost -U postgres"
+	docker exec -it dev-postgres bash -c "printf '\set AUTOCOMMIT on\nDROP ROLE IF EXISTS alexandria; CREATE USER alexandria WITH SUPERUSER PASSWORD '\''asdf'\''; GRANT ALL ON DATABASE alexandria TO alexandria; GRANT ALL ON DATABASE queue TO alexandria' | psql -h localhost -U postgres"
 
 psql_shell:
 	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres"

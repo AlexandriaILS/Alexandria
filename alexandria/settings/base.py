@@ -15,6 +15,8 @@ import subprocess
 
 from alexandria.utils.lazy import LazyObject
 
+import steady_queue
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -87,6 +89,7 @@ INSTALLED_APPS = [
     "taggit",
     "rest_framework",
     "django_htmx",
+    "steady_queue",
     # first party
     "alexandria.api",
     "alexandria.searchablefields",
@@ -147,7 +150,17 @@ DATABASES = {
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
         "HOST": os.environ.get("POSTGRES_HOST"),
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
-    }
+    },
+    "queue": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "queue",
+        "USER": os.environ.get("POSTGRES_USER"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+        "HOST": os.environ.get("POSTGRES_HOST"),
+        "PORT": os.environ.get("POSTGRES_PORT", "5432"),
+        # unittest database
+        "TEST": {"NAME": "test_queue"},
+    },
 }
 
 # LIGHTWEIGHT_QUEUE_BACKEND = "django_lightweight_queue.backends.redis.RedisBackend"
@@ -159,6 +172,18 @@ DATABASES = {
 # LIGHTWEIGHT_QUEUE_MIDDLEWARE = (
 #     "django_lightweight_queue.middleware.logging.LoggingMiddleware",
 # )
+
+steady_queue.database = "queue"
+DATABASE_ROUTERS = ["steady_queue.db_router.SteadyQueueRouter"]
+
+TASKS = {
+    "default": {
+        "BACKEND": "steady_queue.backend.SteadyQueueBackend",
+        "QUEUES": ["queue"],
+        "OPTIONS": {},
+    },
+    "immediate": {"BACKEND": "django.tasks.backends.immediate.ImmediateBackend"}
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

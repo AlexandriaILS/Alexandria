@@ -24,6 +24,7 @@ dependencies = [
     "rich",
     "django-htmx",
     "typing-extensions",
+    "steady-queue>=0.1.2",
 ]
 
 [dependency-groups]

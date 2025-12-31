@@ -10,12 +10,12 @@ from django.core.files.base import ContentFile
 from django.core.files.images import ImageFile
 from django.core.files.storage import default_storage
 
-# from django_lightweight_queue import task
+from django.tasks import task
 
 logger = logging.getLogger(__name__)
 
 
-# @task()
+@task()
 def get_and_save_image(url: str, item_id: int = None, record_id: int = None) -> Any:
     from alexandria.records.models import Item, Record
 
@@ -33,7 +33,7 @@ def get_and_save_image(url: str, item_id: int = None, record_id: int = None) -> 
         # sometimes we get single pixel images, which is definitely not what we want.
         # If that happens, discard the result.
         # The single-pixel image that I received in testing has a length of 807, and
-        # a valid image las a length around 19,500. 2000 seems like a wild guess, but
+        # a valid image has a length around 19,500. 2000 seems like a wild guess, but
         # we'll run with that until it causes issues.
         return
 
