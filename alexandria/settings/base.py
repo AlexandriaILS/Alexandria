@@ -163,16 +163,6 @@ DATABASES = {
     },
 }
 
-# LIGHTWEIGHT_QUEUE_BACKEND = "django_lightweight_queue.backends.redis.RedisBackend"
-# LIGHTWEIGHT_QUEUE_SITE_URL = "http://localhost:8000"
-# LIGHTWEIGHT_QUEUE_REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")
-# LIGHTWEIGHT_QUEUE_REDIS_PORT = os.environ.get("REDIS_PORT", 6379)
-# LIGHTWEIGHT_QUEUE_REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", None)
-# LIGHTWEIGHT_QUEUE_REDIS_PREFIX = os.environ.get("REDIS_PREFIX", "")
-# LIGHTWEIGHT_QUEUE_MIDDLEWARE = (
-#     "django_lightweight_queue.middleware.logging.LoggingMiddleware",
-# )
-
 steady_queue.database = "queue"
 DATABASE_ROUTERS = ["steady_queue.db_router.SteadyQueueRouter"]
 
