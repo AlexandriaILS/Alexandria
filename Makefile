@@ -13,8 +13,8 @@ wipe_db:
 	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres -c 'drop database if exists alexandria;'"
 	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres -c 'drop database if exists queue;'"
 
-wipe_redis:
-	docker exec -it dev-redis bash -c "redis-cli FLUSHALL"
+#wipe_redis:
+#	docker exec -it dev-redis bash -c "redis-cli FLUSHALL"
 
 clean: | wipe_db wipe_redis db_setup migrate
 
@@ -34,15 +34,15 @@ db_up:
 		-e POSTGRES_PASSWORD=alexandria \
 		-v pgdata:/var/lib/postgresql \
 		-p 5432:5432 postgres
-	docker run -d \
-		--name dev-redis \
-		-p 6379:6379 redis
+#	docker run -d \
+#		--name dev-redis \
+#		-p 6379:6379 redis
 
 db_down:
 	docker stop dev-postgres
-	docker stop dev-redis
+	#docker stop dev-redis
 	docker rm dev-postgres
-	docker rm dev-redis
+	#docker rm dev-redis
 
 # Install dependency for trigram similarities, force it to be available for every
 # test database, and then create the database and user information we'll use to
