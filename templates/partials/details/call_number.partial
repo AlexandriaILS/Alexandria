@@ -1,2 +1,2 @@
-{% icon name="local_offer" description="Item call number" extrastyle="transform: scale(-1,1);"%}
+{% icon name="local_offer" description="Item call number" extrastyle="transform: scale(-1,1);" %}
 {{ item.call_number }}

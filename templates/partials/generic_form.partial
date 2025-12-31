@@ -1,7 +1,4 @@
-{% load widget_tweaks %}
-{% load i18n %}
-{% load static %}
-{% load string_helpers %}
+{% load i18n static string_helpers widget_tweaks %}
 
 {% if header %}
     <h1>{{ header }}</h1>
@@ -17,7 +14,7 @@
 {% endif %}
 
 {% block preface %}
-{% endblock %}
+{% endblock preface %}
 
 <div class="mt-4"></div>
 {% if messages %}
@@ -58,7 +55,7 @@
     </div>
 {% endif %}
 
-{# Lifted from https://simpleisbetterthancomplex.com/article/2017/08/19/how-to-render-django-form-manually.html#}
+{# Lifted from https://simpleisbetterthancomplex.com/article/2017/08/19/how-to-render-django-form-manually.html #}
 {% if form.is_multipart %}
     {# properly handle the file uploads #}
     <form novalidate enctype="multipart/form-data" method="post" action="">
@@ -321,7 +318,7 @@
     <link rel="stylesheet" href="{% static "js/trumbowyg/plugins/highlight/ui/trumbowyg.highlight.min.css" %}">
 
     <script>
-        $('#{{trumbowyg_target}}').trumbowyg(
+        $('#{{ trumbowyg_target }}').trumbowyg(
             {
                 btns: [
                     ['viewHTML'],

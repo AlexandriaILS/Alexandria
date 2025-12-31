@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "django.contrib.postgres",
     # third party
     "django_extensions",
     "debug_toolbar",
@@ -86,7 +87,6 @@ INSTALLED_APPS = [
     "taggit",
     "rest_framework",
     "django_htmx",
-    "django_lightweight_queue",
     # first party
     "alexandria.api",
     "alexandria.searchablefields",
@@ -150,15 +150,15 @@ DATABASES = {
     }
 }
 
-LIGHTWEIGHT_QUEUE_BACKEND = "django_lightweight_queue.backends.redis.RedisBackend"
-LIGHTWEIGHT_QUEUE_SITE_URL = "http://localhost:8000"
-LIGHTWEIGHT_QUEUE_REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")
-LIGHTWEIGHT_QUEUE_REDIS_PORT = os.environ.get("REDIS_PORT", 6379)
-LIGHTWEIGHT_QUEUE_REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", None)
-LIGHTWEIGHT_QUEUE_REDIS_PREFIX = os.environ.get("REDIS_PREFIX", "")
-LIGHTWEIGHT_QUEUE_MIDDLEWARE = (
-    "django_lightweight_queue.middleware.logging.LoggingMiddleware",
-)
+# LIGHTWEIGHT_QUEUE_BACKEND = "django_lightweight_queue.backends.redis.RedisBackend"
+# LIGHTWEIGHT_QUEUE_SITE_URL = "http://localhost:8000"
+# LIGHTWEIGHT_QUEUE_REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")
+# LIGHTWEIGHT_QUEUE_REDIS_PORT = os.environ.get("REDIS_PORT", 6379)
+# LIGHTWEIGHT_QUEUE_REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", None)
+# LIGHTWEIGHT_QUEUE_REDIS_PREFIX = os.environ.get("REDIS_PREFIX", "")
+# LIGHTWEIGHT_QUEUE_MIDDLEWARE = (
+#     "django_lightweight_queue.middleware.logging.LoggingMiddleware",
+# )
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -188,8 +188,6 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 
 USE_I18N = True
-
-USE_L10N = True
 
 USE_TZ = True
 

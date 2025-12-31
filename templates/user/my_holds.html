@@ -21,7 +21,7 @@
         {% #centered_column center_width=6 extra_classes="text-center" %}
         <div class="mt-3 text-center alert alert-secondary">
             {# need a `with` assignment because you can't access variables inside of a blocktranslate. #}
-            {% with request.settings.phone_number as phonenumber %}
+            {% with phonenumber=request.settings.phone_number %}
                 {# Translators: there is a phone number at the end of this line #}
                 {% blocktranslate %}
                     Need help? Give us a call at
@@ -31,4 +31,4 @@
         </div>
         {% /centered_column %}
     {% endif %}
-{% endblock %}
+{% endblock content %}

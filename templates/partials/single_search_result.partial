@@ -1,5 +1,4 @@
-{% load format_toast %}
-{% load i18n %}
+{% load format_toast i18n %}
 
 <div class="container mt-3">
     <div class="row">

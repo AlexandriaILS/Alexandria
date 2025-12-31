@@ -8,16 +8,16 @@ from django.contrib.postgres.search import (
     TrigramSimilarity,
 )
 from django.core.paginator import Paginator
-from django.db.models import prefetch_related_objects, BooleanField
+from django.db.models import BooleanField, prefetch_related_objects
 from django.db.models.aggregates import Count
-from django.db.models.expressions import F, Q, Value, ExpressionWrapper
+from django.db.models.expressions import ExpressionWrapper, F, Q, Value
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from alexandria.catalog.helpers import get_results_per_page
 from alexandria.distributed.models import Setting
-from alexandria.records.models import Record, BibliographicLevel
+from alexandria.records.models import BibliographicLevel, Record
 from alexandria.users.helpers import add_patron_acted_as
 from alexandria.utils.db import query_debugger
 from alexandria.utils.type_hints import Request
@@ -120,12 +120,14 @@ def search(request: Request) -> HttpResponse:
         .annotate(
             show_hold_button=ExpressionWrapper(
                 Q(bibliographic_level__name=BibliographicLevel.MONOGRAPH_ITEM),
-                output_field=BooleanField()
-            ))
+                output_field=BooleanField(),
+            )
+        )
         .annotate(types=ArrayAgg("item__type__id", distinct=True, default=Value([])))
         .annotate(
             type_names=ArrayAgg("item__type__name", distinct=True, default=Value([]))
-        ).select_related("type")
+        )
+        .select_related("type")
     )
 
     # Because the pagination page is a list and not a queryset, we have to
@@ -145,7 +147,11 @@ def search(request: Request) -> HttpResponse:
         obj.type_data = zip(obj.type_names, obj.types)
 
     context.update(
-        {"result_count": paginator.count, "results_per_page": results_per_page, "page_annotations": page_qs}
+        {
+            "result_count": paginator.count,
+            "results_per_page": results_per_page,
+            "page_annotations": page_qs,
+        }
     )
 
     if search_term:

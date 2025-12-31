@@ -81,10 +81,10 @@
         <p>{% translate "Total copies" %}: {{ record.get_valid_items.count }}</p>
     </div>
     <div class="container">
-        {% with record.get_number_available_by_type as type_counts %}
+        {% with type_counts=record.get_number_available_by_type %}
             {% regroup record.get_valid_items by type as item_list %}
             <ul class="nav nav-pills nav-justified flex-sm-row" id="myTab" role="tablist"
-                {% if type_counts|length_is:1 %}style="display: none"{% endif %}>
+                {% if type_counts|length == 1 %}style="display: none"{% endif %}>
                 {% for type in item_list %}
                     <li class="nav-item" role="presentation">
                         <button class="nav-link flex-sm-fill justify-content-center{% if type.grouper == record.type %} active{% endif %}"
@@ -123,4 +123,4 @@
         {% endwith %}
     </div>
     {% include 'catalog/hold_location.partial' %}
-{% endblock %}
+{% endblock content %}

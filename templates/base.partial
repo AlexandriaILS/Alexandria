@@ -1,6 +1,4 @@
-{% load settings_value %}
-{% load i18n %}
-{% load static %}
+{% load i18n settings_value static %}
 
 <!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}
@@ -21,11 +19,11 @@
     <main class="flex-fill mb-5">
         {% block navbar %}
             {% include "partials/navbar.partial" %}
-        {% endblock %}
+        {% endblock navbar %}
         <div class="container flex-shrink-0 mt-3" id="theContent" style="height:100%; width: 100%">
             {% block content %}
                 <h1>Sorry, this page isn't done yet!</h1>
-            {% endblock %}
+            {% endblock content %}
         </div>
     </main>
 
@@ -33,7 +31,7 @@
     <script src="{% static 'js/toastutils.js' %}" async defer></script>
     <script src="{% static 'js/holdbuttons.js' %}" async defer></script>
     <script src="{% static 'js/renewbuttons.js' %}" async defer></script>
-{% endblock %}
+{% endblock main %}
 
 {{ request.context.alerts|json_script:"alert-data" }}
 {{ request.context|json_script:"library-data" }}

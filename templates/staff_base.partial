@@ -1,6 +1,5 @@
 {% extends "base.partial" %}
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
 
 {% block main %}
     <header class="d-md-none navbar navbar-light sticky-top bg-light flex-md-nowrap shadow-sm p-0">
@@ -27,12 +26,12 @@
                     <div class="container" id="theContent">
                         {% block title %}
                             <h1 class="h1">{{ page_title }}</h1>
-                        {% endblock %}
+                        {% endblock title %}
                         {% block content %}
-                        {% endblock %}
+                        {% endblock content %}
                     </div>
                 </div>
             </main>
         </div>
     </div>
-{% endblock %}
+{% endblock main %}

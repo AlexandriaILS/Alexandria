@@ -7,7 +7,6 @@ replacing the single-character ending with the three-character version so that
 it prints correctly.
 """
 
-
 from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.text import Truncator

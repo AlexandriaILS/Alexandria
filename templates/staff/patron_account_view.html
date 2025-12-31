@@ -1,6 +1,5 @@
 {% extends 'staff_base.partial' %}
-{% load mathfilters %}
-{% load i18n %}
+{% load i18n mathfilters %}
 
 {% block content %}
     {% if not user.is_active %}
@@ -136,4 +135,4 @@
             ...
         {% endfor %}
     {% endif %}
-{% endblock %}
+{% endblock content %}

@@ -2,7 +2,7 @@
 
 {% block title %}
     <h1>{{ title }}</h1>
-{% endblock %}
+{% endblock title %}
 
 {% block content %}
     {% include 'partials/warn_if_not_in_electron.partial' %}
@@ -17,4 +17,4 @@
         </div>
         {% /vertically_centered_card %}
     </div>
-{% endblock %}
+{% endblock content %}

@@ -6,7 +6,11 @@ from alexandria.records.models import ItemType, ItemTypeBase
 from alexandria.users.management.commands import create_test_patrons, create_test_staff
 from alexandria.users.models import BranchLocation, USLocation
 from alexandria.utils import us_state_to_abbrev
-from alexandria.utils.management.commands import bootstrap_site, import_gutenberg_titles
+from alexandria.utils.management.commands import (
+    bootstrap_site,
+    force_searchable_fields,
+    import_gutenberg_titles,
+)
 
 BRANCH_LOCATIONS = [
     "Crickhollow",
@@ -80,6 +84,7 @@ class Command(BaseCommand):
         bootstrap_site.Command().handle()
         write_default_settings.Command().handle()
         create_test_locations_and_types()
+        # Domain.objects.get_or_create(name="127.0.0.1:8000")
         # roughly 1 librarian for every 600 cardholders
         self.stdout.write("Creating a metric ton of patrons...")
         create_test_patrons.Command().handle(count=12000)
@@ -87,3 +92,5 @@ class Command(BaseCommand):
         create_test_staff.Command().handle(count=20)
         self.stdout.write("Building the library...")
         import_gutenberg_titles.Command().handle()
+        self.stdout.write("Populating search data...")
+        force_searchable_fields.Command().handle()

@@ -38,11 +38,8 @@ class SettingsContainer:
         # dict for easy access without repetitive calls later in the
         # templates.
         settings_values = Setting.objects.filter(host=self.host).values("name", "value")
-        options = {
-            Setting.options[i].value: i.lower()
-            for i in dir(Setting.options)
-            if not i.startswith("__")
-        }
+
+        options = {Setting.options[i].value: i.lower() for i in Setting.options.names}
         self.values = {options[s["name"]]: s["value"] for s in settings_values}
 
     def __getattr__(self, item: str) -> str:

@@ -27,8 +27,8 @@
         <h1>{% block error_code %}Error!{% endblock %}</h1>
         {% block additional_information %}
             {{ request.META.referrer }}
-        {% endblock %}
+        {% endblock additional_information %}
         <button class="btn btn-primary" onclick="history.back()">{% translate "Back to safety!" %}</button>
     </div>
 
-{% endblock %}
+{% endblock content %}

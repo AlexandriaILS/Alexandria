@@ -27,6 +27,7 @@ class CustomUserCreationForm(UserCreationForm):
         field_classes = {"card_number": forms.CharField}
 
 
+@admin.register(User)
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {"fields": ("card_number", "password")}),
@@ -66,6 +67,7 @@ class CustomUserAdmin(UserAdmin):
     exclude = User().get_searchable_field_names()
 
 
+@admin.register(AccountType)
 class AccountTypeAdmin(admin.ModelAdmin):
     add_fieldsets = (
         _("Permissions"),
@@ -80,7 +82,5 @@ class AccountTypeAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(User, CustomUserAdmin)
-admin.site.register(AccountType, AccountTypeAdmin)
 admin.site.register(BranchLocation)
 admin.site.register(USLocation)

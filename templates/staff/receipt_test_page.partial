@@ -22,4 +22,4 @@
 
     </script>
 
-{% endblock %}
+{% endblock content %}

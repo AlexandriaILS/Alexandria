@@ -1,5 +1,4 @@
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
 
 <footer class="footer mt-auto py-3 bg-light">
     <div class="container">

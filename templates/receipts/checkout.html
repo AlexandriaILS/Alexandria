@@ -6,7 +6,7 @@
 |Due       Title
 {text:nowrap}
 {% for item in checkout_session.items.all %}
-|{{ item.get_due_date_for_receipt }}  {{item.record.title | truncatecharswithellipsis:28}}
+|{{ item.get_due_date_for_receipt }}  {{ item.record.title|truncatecharswithellipsis:28 }}
 {% endfor %}
 |
 |

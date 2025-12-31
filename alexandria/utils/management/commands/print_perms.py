@@ -1,5 +1,5 @@
-from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Permission
+from django.core.management.base import BaseCommand
 from rich import print
 from rich.panel import Panel
 
@@ -23,4 +23,4 @@ class Command(BaseCommand):
                 categorizations[model] = [permission_to_perm(permission)]
 
         for model, perms in categorizations.items():
-            print(Panel.fit('\n'.join(perms), title=model, title_align='left'))
+            print(Panel.fit("\n".join(perms), title=model, title_align="left"))

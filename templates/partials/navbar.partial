@@ -1,5 +1,4 @@
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">

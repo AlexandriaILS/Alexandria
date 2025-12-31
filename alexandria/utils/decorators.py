@@ -37,6 +37,7 @@ def htmx_guard_redirect(redirect_name):
     allows for semantically seeing _why_ we're bypassing the decorator at a
     moment's glance.
     """
+
     # https://stackoverflow.com/a/9030358
     def _method_wrapper(view_method: Callable) -> Callable:
         def _arguments_wrapper(

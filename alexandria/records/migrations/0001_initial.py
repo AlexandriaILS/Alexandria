@@ -6,7 +6,6 @@ import django.db.models.deletion
 import django.utils.timezone
 import taggit.managers
 from django.db import migrations, models
-from django.utils.timezone import utc
 
 import alexandria.searchablefields.mixins
 
@@ -436,7 +435,9 @@ class Migration(migrations.Migration):
                 (
                     "last_checked_out",
                     models.DateTimeField(
-                        default=datetime.datetime(1970, 1, 1, 0, 0, tzinfo=utc),
+                        default=datetime.datetime(
+                            1970, 1, 1, 0, 0, tzinfo=datetime.timezone.utc
+                        ),
                         verbose_name="last_checked_out",
                     ),
                 ),

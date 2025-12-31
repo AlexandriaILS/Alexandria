@@ -9,12 +9,13 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.images import ImageFile
 from django.core.files.storage import default_storage
-from django_lightweight_queue import task
+
+# from django_lightweight_queue import task
 
 logger = logging.getLogger(__name__)
 
 
-@task()
+# @task()
 def get_and_save_image(url: str, item_id: int = None, record_id: int = None) -> Any:
     from alexandria.records.models import Item, Record
 

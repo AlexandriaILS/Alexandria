@@ -3,6 +3,7 @@ from django.conf import settings
 
 register = template.Library()
 
+
 # https://stackoverflow.com/a/7716141
 @register.simple_tag
 def settings_value(name):

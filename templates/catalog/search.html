@@ -1,12 +1,11 @@
 {% extends 'base.partial' %}
-{% load i18n %}
-{% load static %}
+{% load i18n static %}
 
 
 {% block content %}
     {% include 'partials/acting_user_warning.partial' %}
     {% if search_term %}
-        {% blocktranslate count result_count as r_count %}
+        {% blocktranslate count r_count=result_count %}
             <h1><span id="resultCount">{{ r_count }}</span> Result</h1>
             {% plural %}
             <h1><span id="resultCount">{{ r_count }}</span> Results</h1>
@@ -23,4 +22,4 @@
     {% else %}
         {% include 'catalog/no_results_found.partial' %}
     {% endif %}
-{% endblock %}
+{% endblock content %}

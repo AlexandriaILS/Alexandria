@@ -3,7 +3,7 @@
 
 {% block title %}
     <h1>{{ title }}</h1>
-{% endblock %}
+{% endblock title %}
 
 {% block content %}
     {% if search_text or page %}
@@ -70,4 +70,4 @@
             {% translate "No results found." %}
         </div>
     {% endif %}
-{% endblock %}
+{% endblock content %}

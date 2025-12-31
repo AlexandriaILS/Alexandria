@@ -1,7 +1,7 @@
 {% load i18n %}
 
 {% if hold.is_ready_for_pickup %}
-    {% with hold.destination as location %}
+    {% with location=hold.destination %}
         {% blocktranslate %}
             <div class="card shadow" style="width: 100%;">
                 <div class="card-body">
@@ -32,7 +32,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    {% with hold.item.record.title as title %}
+                    {% with title=hold.item.record.title %}
                     {% blocktranslate %}
                         <p>
                             Are you sure you want to cancel this hold on <em>{{ title }}</em>? You will lose your place in the

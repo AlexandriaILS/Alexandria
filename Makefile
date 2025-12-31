@@ -1,13 +1,13 @@
-.PHONY: migrate dev_data run nuke shell docs db_up db_down db_setup test wipe_db wipe_redis
+.PHONY: migrate dev_data run nuke shell docs db_up db_down db_setup test wipe_db wipe_redis pretty
 
 migrate:
-	poetry run python manage.py migrate
+	uv run python manage.py migrate
 
 dev_data:
-	poetry run python manage.py bootstrap_dev_site
+	uv run python manage.py bootstrap_dev_site
 
 run:
-	poetry run python manage.py runserver
+	uv run python manage.py runserver
 
 wipe_db:
 	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres -c 'drop database if exists alexandria;'"
@@ -18,7 +18,7 @@ wipe_redis:
 clean: | wipe_db wipe_redis db_setup migrate
 
 shell:
-	poetry run python manage.py shell_plus
+	uv run python manage.py shell_plus
 
 docs:
 	retype watch
@@ -31,7 +31,7 @@ db_up:
 	docker run -d \
 		--name dev-postgres \
 		-e POSTGRES_PASSWORD=alexandria \
-		-v pgdata:/var/lib/postgresql/data \
+		-v pgdata:/var/lib/postgresql \
 		-p 5432:5432 postgres
 	docker run -d \
 		--name dev-redis \
@@ -56,8 +56,14 @@ psql_shell:
 	docker exec -it dev-postgres bash -c "psql -h localhost -U postgres"
 
 test:
-	poetry run pytest -n auto
+	uv run pytest -n auto
 
 # launch the django_lightweight_queue worker
 worker:
-	poetry run python manage.py queue_runner --config=alexandria/settings/routing.py
+	uv run python manage.py queue_runner --config=alexandria/settings/routing.py
+
+pretty:
+	@uv run black . \
+	&& uv run isort . \
+	&& git ls-files -z -- '*.html' | xargs -0r .venv/bin/djade || true \
+	&& git ls-files -z -- '*.partial' | xargs -0r .venv/bin/djade || true

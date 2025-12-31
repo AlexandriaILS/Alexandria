@@ -1,7 +1,6 @@
-{% load i18n %}
-{% load mathfilters %}
+{% load i18n mathfilters %}
 
-{% with item.can_renew as can_renew %}
+{% with can_renew=item.can_renew %}
     {% if not can_renew %}
         <span class="d-grid" tabindex="0" data-bs-toggle="tooltip"
 
@@ -10,7 +9,7 @@
                 {% elif item.is_on_hold %}
               title="{% translate 'Item has been requested' %}"
                 {% else %}
-                    {% with item.get_renewal_availability_date as renewal_allow_date %}
+                    {% with renewal_allow_date=item.get_renewal_availability_date %}
               title="
                         {% blocktranslate %}Eligible for renewal on {{ renewal_allow_date }}{% endblocktranslate %}"
                     {% endwith %}

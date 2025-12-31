@@ -8,6 +8,7 @@ have the following functionality:
 * offers print ability for receipts
 * offers email receipt
 """
+
 from typing import Optional
 
 from django.http import HttpResponse
@@ -15,7 +16,7 @@ from django.shortcuts import render
 from rest_framework import status
 
 from alexandria.records.models import CheckoutSession, Item
-from alexandria.records.views.checkout_utils import create_toast, Toasts
+from alexandria.records.views.checkout_utils import Toasts, create_toast
 from alexandria.users.models import User
 from alexandria.utils.decorators import htmx_guard_redirect
 from alexandria.utils.type_hints import Request
