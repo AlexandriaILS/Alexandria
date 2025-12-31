@@ -40,7 +40,11 @@ class SettingsContainer:
         settings_values = Setting.objects.filter(host=self.host).values("name", "value")
 
         options = {Setting.options[i].value: i.lower() for i in Setting.options.names}
-        self.values = {options[s["name"]]: s["value"] for s in settings_values}
+        self.values = {}
+        for s in settings_values:
+            self.values[s["name"]] = s["value"]
+            if s["name"] in options:
+                self.values[options[s["name"]]] = s["value"]
 
     def __getattr__(self, item: str) -> str:
         if item in self.values:

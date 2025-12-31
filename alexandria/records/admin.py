@@ -28,7 +28,7 @@ class ItemAdmin(admin.ModelAdmin):
 class RecordAdmin(admin.ModelAdmin):
     ordering = ("title",)
     search_fields = ["searchable_title", "searchable_authors", "barcode", "call_number"]
-    exclude = Record().get_searchable_field_names()
+    exclude = Record.get_searchable_field_names()
 
 
 admin.site.register(Subject)

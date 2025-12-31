@@ -64,7 +64,7 @@ class CustomUserAdmin(UserAdmin):
     filter_horizontal = ()
     ordering = ("card_number",)
     add_form = CustomUserCreationForm
-    exclude = User().get_searchable_field_names()
+    exclude = User.get_searchable_field_names()
 
 
 @admin.register(AccountType)
